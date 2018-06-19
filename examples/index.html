@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+  <head>
+    <title>markdown-toolbar examples</title>
+    <link href="https://unpkg.com/primer@latest/build/build.css" rel="stylesheet">
+  </head>
+  <body>
+    <div class="container py-4">
+      <markdown-toolbar for="textarea">
+        <md-bold class="btn btn-sm">bold</md-bold>
+        <md-header class="btn btn-sm">header</md-header>
+        <md-italic class="btn btn-sm">italic</md-italic>
+        <md-quote class="btn btn-sm">quote</md-quote>
+        <md-code class="btn btn-sm">code</md-code>
+        <md-link class="btn btn-sm">link</md-link>
+        <md-unordered-list class="btn btn-sm">unordered-list</md-unordered-list>
+        <md-ordered-list class="btn btn-sm">ordered-list</md-ordered-list>
+        <md-task-list class="btn btn-sm">task-list</md-task-list>
+        <md-mention class="btn btn-sm">mention</md-mention>
+        <md-ref class="btn btn-sm">ref</md-ref>
+      </markdown-toolbar>
+      <textarea class="mt-3 d-block width-full" id="textarea"></textarea>
+    </div>
+    <script src="../dist/index.umd.js"></script>
+  </body>
+</html>

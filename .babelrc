@@ -1,0 +1,22 @@
+{
+  "env": {
+    "esm": {
+      "plugins": [
+        "transform-object-rest-spread",
+        "transform-custom-element-classes"
+      ],
+      "presets": [
+        ["flow"],
+        ["es2015", {"modules": false}],
+      ]
+    },
+    "umd": {
+      "plugins": [
+        "transform-object-rest-spread",
+        "transform-custom-element-classes",
+        "transform-es2015-modules-umd"
+      ],
+      "presets": ["flow", "es2015"]
+    }
+  }
+}
