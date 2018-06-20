@@ -43,6 +43,7 @@ import '@github/markdown-toolbar-element'
 
 ```
 npm install
+npm test
 ```
 
 ## License
