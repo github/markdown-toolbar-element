@@ -1,6 +1,6 @@
 # &lt;markdown-toolbar&gt; element
 
-markdown-toolbar buttons for textareas.
+Markdown formatting buttons for text inputs.
 
 ## Installation
 
