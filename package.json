@@ -1,7 +1,7 @@
 {
   "name": "@github/markdown-toolbar-element",
   "version": "0.0.1",
-  "description": "Markdown toolbar elelemnt.",
+  "description": "Markdown formatting buttons for text inputs.",
   "repository": "github/markdown-toolbar-element",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
