@@ -528,3 +528,5 @@ function applyStyle(button: Element, styles: {}) {
     styleSelectedText(field, style)
   }
 }
+
+export default MarkdownToolbarElement
