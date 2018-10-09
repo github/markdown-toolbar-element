@@ -74,6 +74,7 @@ describe('markdown-toolbbar-element', function() {
           <md-quote>quote</md-quote>
           <md-code>code</md-code>
           <md-link>link</md-link>
+          <md-img>image</md-img>
           <md-unordered-list>unordered-list</md-unordered-list>
           <md-ordered-list>ordered-list</md-ordered-list>
           <md-task-list>task-list</md-task-list>
@@ -457,6 +458,32 @@ describe('markdown-toolbbar-element', function() {
         setVisualValue("GitHub's |homepage|")
         clickToolbar('md-link')
         assert.equal("GitHub's [homepage](|url|)", visualValue())
+      })
+    })
+
+    describe('images', function() {
+      it('inserts image syntax with cursor in description', function() {
+        setVisualValue('|')
+        clickToolbar('md-img')
+        assert.equal('![|](url)', visualValue())
+      })
+
+      it('selected url is wrapped in image syntax with cursor in description', function() {
+        setVisualValue("GitHub's logo is |https://assets-cdn.github.com/images/modules/logos_page/Octocat.png|")
+        clickToolbar('md-img')
+        assert.equal("GitHub's logo is ![|](https://assets-cdn.github.com/images/modules/logos_page/Octocat.png)", visualValue())
+      })
+
+      it('cursor on url is wrapped in image syntax with cursor in description', function() {
+        setVisualValue("GitHub's logo is https://assets-cdn.git|hub.com/images/modules/logos_page/Octocat.png")
+        clickToolbar('md-img')
+        assert.equal("GitHub's logo is ![|](https://assets-cdn.github.com/images/modules/logos_page/Octocat.png)", visualValue())
+      })
+
+      it('selected plan text is wrapped in image syntax with cursor in url', function() {
+        setVisualValue("GitHub's |logo|")
+        clickToolbar('md-img')
+        assert.equal("GitHub's ![logo](|url|)", visualValue())
       })
     })
   })
