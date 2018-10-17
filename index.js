@@ -52,6 +52,42 @@ if (!window.customElements.get('md-header')) {
   window.customElements.define('md-header', MarkdownHeaderButtonElement)
 }
 
+class MarkdownHeading2ButtonElement extends MarkdownButtonElement {
+  constructor() {
+    super()
+    styles.set(this, {prefix: '## ', surroundWithNewlines: true})
+  }
+}
+
+if (!window.customElements.get('md-header-2')) {
+  window.MarkdownHeading2ButtonElement = MarkdownHeading2ButtonElement
+  window.customElements.define('md-header-2', MarkdownHeading2ButtonElement)
+}
+
+class MarkdownHeading3ButtonElement extends MarkdownButtonElement {
+  constructor() {
+    super()
+    styles.set(this, {prefix: '### ', surroundWithNewlines: true})
+  }
+}
+
+if (!window.customElements.get('md-header-3')) {
+  window.MarkdownHeading3ButtonElement = MarkdownHeading3ButtonElement
+  window.customElements.define('md-header-3', MarkdownHeading3ButtonElement)
+}
+
+class MarkdownHeading4ButtonElement extends MarkdownButtonElement {
+  constructor() {
+    super()
+    styles.set(this, {prefix: '#### ', surroundWithNewlines: true})
+  }
+}
+
+if (!window.customElements.get('md-header-4')) {
+  window.MarkdownHeading4ButtonElement = MarkdownHeading4ButtonElement
+  window.customElements.define('md-header-4', MarkdownHeading4ButtonElement)
+}
+
 class MarkdownBoldButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
@@ -115,6 +151,36 @@ if (!window.customElements.get('md-link')) {
   window.customElements.define('md-link', MarkdownLinkButtonElement)
 }
 
+class MarkdownCallToActionButtonElement extends MarkdownButtonElement {
+  constructor() {
+    super()
+    styles.set(this, {
+      prefix: '$CTA [',
+      suffix: '](url) $CTA',
+      replaceNext: 'url',
+      scanFor: 'https?://',
+      surroundWithNewlines: true
+    })
+  }
+}
+
+if (!window.customElements.get('md-link-cta')) {
+  window.MarkdownCallToActionButtonElement = MarkdownCallToActionButtonElement
+  window.customElements.define('md-link-cta', MarkdownCallToActionButtonElement)
+}
+
+class MarkdownEmailLinkButtonElement extends MarkdownButtonElement {
+  constructor() {
+    super()
+    styles.set(this, {prefix: '<', suffix: '>'})
+  }
+}
+
+if (!window.customElements.get('md-link-email')) {
+  window.MarkdownEmailLinkButtonElement = MarkdownEmailLinkButtonElement
+  window.customElements.define('md-link-email', MarkdownEmailLinkButtonElement)
+}
+
 class MarkdownUnorderedListButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
@@ -174,6 +240,18 @@ class MarkdownRefButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-ref')) {
   window.MarkdownRefButtonElement = MarkdownRefButtonElement
   window.customElements.define('md-ref', MarkdownRefButtonElement)
+}
+
+class MarkdownAddressButtonElement extends MarkdownButtonElement {
+  constructor() {
+    super()
+    styles.set(this, {prefix: '$A\n', suffix: '\n$A', multiline: true, surroundWithNewlines: true})
+  }
+}
+
+if (!window.customElements.get('md-address')) {
+  window.MarkdownAddressButtonElement = MarkdownAddressButtonElement
+  window.customElements.define('md-address', MarkdownAddressButtonElement)
 }
 
 const modifierKey = navigator.userAgent.match(/Macintosh/) ? 'Meta' : 'Control'
