@@ -4,15 +4,11 @@ Markdown formatting buttons for text inputs.
 
 ## Installation
 
-```
-$ npm install --save @github/markdown-toolbar-element
-```
+Add the compiled `/dist/index.umd.js` to your application assets.
+
+An npm installation will be available at a future point.
 
 ## Usage
-
-```js
-import '@github/markdown-toolbar-element'
-```
 
 ```html
 <markdown-toolbar for="textarea_id">
