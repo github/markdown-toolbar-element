@@ -2,24 +2,40 @@
 <html>
   <head>
     <title>markdown-toolbar examples</title>
-    <link href="https://unpkg.com/primer@latest/build/build.css" rel="stylesheet">
+    <link href="govuk-frontend-2.2.0.min.css" rel="stylesheet">
   </head>
   <body>
-    <div class="container py-4">
-      <markdown-toolbar for="textarea">
-        <md-bold class="btn btn-sm">bold</md-bold>
-        <md-header class="btn btn-sm">header</md-header>
-        <md-italic class="btn btn-sm">italic</md-italic>
-        <md-quote class="btn btn-sm">quote</md-quote>
-        <md-code class="btn btn-sm">code</md-code>
-        <md-link class="btn btn-sm">link</md-link>
-        <md-unordered-list class="btn btn-sm">unordered-list</md-unordered-list>
-        <md-ordered-list class="btn btn-sm">ordered-list</md-ordered-list>
-        <md-task-list class="btn btn-sm">task-list</md-task-list>
-        <md-mention class="btn btn-sm">mention</md-mention>
-        <md-ref class="btn btn-sm">ref</md-ref>
-      </markdown-toolbar>
-      <textarea class="mt-3 d-block width-full" id="textarea"></textarea>
+    <div class="govuk-width-container">
+      <main class="govuk-main-wrapper">
+
+        <div class="govuk-grid-row">
+          <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-xl">markdown-toolbar element</h1>
+            <p class="govuk-body">Markdown formatting buttons for text inputs</p>
+            <markdown-toolbar for="textarea">
+              <md-header class="govuk-button">header</md-header>
+              <md-bold class="govuk-button">bold</md-bold>
+              <md-italic class="govuk-button">italic</md-italic>
+              <md-quote class="govuk-button">quote</md-quote>
+              <md-code class="govuk-button">code</md-code>
+              <md-link class="govuk-button">link</md-link>
+              <md-unordered-list class="govuk-button">unordered-list</md-unordered-list>
+              <md-ordered-list class="govuk-button">ordered-list</md-ordered-list>
+              <md-task-list class="govuk-button">task-list</md-task-list>
+              <md-mention class="govuk-button">mention</md-mention>
+              <md-ref class="govuk-button">ref</md-ref>
+              <md-header-2 class="govuk-button">heading 2</md-header-2>
+              <md-header-3 class="govuk-button">heading 3</md-header-3>
+              <md-header-4 class="govuk-button">heading 4</md-header-4>
+              <md-link-cta class="govuk-button">call to action link</md-link-cta>
+              <md-link-email class="govuk-button">email link</md-link-email>
+              <md-address class="govuk-button">address</md-address>
+            </markdown-toolbar>
+            <textarea class="govuk-textarea" id="textarea" rows="10"></textarea>
+          </div>
+        </div>
+
+      </main>
     </div>
     <script src="../dist/index.umd.js"></script>
   </body>
