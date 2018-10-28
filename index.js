@@ -55,8 +55,12 @@ if (!window.customElements.get('md-header')) {
 class MarkdownBoldButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
-    this.setAttribute('hotkey', 'b')
     styles.set(this, {prefix: '**', suffix: '**', trimFirst: true})
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.setAttribute('hotkey', 'b')
   }
 }
 
@@ -68,8 +72,12 @@ if (!window.customElements.get('md-bold')) {
 class MarkdownItalicButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
-    this.setAttribute('hotkey', 'i')
     styles.set(this, {prefix: '_', suffix: '_', trimFirst: true})
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.setAttribute('hotkey', 'i')
   }
 }
 
@@ -105,8 +113,12 @@ if (!window.customElements.get('md-code')) {
 class MarkdownLinkButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
-    this.setAttribute('hotkey', 'k')
     styles.set(this, {prefix: '[', suffix: '](url)', replaceNext: 'url', scanFor: 'https?://'})
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.setAttribute('hotkey', 'k')
   }
 }
 
@@ -142,8 +154,12 @@ if (!window.customElements.get('md-ordered-list')) {
 class MarkdownTaskListButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
-    this.setAttribute('hotkey', 'L')
     styles.set(this, {prefix: '- [ ] ', multiline: true, surroundWithNewlines: true})
+  }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.setAttribute('hotkey', 'L')
   }
 }
 
