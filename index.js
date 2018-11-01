@@ -310,15 +310,15 @@ function repeat(string: string, n: number): string {
   return Array(n + 1).join(string)
 }
 
-function wordSelectionStart(text: string, index: number): number {
-  while (text[index] && text[index - 1] != null && !text[index - 1].match(/\s/)) {
+function lineSelectionStart(text: string, index: number): number {
+  while (text[index] && text[index - 1] != null && !text[index - 1].match(/\n/)) {
     index--
   }
   return index
 }
 
-function wordSelectionEnd(text: string, index: number): number {
-  while (text[index] && !text[index].match(/\s/)) {
+function lineSelectionEnd(text: string, index: number): number {
+  while (text[index] && !text[index].match(/\n/)) {
     index++
   }
   return index
@@ -384,8 +384,8 @@ function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) 
 
 function expandSelectedText(textarea: HTMLTextAreaElement, prefixToUse: string, suffixToUse: string): string {
   if (textarea.selectionStart === textarea.selectionEnd) {
-    textarea.selectionStart = wordSelectionStart(textarea.value, textarea.selectionStart)
-    textarea.selectionEnd = wordSelectionEnd(textarea.value, textarea.selectionEnd)
+    textarea.selectionStart = lineSelectionStart(textarea.value, textarea.selectionStart)
+    textarea.selectionEnd = lineSelectionEnd(textarea.value, textarea.selectionEnd)
   } else {
     const expandedSelectionStart = textarea.selectionStart - prefixToUse.length
     const expandedSelectionEnd = textarea.selectionEnd + suffixToUse.length
