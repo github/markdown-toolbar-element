@@ -510,13 +510,11 @@ function insertText(textarea, _ref) {
   var after = textarea.value.slice(textarea.selectionEnd);
 
   if (canInsertText === null || canInsertText === true) {
-    textarea.contentEditable = 'true';
     try {
       canInsertText = document.execCommand('insertText', false, text);
     } catch (error) {
       canInsertText = false;
     }
-    textarea.contentEditable = 'false';
   }
 
   if (canInsertText && !textarea.value.slice(0, textarea.selectionStart).endsWith(text)) {
