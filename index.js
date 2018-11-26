@@ -196,7 +196,7 @@ if (!window.customElements.get('md-unordered-list')) {
 class MarkdownOrderedListButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
-    styles.set(this, {prefix: '1. ', multiline: true, orderedList: true})
+    styles.set(this, {prefix: '1. ', multiline: true, surroundWithNewlines: true, orderedList: true})
   }
 }
 
@@ -369,7 +369,7 @@ function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) 
   const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
 
   let result
-  if (styleArgs.orderedList) {
+  if (styleArgs.orderedList && text) {
     result = orderedList(textarea)
   } else if (styleArgs.multiline && isMultipleLines(text)) {
     result = multilineStyle(textarea, styleArgs)
