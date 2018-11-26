@@ -395,7 +395,7 @@
 
       var _this14 = _possibleConstructorReturn(this, (MarkdownOrderedListButtonElement.__proto__ || Object.getPrototypeOf(MarkdownOrderedListButtonElement)).call(this));
 
-      styles.set(_this14, { prefix: '1. ', multiline: true, orderedList: true });
+      styles.set(_this14, { prefix: '1. ', multiline: true, surroundWithNewlines: true, orderedList: true });
       return _this14;
     }
 
@@ -618,7 +618,7 @@
     var text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd);
 
     var result = void 0;
-    if (styleArgs.orderedList) {
+    if (styleArgs.orderedList && text) {
       result = orderedList(textarea);
     } else if (styleArgs.multiline && isMultipleLines(text)) {
       result = multilineStyle(textarea, styleArgs);
