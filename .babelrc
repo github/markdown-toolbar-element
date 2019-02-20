@@ -1,22 +1,13 @@
 {
   "env": {
     "esm": {
-      "plugins": [
-        "@babel/plugin-proposal-object-rest-spread",
-        "transform-custom-element-classes"
-      ],
-      "presets": [
-        ["@babel/flow"],
-        ["@babel/env", {"modules": false}],
-      ]
+      "presets": ["github"]
     },
     "umd": {
       "plugins": [
-        "@babel/plugin-proposal-object-rest-spread",
-        "transform-custom-element-classes",
         "@babel/plugin-transform-modules-umd"
       ],
-      "presets": ["@babel/flow", "@babel/env"]
+      "presets": ["github"]
     }
   }
 }
