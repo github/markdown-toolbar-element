@@ -7,7 +7,7 @@
   "module": "dist/index.esm.js",
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "eslint . && flow check",
+    "lint": "github-lint",
     "prebuild": "npm run clean && npm run lint && mkdir dist",
     "build-umd": "BABEL_ENV=umd babel index.js -o dist/index.umd.js",
     "build-esm": "BABEL_ENV=esm babel index.js -o dist/index.esm.js",
@@ -28,7 +28,7 @@
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.3.3",
     "@babel/plugin-transform-modules-umd": "^7.2.0",
-    "babel-preset-github": "^2.1.1",
+    "babel-preset-github": "^2.1.2",
     "chai": "^4.2.0",
     "eslint": "^5.14.1",
     "eslint-plugin-github": "^1.9.0",
@@ -40,5 +40,7 @@
     "karma-mocha-reporter": "^2.2.5",
     "mocha": "^6.0.0"
   },
-  "eslintIgnore": ["dist/"]
+  "eslintIgnore": [
+    "dist/"
+  ]
 }
