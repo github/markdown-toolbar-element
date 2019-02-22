@@ -1,4 +1,4 @@
-/* @flow */
+/* @flow strict */
 
 function keydown(fn: KeyboardEventHandler): KeyboardEventHandler {
   return function(event: KeyboardEvent) {
@@ -248,14 +248,16 @@ function repeat(string: string, n: number): string {
   return Array(n + 1).join(string)
 }
 
-function wordSelectionStart(text: string, index: number): number {
+function wordSelectionStart(text: string, i: number): number {
+  let index = i
   while (text[index] && text[index - 1] != null && !text[index - 1].match(/\s/)) {
     index--
   }
   return index
 }
 
-function wordSelectionEnd(text: string, index: number): number {
+function wordSelectionEnd(text: string, i: number): number {
+  let index = i
   while (text[index] && !text[index].match(/\s/)) {
     index++
   }

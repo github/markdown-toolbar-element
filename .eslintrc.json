@@ -1,7 +1,23 @@
 {
   "extends": [
-    "plugin:github/es6",
     "plugin:github/browser",
+    "plugin:github/es6",
     "plugin:github/flow"
+  ],
+  "parser": "babel-eslint",
+  "overrides": [
+    {
+      "files": "test/**/*.js",
+      "rules": {
+        "flowtype/require-valid-file-annotation": "off",
+        "github/unescaped-html-literal": "off"
+      }
+    },
+    {
+      "files": "prettier.config.js",
+      "rules": {
+        "flowtype/require-valid-file-annotation": "off"
+      }
+    }
   ]
 }
