@@ -605,4 +605,7 @@ function applyStyle(button: Element, styles: {}) {
   }
 }
 
+MarkdownToolbarElement.insertText = insertText
+MarkdownToolbarElement.newlinesToSurroundSelectedText = newlinesToSurroundSelectedText
+
 export default MarkdownToolbarElement
