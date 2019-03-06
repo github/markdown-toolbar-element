@@ -786,4 +786,7 @@ function applyStyle(button, styles) {
   }
 }
 
+MarkdownToolbarElement.insertText = insertText;
+MarkdownToolbarElement.newlinesToSurroundSelectedText = newlinesToSurroundSelectedText;
+
 export default MarkdownToolbarElement;
