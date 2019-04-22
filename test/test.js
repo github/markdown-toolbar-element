@@ -300,6 +300,12 @@ describe('markdown-toolbbar-element', function() {
         assert.equal('> |Butts|\n\nThe quick brown fox jumps over the lazy dog', visualValue())
       })
 
+      it('quotes full line of text when you click the quote icon', function() {
+        setVisualValue('|The quick brown fox jumps over the lazy dog')
+        clickToolbar('md-quote')
+        assert.equal('> |The quick brown fox jumps over the lazy dog', visualValue())
+      })
+
       it('prefixes newlines when quoting an existing line on an existing', function() {
         setVisualValue('The quick brown fox jumps over the lazy dog|Butts|')
         clickToolbar('md-quote')
