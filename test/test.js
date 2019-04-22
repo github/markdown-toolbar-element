@@ -351,10 +351,16 @@ describe('markdown-toolbbar-element', function() {
     })
 
     describe('lists', function() {
-      it('turns line into list when you click the unordered list icon', function() {
+      it('turns line into list when you click the unordered list icon with selection', function() {
         setVisualValue('One\n|Two|\nThree\n')
         clickToolbar('md-unordered-list')
         assert.equal('One\n\n- |Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list when you click the unordered list icon without selection', function() {
+        setVisualValue('One\n|Two and two\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- |Two and two\n\nThree\n', visualValue())
       })
 
       it('turns multiple lines into list when you click the unordered list icon', function() {
