@@ -258,8 +258,8 @@ function wordSelectionStart(text: string, i: number): number {
 
 function wordSelectionEnd(text: string, i: number, multiline: boolean): number {
   let index = i
-  const breakPoint = multiline ? /\n/ : /\s/
-  while (text[index] && !text[index].match(breakPoint)) {
+  const breakpoint = multiline ? /\n/ : /\s/
+  while (text[index] && !text[index].match(breakpoint)) {
     index++
   }
   return index
