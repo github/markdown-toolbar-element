@@ -256,9 +256,10 @@ function wordSelectionStart(text: string, i: number): number {
   return index
 }
 
-function wordSelectionEnd(text: string, i: number): number {
+function wordSelectionEnd(text: string, i: number, multiline: boolean): number {
   let index = i
-  while (text[index] && !text[index].match(/\s/)) {
+  const breakPoint = multiline ? /\n/ : /\s/
+  while (text[index] && !text[index].match(breakPoint)) {
     index++
   }
   return index
@@ -322,10 +323,15 @@ function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) 
   insertText(textarea, result)
 }
 
-function expandSelectedText(textarea: HTMLTextAreaElement, prefixToUse: string, suffixToUse: string): string {
+function expandSelectedText(
+  textarea: HTMLTextAreaElement,
+  prefixToUse: string,
+  suffixToUse: string,
+  multiline: boolean = false
+): string {
   if (textarea.selectionStart === textarea.selectionEnd) {
     textarea.selectionStart = wordSelectionStart(textarea.value, textarea.selectionStart)
-    textarea.selectionEnd = wordSelectionEnd(textarea.value, textarea.selectionEnd)
+    textarea.selectionEnd = wordSelectionEnd(textarea.value, textarea.selectionEnd, multiline)
   } else {
     const expandedSelectionStart = textarea.selectionStart - prefixToUse.length
     const expandedSelectionEnd = textarea.selectionEnd + suffixToUse.length
@@ -399,7 +405,7 @@ function blockStyle(textarea: HTMLTextAreaElement, arg: StyleArgs): SelectionRan
       prefixToUse = ` ${prefixToUse}`
     }
   }
-  selectedText = expandSelectedText(textarea, prefixToUse, suffixToUse)
+  selectedText = expandSelectedText(textarea, prefixToUse, suffixToUse, arg.multiline)
   let selectionStart = textarea.selectionStart
   let selectionEnd = textarea.selectionEnd
   const hasReplaceNext = replaceNext.length > 0 && suffixToUse.indexOf(replaceNext) > -1 && selectedText.length > 0
