@@ -480,6 +480,7 @@ function multilineStyle(textarea: HTMLTextAreaElement, arg: StyleArgs) {
 
 function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
   const orderedListRegex = /^\d+\.\s+/
+  const noInitialSelection = textarea.selectionStart === textarea.selectionEnd
   let selectionEnd
   let selectionStart
   let text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
@@ -506,6 +507,7 @@ function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
     const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
     selectionStart = textarea.selectionStart + newlinesToAppend.length
     selectionEnd = selectionStart + text.length
+    if (noInitialSelection) selectionStart = selectionEnd
     text = newlinesToAppend + text + newlinesToPrepend
   }
 
