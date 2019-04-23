@@ -398,7 +398,7 @@ describe('markdown-toolbbar-element', function() {
       it('creates ordered list without selection', function() {
         setVisualValue('apple\n|pear\nbanana\n')
         clickToolbar('md-ordered-list')
-        assert.equal('apple\n\n|1. |\n\npear\nbanana\n', visualValue())
+        assert.equal('apple\n\n1. |\n\npear\nbanana\n', visualValue())
       })
 
       it('creates ordered list by selecting one line', function() {
