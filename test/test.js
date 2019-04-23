@@ -401,6 +401,18 @@ describe('markdown-toolbbar-element', function() {
         assert.equal('apple\n\n1. |\n\npear\nbanana\n', visualValue())
       })
 
+      it('undo an ordered list without selection', function() {
+        setVisualValue('apple\n1. |pear\nbanana\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('apple\n|pear\nbanana\n', visualValue())
+      })
+
+      it('undo an ordered list without selection and puts cursor at the right position', function() {
+        setVisualValue('apple\n1. pea|r\nbanana\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('apple\npea|r\nbanana\n', visualValue())
+      })
+
       it('creates ordered list by selecting one line', function() {
         setVisualValue('apple\n|pear|\nbanana\n')
         clickToolbar('md-ordered-list')
