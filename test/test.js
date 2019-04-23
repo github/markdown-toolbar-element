@@ -300,6 +300,12 @@ describe('markdown-toolbbar-element', function() {
         assert.equal('> |Butts|\n\nThe quick brown fox jumps over the lazy dog', visualValue())
       })
 
+      it('quotes full line of text when you click the quote icon', function() {
+        setVisualValue('|The quick brown fox jumps over the lazy dog')
+        clickToolbar('md-quote')
+        assert.equal('> |The quick brown fox jumps over the lazy dog', visualValue())
+      })
+
       it('prefixes newlines when quoting an existing line on an existing', function() {
         setVisualValue('The quick brown fox jumps over the lazy dog|Butts|')
         clickToolbar('md-quote')
@@ -351,10 +357,16 @@ describe('markdown-toolbbar-element', function() {
     })
 
     describe('lists', function() {
-      it('turns line into list when you click the unordered list icon', function() {
+      it('turns line into list when you click the unordered list icon with selection', function() {
         setVisualValue('One\n|Two|\nThree\n')
         clickToolbar('md-unordered-list')
         assert.equal('One\n\n- |Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list when you click the unordered list icon without selection', function() {
+        setVisualValue('One\n|Two and two\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- |Two and two\n\nThree\n', visualValue())
       })
 
       it('turns multiple lines into list when you click the unordered list icon', function() {
@@ -381,6 +393,12 @@ describe('markdown-toolbbar-element', function() {
         assert.equal('- |Two|', visualValue())
         clickToolbar('md-unordered-list')
         assert.equal('|Two|', visualValue())
+      })
+
+      it('creates ordered list without selection', function() {
+        setVisualValue('apple\n|pear\nbanana\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('apple\n\n|1. |\n\npear\nbanana\n', visualValue())
       })
 
       it('creates ordered list by selecting one line', function() {
