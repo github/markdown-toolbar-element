@@ -276,36 +276,16 @@ if (!window.customElements.get('md-link-cta')) {
   window.customElements.define('md-link-cta', MarkdownCallToActionButtonElement);
 }
 
-var MarkdownEmailLinkButtonElement = function (_MarkdownButtonElemen11) {
-  _inherits(MarkdownEmailLinkButtonElement, _MarkdownButtonElemen11);
-
-  function MarkdownEmailLinkButtonElement() {
-    _classCallCheck(this, MarkdownEmailLinkButtonElement);
-
-    var _this12 = _possibleConstructorReturn(this, (MarkdownEmailLinkButtonElement.__proto__ || Object.getPrototypeOf(MarkdownEmailLinkButtonElement)).call(this));
-
-    styles.set(_this12, { prefix: '<', suffix: '>' });
-    return _this12;
-  }
-
-  return MarkdownEmailLinkButtonElement;
-}(MarkdownButtonElement);
-
-if (!window.customElements.get('md-link-email')) {
-  window.MarkdownEmailLinkButtonElement = MarkdownEmailLinkButtonElement;
-  window.customElements.define('md-link-email', MarkdownEmailLinkButtonElement);
-}
-
-var MarkdownUnorderedListButtonElement = function (_MarkdownButtonElemen12) {
-  _inherits(MarkdownUnorderedListButtonElement, _MarkdownButtonElemen12);
+var MarkdownUnorderedListButtonElement = function (_MarkdownButtonElemen11) {
+  _inherits(MarkdownUnorderedListButtonElement, _MarkdownButtonElemen11);
 
   function MarkdownUnorderedListButtonElement() {
     _classCallCheck(this, MarkdownUnorderedListButtonElement);
 
-    var _this13 = _possibleConstructorReturn(this, (MarkdownUnorderedListButtonElement.__proto__ || Object.getPrototypeOf(MarkdownUnorderedListButtonElement)).call(this));
+    var _this12 = _possibleConstructorReturn(this, (MarkdownUnorderedListButtonElement.__proto__ || Object.getPrototypeOf(MarkdownUnorderedListButtonElement)).call(this));
 
-    styles.set(_this13, { prefix: '- ', multiline: true, surroundWithNewlines: true });
-    return _this13;
+    styles.set(_this12, { prefix: '- ', multiline: true, surroundWithNewlines: true });
+    return _this12;
   }
 
   return MarkdownUnorderedListButtonElement;
@@ -316,16 +296,16 @@ if (!window.customElements.get('md-unordered-list')) {
   window.customElements.define('md-unordered-list', MarkdownUnorderedListButtonElement);
 }
 
-var MarkdownOrderedListButtonElement = function (_MarkdownButtonElemen13) {
-  _inherits(MarkdownOrderedListButtonElement, _MarkdownButtonElemen13);
+var MarkdownOrderedListButtonElement = function (_MarkdownButtonElemen12) {
+  _inherits(MarkdownOrderedListButtonElement, _MarkdownButtonElemen12);
 
   function MarkdownOrderedListButtonElement() {
     _classCallCheck(this, MarkdownOrderedListButtonElement);
 
-    var _this14 = _possibleConstructorReturn(this, (MarkdownOrderedListButtonElement.__proto__ || Object.getPrototypeOf(MarkdownOrderedListButtonElement)).call(this));
+    var _this13 = _possibleConstructorReturn(this, (MarkdownOrderedListButtonElement.__proto__ || Object.getPrototypeOf(MarkdownOrderedListButtonElement)).call(this));
 
-    styles.set(_this14, { prefix: '1. ', multiline: true, surroundWithNewlines: true, orderedList: true });
-    return _this14;
+    styles.set(_this13, { prefix: '1. ', multiline: true, surroundWithNewlines: true, orderedList: true });
+    return _this13;
   }
 
   return MarkdownOrderedListButtonElement;
@@ -336,17 +316,17 @@ if (!window.customElements.get('md-ordered-list')) {
   window.customElements.define('md-ordered-list', MarkdownOrderedListButtonElement);
 }
 
-var MarkdownTaskListButtonElement = function (_MarkdownButtonElemen14) {
-  _inherits(MarkdownTaskListButtonElement, _MarkdownButtonElemen14);
+var MarkdownTaskListButtonElement = function (_MarkdownButtonElemen13) {
+  _inherits(MarkdownTaskListButtonElement, _MarkdownButtonElemen13);
 
   function MarkdownTaskListButtonElement() {
     _classCallCheck(this, MarkdownTaskListButtonElement);
 
-    var _this15 = _possibleConstructorReturn(this, (MarkdownTaskListButtonElement.__proto__ || Object.getPrototypeOf(MarkdownTaskListButtonElement)).call(this));
+    var _this14 = _possibleConstructorReturn(this, (MarkdownTaskListButtonElement.__proto__ || Object.getPrototypeOf(MarkdownTaskListButtonElement)).call(this));
 
-    _this15.setAttribute('hotkey', 'L');
-    styles.set(_this15, { prefix: '- [ ] ', multiline: true, surroundWithNewlines: true });
-    return _this15;
+    _this14.setAttribute('hotkey', 'L');
+    styles.set(_this14, { prefix: '- [ ] ', multiline: true, surroundWithNewlines: true });
+    return _this14;
   }
 
   return MarkdownTaskListButtonElement;
@@ -357,16 +337,16 @@ if (!window.customElements.get('md-task-list')) {
   window.customElements.define('md-task-list', MarkdownTaskListButtonElement);
 }
 
-var MarkdownMentionButtonElement = function (_MarkdownButtonElemen15) {
-  _inherits(MarkdownMentionButtonElement, _MarkdownButtonElemen15);
+var MarkdownMentionButtonElement = function (_MarkdownButtonElemen14) {
+  _inherits(MarkdownMentionButtonElement, _MarkdownButtonElemen14);
 
   function MarkdownMentionButtonElement() {
     _classCallCheck(this, MarkdownMentionButtonElement);
 
-    var _this16 = _possibleConstructorReturn(this, (MarkdownMentionButtonElement.__proto__ || Object.getPrototypeOf(MarkdownMentionButtonElement)).call(this));
+    var _this15 = _possibleConstructorReturn(this, (MarkdownMentionButtonElement.__proto__ || Object.getPrototypeOf(MarkdownMentionButtonElement)).call(this));
 
-    styles.set(_this16, { prefix: '@', prefixSpace: true });
-    return _this16;
+    styles.set(_this15, { prefix: '@', prefixSpace: true });
+    return _this15;
   }
 
   return MarkdownMentionButtonElement;
@@ -377,16 +357,16 @@ if (!window.customElements.get('md-mention')) {
   window.customElements.define('md-mention', MarkdownMentionButtonElement);
 }
 
-var MarkdownRefButtonElement = function (_MarkdownButtonElemen16) {
-  _inherits(MarkdownRefButtonElement, _MarkdownButtonElemen16);
+var MarkdownRefButtonElement = function (_MarkdownButtonElemen15) {
+  _inherits(MarkdownRefButtonElement, _MarkdownButtonElemen15);
 
   function MarkdownRefButtonElement() {
     _classCallCheck(this, MarkdownRefButtonElement);
 
-    var _this17 = _possibleConstructorReturn(this, (MarkdownRefButtonElement.__proto__ || Object.getPrototypeOf(MarkdownRefButtonElement)).call(this));
+    var _this16 = _possibleConstructorReturn(this, (MarkdownRefButtonElement.__proto__ || Object.getPrototypeOf(MarkdownRefButtonElement)).call(this));
 
-    styles.set(_this17, { prefix: '#', prefixSpace: true });
-    return _this17;
+    styles.set(_this16, { prefix: '#', prefixSpace: true });
+    return _this16;
   }
 
   return MarkdownRefButtonElement;
@@ -397,16 +377,16 @@ if (!window.customElements.get('md-ref')) {
   window.customElements.define('md-ref', MarkdownRefButtonElement);
 }
 
-var MarkdownAddressButtonElement = function (_MarkdownButtonElemen17) {
-  _inherits(MarkdownAddressButtonElement, _MarkdownButtonElemen17);
+var MarkdownAddressButtonElement = function (_MarkdownButtonElemen16) {
+  _inherits(MarkdownAddressButtonElement, _MarkdownButtonElemen16);
 
   function MarkdownAddressButtonElement() {
     _classCallCheck(this, MarkdownAddressButtonElement);
 
-    var _this18 = _possibleConstructorReturn(this, (MarkdownAddressButtonElement.__proto__ || Object.getPrototypeOf(MarkdownAddressButtonElement)).call(this));
+    var _this17 = _possibleConstructorReturn(this, (MarkdownAddressButtonElement.__proto__ || Object.getPrototypeOf(MarkdownAddressButtonElement)).call(this));
 
-    styles.set(_this18, { prefix: '$A\n', suffix: '\n$A', multiline: true, surroundWithNewlines: true });
-    return _this18;
+    styles.set(_this17, { prefix: '$A\n', suffix: '\n$A', multiline: true, surroundWithNewlines: true });
+    return _this17;
   }
 
   return MarkdownAddressButtonElement;
@@ -543,7 +523,12 @@ function insertText(textarea, _ref) {
   }
 }
 
-function styleSelectedText(textarea, styleArgs) {
+function isEmail(text) {
+  var regExp = new RegExp(/\S+@\S+\.\S+/);
+  return regExp.test(text);
+}
+
+function styleSelectedText(button, textarea, styleArgs) {
   var text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd);
 
   var result = void 0;
@@ -552,6 +537,12 @@ function styleSelectedText(textarea, styleArgs) {
   } else if (styleArgs.multiline && isMultipleLines(text)) {
     result = multilineStyle(textarea, styleArgs);
   } else {
+    if (button instanceof MarkdownLinkButtonElement && isEmail(text)) {
+      styleArgs.prefix = '<';
+      styleArgs.suffix = '>';
+      styleArgs.replaceNext = false;
+      styleArgs.scanFor = false;
+    }
     result = blockStyle(textarea, styleArgs);
   }
 
@@ -782,7 +773,7 @@ function applyStyle(button, styles) {
   var field = toolbar.field;
   if (field) {
     field.focus();
-    styleSelectedText(field, style);
+    styleSelectedText(button, field, style);
   }
 }
 
