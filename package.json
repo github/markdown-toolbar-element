@@ -1,29 +1,30 @@
 {
-  "name": "@github/markdown-toolbar-element",
+  "name": "markdown-toolbar-element",
   "version": "0.1.0",
   "description": "Markdown formatting buttons for text inputs.",
-  "repository": "github/markdown-toolbar-element",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
+  "license": "MIT",
+  "repository": "github/markdown-toolbar-element",
+  "files": [
+    "dist"
+  ],
+  "watch": {
+    "build": [
+      "index.js"
+    ]
+  },
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "eslint index.js",
-    "prebuild": "npm run clean && npm run lint && mkdir dist",
+    "prebuild": "npm run clean && mkdir dist",
     "build-umd": "BABEL_ENV=umd babel index.js -o dist/index.umd.js",
     "build-esm": "BABEL_ENV=esm babel index.js -o dist/index.esm.js",
     "build": "npm run build-umd && npm run build-esm",
     "pretest": "npm run build",
     "test": "karma start test/karma.config.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "watch": "npm-watch"
   },
-  "keywords": [
-    "custom-element",
-    "markdown"
-  ],
-  "license": "MIT",
-  "files": [
-    "dist"
-  ],
   "devDependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-transform-custom-element-classes": "^0.1.0",
@@ -38,6 +39,7 @@
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.5",
-    "mocha": "^5.0.5"
+    "mocha": "^5.0.5",
+    "npm-watch": "^0.6.0"
   }
 }
