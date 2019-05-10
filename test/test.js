@@ -127,42 +127,6 @@ describe('markdown-toolbbar-element', function() {
         assert.equal('**|Hello world|** \n', visualValue())
       })
 
-      it('bold selected word when cursor is at the start of the word', function() {
-        setVisualValue('The |quick brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('The **|quick** brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('bold selected word when cursor is in the middle of the word', function() {
-        setVisualValue('The qui|ck brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('The **qui|ck** brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('bold selected word when cursor is at the end of the word', function() {
-        setVisualValue('The quick| brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('The **quick|** brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('bold selected word when cursor is at the start of the first word', function() {
-        setVisualValue('|The quick brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('**|The** quick brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('bold selected word when cursor is in the middle of the first word', function() {
-        setVisualValue('T|he quick brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('**T|he** quick brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('bold selected word when cursor is at the end of the first word', function() {
-        setVisualValue('The| quick brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('**The|** quick brown fox jumps over the lazy dog', visualValue())
-      })
-
       it('unbolds selected bold inner text when you click the bold icon', function() {
         setVisualValue('The **|quick|** brown fox jumps over the lazy dog')
         clickToolbar('md-bold')
@@ -173,54 +137,6 @@ describe('markdown-toolbbar-element', function() {
         setVisualValue('The |**quick**| brown fox jumps over the lazy dog')
         clickToolbar('md-bold')
         assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('unbold selected word when cursor is at the start of the word', function() {
-        setVisualValue('The **|quick** brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('The |quick brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('unbold selected word when cursor is in the middle of the word', function() {
-        setVisualValue('The **qui|ck** brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('The qui|ck brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('unbold selected word when cursor is at the end of the word', function() {
-        setVisualValue('The **quick|** brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('The quick| brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('unbold selected word when cursor is before the bold syntax', function() {
-        setVisualValue('The |**quick** brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('The |quick brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('unbold selected word when cursor is after the bold syntax', function() {
-        setVisualValue('The **quick**| brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('The quick| brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('unbold selected word when cursor is at the start of the first word', function() {
-        setVisualValue('**|The** quick brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('|The quick brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('unbold selected word when cursor is in the middle of the first word', function() {
-        setVisualValue('**T|he** quick brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('T|he quick brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('unbold selected word when cursor is at the end of the first word', function() {
-        setVisualValue('**The|** quick brown fox jumps over the lazy dog')
-        clickToolbar('md-bold')
-        assert.equal('The| quick brown fox jumps over the lazy dog', visualValue())
       })
     })
 
@@ -260,24 +176,6 @@ describe('markdown-toolbbar-element', function() {
         setVisualValue('The |')
         clickToolbar('md-italic')
         assert.equal('The _|_', visualValue())
-      })
-
-      it('italicize selected word when cursor is at the start of the word', function() {
-        setVisualValue('The |quick brown fox jumps over the lazy dog')
-        clickToolbar('md-italic')
-        assert.equal('The _|quick_ brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('italicize selected word when cursor is in the middle of the word', function() {
-        setVisualValue('The qui|ck brown fox jumps over the lazy dog')
-        clickToolbar('md-italic')
-        assert.equal('The _qui|ck_ brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('italicize selected word when cursor is at the end of the word', function() {
-        setVisualValue('The quick| brown fox jumps over the lazy dog')
-        clickToolbar('md-italic')
-        assert.equal('The _quick|_ brown fox jumps over the lazy dog', visualValue())
       })
 
       it('unitalicizes selected italic text when you click the italic icon', function() {
@@ -443,12 +341,6 @@ describe('markdown-toolbbar-element', function() {
 
       it('selected url is wrapped in link syntax with cursor in description', function() {
         setVisualValue("GitHub's homepage is |https://github.com/|")
-        clickToolbar('md-link')
-        assert.equal("GitHub's homepage is [|](https://github.com/)", visualValue())
-      })
-
-      it('cursor on url is wrapped in link syntax with cursor in description', function() {
-        setVisualValue("GitHub's homepage is https://git|hub.com/")
         clickToolbar('md-link')
         assert.equal("GitHub's homepage is [|](https://github.com/)", visualValue())
       })
