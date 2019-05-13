@@ -595,7 +595,7 @@
   }
 
   function isEmail(text) {
-    var regExp = new RegExp(/\S+@\S+\.\S+/);
+    var regExp = new RegExp(/^(?!http(s)*:\/\/)\S+@\S+\.\S+/);
     return regExp.test(text);
   }
 

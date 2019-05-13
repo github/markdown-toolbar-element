@@ -356,6 +356,12 @@ describe('markdown-toolbbar-element', function() {
         clickToolbar('md-link')
         assert.equal("GitHub's email is <|contact@github.com|>", visualValue())
       })
+
+      it('selected http(s) prefixed email is wrapped in link syntax', function() {
+        setVisualValue("GitHub's email is |https://contact@github.com|")
+        clickToolbar('md-link')
+        assert.equal("GitHub\'s email is [|](https://contact@github.com)", visualValue())
+      })
     })
   })
 })

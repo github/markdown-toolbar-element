@@ -354,7 +354,7 @@ function insertText(textarea: HTMLTextAreaElement, {text, selectionStart, select
 }
 
 function isEmail(text) {
-  const regExp = new RegExp(/\S+@\S+\.\S+/)
+  const regExp = new RegExp(/^(?!http(s)*:\/\/)\S+@\S+\.\S+/)
   return regExp.test(text)
 }
 
