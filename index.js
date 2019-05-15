@@ -169,18 +169,6 @@ if (!window.customElements.get('md-link-cta')) {
   window.customElements.define('md-link-cta', MarkdownCallToActionButtonElement)
 }
 
-class MarkdownEmailLinkButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-    styles.set(this, {prefix: '<', suffix: '>'})
-  }
-}
-
-if (!window.customElements.get('md-link-email')) {
-  window.MarkdownEmailLinkButtonElement = MarkdownEmailLinkButtonElement
-  window.customElements.define('md-link-email', MarkdownEmailLinkButtonElement)
-}
-
 class MarkdownUnorderedListButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
@@ -365,7 +353,12 @@ function insertText(textarea: HTMLTextAreaElement, {text, selectionStart, select
   }
 }
 
-function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) {
+function isEmail(text) {
+  const regExp = new RegExp(/^(?!http(s)*:\/\/)\S+@\S+\.\S+/)
+  return regExp.test(text)
+}
+
+function styleSelectedText(button: HTMLElement, textarea: HTMLTextAreaElement, styleArgs: StyleArgs) {
   const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
 
   let result
@@ -374,6 +367,12 @@ function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) 
   } else if (styleArgs.multiline && isMultipleLines(text)) {
     result = multilineStyle(textarea, styleArgs)
   } else {
+    if (button instanceof MarkdownLinkButtonElement && isEmail(text)) {
+      styleArgs.prefix = '<'
+      styleArgs.suffix = '>'
+      styleArgs.replaceNext = false
+      styleArgs.scanFor = false
+    }
     result = blockStyle(textarea, styleArgs)
   }
 
@@ -601,7 +600,7 @@ function applyStyle(button: Element, styles: {}) {
   const field = toolbar.field
   if (field) {
     field.focus()
-    styleSelectedText(field, style)
+    styleSelectedText(button, field, style)
   }
 }
 

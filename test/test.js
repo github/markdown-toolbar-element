@@ -345,10 +345,22 @@ describe('markdown-toolbbar-element', function() {
         assert.equal("GitHub's homepage is [|](https://github.com/)", visualValue())
       })
 
-      it('selected plan text is wrapped in link syntax with cursor in url', function() {
+      it('selected plain text is wrapped in link syntax with cursor in url', function() {
         setVisualValue("GitHub's |homepage|")
         clickToolbar('md-link')
         assert.equal("GitHub's [homepage](|url|)", visualValue())
+      })
+
+      it('selected email is wrapped in email link syntax', function() {
+        setVisualValue("GitHub's email is |contact@github.com|")
+        clickToolbar('md-link')
+        assert.equal("GitHub's email is <|contact@github.com|>", visualValue())
+      })
+
+      it('selected http(s) prefixed email is wrapped in link syntax', function() {
+        setVisualValue("GitHub's email is |https://contact@github.com|")
+        clickToolbar('md-link')
+        assert.equal("GitHub\'s email is [|](https://contact@github.com)", visualValue())
       })
     })
   })
