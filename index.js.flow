@@ -1,0 +1,7 @@
+/* @flow strict */
+
+declare module '@github/markdown-toolbar-element' {
+  declare export default class MarkdownToolbarElement extends HTMLElement {
+    get field(): ?HTMLTextAreaElement;
+  }
+}
