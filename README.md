@@ -4,25 +4,20 @@ Markdown formatting buttons for text inputs.
 
 ## Installation
 
-Add the compiled `/dist/index.umd.js` to your application assets.
-
-An npm installation will be available at a future point.
+```
+npm install --save markdown-toolbar-element
+```
 
 ## Usage
 
 ```html
 <markdown-toolbar for="textarea_id">
-  <md-bold>bold</md-bold>
-  <md-header>header</md-header>
-  <md-italic>italic</md-italic>
-  <md-quote>quote</md-quote>
-  <md-code>code</md-code>
+  <md-header-2>heading 2</md-header-2>
+  <md-header-3>heading 3</md-header-3>
   <md-link>link</md-link>
-  <md-unordered-list>unordered-list</md-unordered-list>
+  <md-quote>quote</md-quote>
   <md-ordered-list>ordered-list</md-ordered-list>
-  <md-task-list>task-list</md-task-list>
-  <md-mention>mention</md-mention>
-  <md-ref>ref</md-ref>
+  <md-unordered-list>unordered-list</md-unordered-list>
 </markdown-toolbar>
 <textarea id="textarea_id"></textarea>
 ```
