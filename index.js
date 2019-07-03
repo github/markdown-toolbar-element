@@ -542,7 +542,7 @@ type StyleArgs = {
   trimFirst: boolean
 }
 
-function applyStyle(button: Element, styles: {}) {
+function applyStyle(button: Element, stylesToApply: {}) {
   const toolbar = button.closest('markdown-toolbar')
   if (!(toolbar instanceof MarkdownToolbarElement)) return
 
@@ -560,7 +560,7 @@ function applyStyle(button: Element, styles: {}) {
     trimFirst: false
   }
 
-  const style = {...defaults, ...styles}
+  const style = {...defaults, ...stylesToApply}
 
   const field = toolbar.field
   if (field) {
