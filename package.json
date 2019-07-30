@@ -5,6 +5,7 @@
   "repository": "github/markdown-toolbar-element",
   "main": "dist/index.umd.js",
   "module": "dist/index.esm.js",
+  "types": "index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
     "lint": "github-lint",
@@ -22,7 +23,8 @@
   ],
   "license": "MIT",
   "files": [
-    "dist"
+    "dist",
+    "index.d.ts"
   ],
   "devDependencies": {
     "@babel/cli": "^7.4.4",
