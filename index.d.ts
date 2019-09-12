@@ -4,6 +4,6 @@ export default class MarkdownToolbarElement extends HTMLElement {
 
 declare global {
   interface Window {
-    MarkdownToolbarElement: MarkdownToolbarElement
+    MarkdownToolbarElement: typeof MarkdownToolbarElement
   }
 }
