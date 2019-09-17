@@ -218,7 +218,13 @@ class MarkdownToolbarElement extends HTMLElement {
   get field(): ?HTMLTextAreaElement {
     const id = this.getAttribute('for')
     if (!id) return
-    const field = this.getRootNode().getElementById(id)
+    const root = this.getRootNode()
+    const field =
+      root instanceof Document
+        ? root.getElementById(id)
+        : root instanceof DocumentFragment
+        ? root.querySelector(`#${id}`)
+        : null
     return field instanceof HTMLTextAreaElement ? field : null
   }
 }
