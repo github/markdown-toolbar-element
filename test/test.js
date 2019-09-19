@@ -70,7 +70,7 @@ describe('markdown-toolbbar-element', function() {
         <markdown-toolbar for="textarea_id">
           <md-bold>bold</md-bold>
           <md-header>header</md-header>
-          <md-header level="1">h1</md-header>
+          <md-header data-level="1">h1</md-header>
           <md-italic>italic</md-italic>
           <md-quote>quote</md-quote>
           <md-code>code</md-code>
@@ -499,7 +499,7 @@ describe('markdown-toolbbar-element', function() {
       })
       it('inserts header 1 syntax with cursor in description', function() {
         setVisualValue('|title|')
-        clickToolbar('md-header[level="1"]')
+        clickToolbar('md-header[data-level="1"]')
         assert.equal('# |title|', visualValue())
       })
     })
