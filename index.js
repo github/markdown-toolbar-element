@@ -44,7 +44,7 @@ class MarkdownHeaderButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
 
-    const level = parseInt(this.dataset.level || 3, 10)
+    const level = parseInt(this.getAttribute('level') || 3, 10)
     const prefix = `${'#'.repeat(level)} `
     styles.set(this, {
       prefix
