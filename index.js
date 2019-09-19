@@ -127,6 +127,18 @@ if (!window.customElements.get('md-link')) {
   window.customElements.define('md-link', MarkdownLinkButtonElement)
 }
 
+class MarkdownImageButtonElement extends MarkdownButtonElement {
+  constructor() {
+    super()
+    styles.set(this, {prefix: '![', suffix: '](url)', replaceNext: 'url', scanFor: 'https?://'})
+  }
+}
+
+if (!window.customElements.get('md-image')) {
+  window.MarkdownImageButtonElement = MarkdownImageButtonElement
+  window.customElements.define('md-image', MarkdownImageButtonElement)
+}
+
 class MarkdownUnorderedListButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
