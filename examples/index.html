@@ -21,7 +21,14 @@
       </markdown-toolbar>
       <textarea rows="6" class="mt-3 d-block width-full" id="textarea"></textarea>
     </div>
-    <!-- script src="../dist/index.umd.js"></script -->
-    <script src="https://unpkg.com/@github/markdown-toolbar-element@latest/dist/index.umd.js"></script>
+    <script>
+      const script = document.createElement('script')
+      if (window.location.hostname.endsWith('github.io')) {
+        script.src = "https://unpkg.com/@github/markdown-toolbar-element@latest/dist/index.umd.js"
+      } else {
+        script.src = "../dist/index.umd.js"
+      }
+      document.body.appendChild(script)
+    </script>
   </body>
 </html>
