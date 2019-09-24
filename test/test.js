@@ -1,4 +1,4 @@
-describe('markdown-toolbbar-element', function() {
+describe('markdown-toolbar-element', function() {
   describe('element creation', function() {
     it('creates from document.createElement', function() {
       const el = document.createElement('markdown-toolbar')
