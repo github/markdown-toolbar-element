@@ -43,7 +43,12 @@ class MarkdownButtonElement extends HTMLElement {
 class MarkdownHeaderButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
-    styles.set(this, {prefix: '### '})
+
+    const level = parseInt(this.getAttribute('level') || 3, 10)
+    const prefix = `${'#'.repeat(level)} `
+    styles.set(this, {
+      prefix
+    })
   }
 }
 
