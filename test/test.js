@@ -71,6 +71,7 @@ describe('markdown-toolbar-element', function() {
           <md-bold>bold</md-bold>
           <md-header>header</md-header>
           <md-header level="1">h1</md-header>
+          <md-header level="10">h1</md-header>
           <md-italic>italic</md-italic>
           <md-quote>quote</md-quote>
           <md-code>code</md-code>
@@ -497,10 +498,17 @@ describe('markdown-toolbar-element', function() {
         clickToolbar('md-header')
         assert.equal('### |title|', visualValue())
       })
+
       it('inserts header 1 syntax with cursor in description', function() {
         setVisualValue('|title|')
         clickToolbar('md-header[level="1"]')
         assert.equal('# |title|', visualValue())
+      })
+
+      it('does not insert header for invalid level', function() {
+        setVisualValue('|title|')
+        clickToolbar('md-header[level="10"]')
+        assert.equal('|title|', visualValue())
       })
     })
   })
