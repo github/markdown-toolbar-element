@@ -22,6 +22,7 @@ import '@github/markdown-toolbar-element'
   <md-quote>quote</md-quote>
   <md-code>code</md-code>
   <md-link>link</md-link>
+  <md-image>image</md-image>
   <md-unordered-list>unordered-list</md-unordered-list>
   <md-ordered-list>ordered-list</md-ordered-list>
   <md-task-list>task-list</md-task-list>
