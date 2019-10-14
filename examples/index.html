@@ -24,7 +24,7 @@
     </div>
     <script>
       const script = document.createElement('script')
-      if (window.location.hostname.endsWith('github.io')) {
+      if (window.location.hostname.endsWith('github.io') || window.location.hostname.endsWith('github.com')) {
         script.src = "https://unpkg.com/@github/markdown-toolbar-element@latest/dist/index.umd.js"
       } else {
         script.src = "../dist/index.umd.js"
