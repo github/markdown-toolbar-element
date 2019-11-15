@@ -18,7 +18,6 @@ describe('markdown-toolbar-element', function() {
       event.initEvent('focus', false, true)
       textarea.dispatchEvent(event)
     }
-    
     function pressHotkey(hotkey) {
       const textarea = document.querySelector('textarea')
       const osx = navigator.userAgent.indexOf('Macintosh') !== -1
