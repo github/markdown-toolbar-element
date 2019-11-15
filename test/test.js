@@ -18,7 +18,7 @@ describe('markdown-toolbar-element', function() {
       event.initEvent('focus', false, true)
       textarea.dispatchEvent(event)
     }
-
+    
     function pressHotkey(hotkey) {
       const textarea = document.querySelector('textarea')
       const osx = navigator.userAgent.indexOf('Macintosh') !== -1
@@ -26,7 +26,7 @@ describe('markdown-toolbar-element', function() {
       event.initEvent('keydown', true, true)
       event.metaKey = osx
       event.ctrlKey = !osx
-      event.key = hotkey
+      event.code = `Key${hotkey.toUpperCase()}`
       textarea.dispatchEvent(event)
     }
 
