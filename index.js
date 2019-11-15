@@ -69,7 +69,7 @@ class MarkdownBoldButtonElement extends MarkdownButtonElement {
 
   connectedCallback() {
     super.connectedCallback()
-    this.setAttribute('hotkey', 'b')
+    this.setAttribute('hotkey', 'KeyB')
   }
 }
 
@@ -86,7 +86,7 @@ class MarkdownItalicButtonElement extends MarkdownButtonElement {
 
   connectedCallback() {
     super.connectedCallback()
-    this.setAttribute('hotkey', 'i')
+    this.setAttribute('hotkey', 'KeyI')
   }
 }
 
@@ -127,7 +127,7 @@ class MarkdownLinkButtonElement extends MarkdownButtonElement {
 
   connectedCallback() {
     super.connectedCallback()
-    this.setAttribute('hotkey', 'k')
+    this.setAttribute('hotkey', 'KeyK')
   }
 }
 
@@ -180,7 +180,7 @@ class MarkdownTaskListButtonElement extends MarkdownButtonElement {
 
   connectedCallback() {
     super.connectedCallback()
-    this.setAttribute('hotkey', 'L')
+    this.setAttribute('hotkey', 'KeyL')
   }
 }
 
@@ -248,7 +248,7 @@ const shortcutListeners = new WeakMap()
 
 function shortcut(toolbar: Element, event: KeyboardEvent) {
   if ((event.metaKey && modifierKey === 'Meta') || (event.ctrlKey && modifierKey === 'Control')) {
-    const button = toolbar.querySelector(`[hotkey="${event.key}"]`)
+    const button = toolbar.querySelector(`[hotkey="${event.code}"]`)
     if (button) {
       button.click()
       event.preventDefault()
