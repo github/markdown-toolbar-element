@@ -1,4 +1,4 @@
-describe('markdown-toolbbar-element', function() {
+describe('markdown-toolbar-element', function() {
   describe('element creation', function() {
     it('creates from document.createElement', function() {
       const el = document.createElement('markdown-toolbar')
@@ -70,10 +70,13 @@ describe('markdown-toolbbar-element', function() {
         <markdown-toolbar for="textarea_id">
           <md-bold>bold</md-bold>
           <md-header>header</md-header>
+          <md-header level="1">h1</md-header>
+          <md-header level="10">h1</md-header>
           <md-italic>italic</md-italic>
           <md-quote>quote</md-quote>
           <md-code>code</md-code>
           <md-link>link</md-link>
+          <md-image>image</md-image>
           <md-unordered-list>unordered-list</md-unordered-list>
           <md-ordered-list>ordered-list</md-ordered-list>
           <md-task-list>task-list</md-task-list>
@@ -487,6 +490,52 @@ describe('markdown-toolbbar-element', function() {
         setVisualValue("GitHub's |homepage|")
         clickToolbar('md-link')
         assert.equal("GitHub's [homepage](|url|)", visualValue())
+      })
+    })
+
+    describe('images', function() {
+      it('inserts image syntax with cursor in description', function() {
+        setVisualValue('|')
+        clickToolbar('md-image')
+        assert.equal('![|](url)', visualValue())
+      })
+
+      it('selected url is wrapped in image syntax with cursor in description', function() {
+        setVisualValue('Octocat is |https://octodex.github.com/images/original.png|')
+        clickToolbar('md-image')
+        assert.equal('Octocat is ![|](https://octodex.github.com/images/original.png)', visualValue())
+      })
+
+      it('cursor on url is wrapped in image syntax with cursor in description', function() {
+        setVisualValue('Octocat is https://octodex.git|hub.com/images/original.png')
+        clickToolbar('md-image')
+        assert.equal('Octocat is ![|](https://octodex.github.com/images/original.png)', visualValue())
+      })
+
+      it('selected plan text is wrapped in image syntax with cursor in url', function() {
+        setVisualValue("GitHub's |logo|")
+        clickToolbar('md-image')
+        assert.equal("GitHub's ![logo](|url|)", visualValue())
+      })
+    })
+
+    describe('header', function() {
+      it('inserts header syntax with cursor in description', function() {
+        setVisualValue('|title|')
+        clickToolbar('md-header')
+        assert.equal('### |title|', visualValue())
+      })
+
+      it('inserts header 1 syntax with cursor in description', function() {
+        setVisualValue('|title|')
+        clickToolbar('md-header[level="1"]')
+        assert.equal('# |title|', visualValue())
+      })
+
+      it('does not insert header for invalid level', function() {
+        setVisualValue('|title|')
+        clickToolbar('md-header[level="10"]')
+        assert.equal('|title|', visualValue())
       })
     })
   })
