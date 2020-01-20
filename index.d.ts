@@ -6,4 +6,7 @@ declare global {
   interface Window {
     MarkdownToolbarElement: typeof MarkdownToolbarElement
   }
+  interface HTMLElementTagNameMap {
+    'markdown-toolbar': MarkdownToolbarElement
+  }
 }
