@@ -14,6 +14,7 @@ deploy:
   # This deploy requires a Github personal access token, so if this breaks it
   # could be that the developer has left GDS.
   - provider: pages
+    edge: true
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
     keep_history: true
@@ -21,12 +22,14 @@ deploy:
     on:
       branch: master
   - provider: script
+    edge: true
     skip_cleanup: true
     script: git tag $LOCAL_VERSION && git push $GIT_REMOTE --tags
     on:
       branch: master
       condition: -z $GIT_TAG
   - provider: npm
+    edge: true
     skip_cleanup: true
     email: govuk-dev@digital.cabinet-office.gov.uk
     api_key: $NPM_TOKEN
