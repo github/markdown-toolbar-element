@@ -2,9 +2,32 @@
 
 function keydown(fn: KeyboardEventHandler): KeyboardEventHandler {
   return function(event: KeyboardEvent) {
-    if (event.key === ' ' || event.key === 'Enter') {
+    const key = event.key
+    if (key === ' ' || key === 'Enter') {
       event.preventDefault()
       fn(event)
+    }
+    if (key === 'ArrowRight' || key === 'ArrowLeft' || key === 'Home' || key === 'End') {
+      const target = event.currentTarget
+      if (!(target instanceof MarkdownButtonElement)) return
+      const toolbar = target.closest('markdown-toolbar')
+      if (!(toolbar instanceof MarkdownToolbarElement)) return
+
+      const buttons = []
+      for (const button of toolbar.children) {
+        if (!(button instanceof MarkdownButtonElement)) continue
+        button.setAttribute('tabindex', '-1')
+        buttons.push(button)
+      }
+      let i = 0
+      if (key === 'ArrowLeft') i = buttons.indexOf(target) - 1
+      if (key === 'ArrowRight') i = buttons.indexOf(target) + 1
+      if (key === 'End') i = buttons.length - 1
+      if (i < 0) i = buttons.length - 1
+      if (i > buttons.length - 1) i = 0
+
+      buttons[i].setAttribute('tabindex', '0')
+      buttons[i].focus()
     }
   }
 }
@@ -25,7 +48,7 @@ class MarkdownButtonElement extends HTMLElement {
 
   connectedCallback() {
     if (!this.hasAttribute('tabindex')) {
-      this.setAttribute('tabindex', '0')
+      this.setAttribute('tabindex', '-1')
     }
 
     if (!this.hasAttribute('role')) {
@@ -221,11 +244,16 @@ class MarkdownToolbarElement extends HTMLElement {
   }
 
   connectedCallback() {
+    if (!this.hasAttribute('role')) {
+      this.setAttribute('role', 'toolbar')
+    }
     const fn = shortcut.bind(null, this)
     if (this.field) {
       this.field.addEventListener('keydown', fn)
       shortcutListeners.set(this, fn)
     }
+    const firstTabIndex = document.querySelector('[role="button"][tabindex]')
+    if (firstTabIndex) firstTabIndex.setAttribute('tabindex', '0')
   }
 
   disconnectedCallback() {

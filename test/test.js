@@ -92,6 +92,72 @@ describe('markdown-toolbar-element', function() {
       document.body.innerHTML = ''
     })
 
+    describe('focus management', function() {
+      function focusFirstButton() {
+        const button = document.querySelector('md-bold')
+        button.focus()
+      }
+
+      function pushKeyOnFocussedButton(key) {
+        const event = document.createEvent('Event')
+        event.initEvent('keydown', true, true)
+        event.key = key
+        document.activeElement.dispatchEvent(event)
+      }
+
+      function getElementsWithTabindex(index) {
+        return [...document.querySelectorAll(`markdown-toolbar [tabindex="${index}"]`)]
+      }
+
+      it('moves focus to next button when ArrowRight is pressed', function() {
+        focusFirstButton()
+        pushKeyOnFocussedButton('ArrowRight')
+        assert.equal(getElementsWithTabindex(-1).length, 13)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('ArrowRight')
+        assert.equal(getElementsWithTabindex(-1).length, 13)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header[level="1"]')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('ArrowRight')
+        assert.equal(getElementsWithTabindex(-1).length, 13)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header[level="10"]')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+      })
+
+      it('cycles focus round to last element from first when ArrowLeft is pressed', function() {
+        focusFirstButton()
+        pushKeyOnFocussedButton('ArrowLeft')
+        assert.equal(getElementsWithTabindex(-1).length, 13)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('ArrowLeft')
+        assert.equal(getElementsWithTabindex(-1).length, 13)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-mention')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+      })
+
+      it('focussed first/last button when Home/End key is pressed', function() {
+        focusFirstButton()
+        pushKeyOnFocussedButton('End')
+        assert.equal(getElementsWithTabindex(-1).length, 13)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('End')
+        assert.equal(getElementsWithTabindex(-1).length, 13)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('Home')
+        assert.equal(getElementsWithTabindex(-1).length, 13)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('Home')
+        assert.equal(getElementsWithTabindex(-1).length, 13)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+      })
+    })
+
     describe('bold', function() {
       it('bold selected text when you click the bold icon', function() {
         setVisualValue('The |quick| brown fox jumps over the lazy dog')
