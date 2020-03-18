@@ -2,32 +2,9 @@
 
 function keydown(fn: KeyboardEventHandler): KeyboardEventHandler {
   return function(event: KeyboardEvent) {
-    const key = event.key
-    if (key === ' ' || key === 'Enter') {
+    if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault()
       fn(event)
-    }
-    if (key === 'ArrowRight' || key === 'ArrowLeft' || key === 'Home' || key === 'End') {
-      const target = event.currentTarget
-      if (!(target instanceof HTMLElement)) return
-      if (!target.hasAttribute('data-md-button')) return
-      const toolbar = target.closest('markdown-toolbar')
-      if (!(toolbar instanceof MarkdownToolbarElement)) return
-
-      const buttons = []
-      for (const button of toolbar.querySelectorAll('[data-md-button]')) {
-        button.setAttribute('tabindex', '-1')
-        buttons.push(button)
-      }
-      let i = 0
-      if (key === 'ArrowLeft') i = buttons.indexOf(target) - 1
-      if (key === 'ArrowRight') i = buttons.indexOf(target) + 1
-      if (key === 'End') i = buttons.length - 1
-      if (i < 0) i = buttons.length - 1
-      if (i > buttons.length - 1) i = 0
-
-      buttons[i].setAttribute('tabindex', '0')
-      buttons[i].focus()
     }
   }
 }
@@ -248,6 +225,9 @@ class MarkdownToolbarElement extends HTMLElement {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar')
     }
+    const focusKeydownfn = focusKeydown.bind(null, this)
+    this.addEventListener('keydown', focusKeydownfn)
+    focusListeners.set(this, focusKeydownfn)
     const fn = shortcut.bind(null, this)
     if (this.field) {
       this.field.addEventListener('keydown', fn)
@@ -263,6 +243,10 @@ class MarkdownToolbarElement extends HTMLElement {
       this.field.removeEventListener('keydown', fn)
       shortcutListeners.delete(this)
     }
+    const focusKeydownfn = focusListeners.get(this)
+    if (focusKeydownfn) {
+      this.removeEventListener('keydown', focusKeydownfn)
+    }
   }
 
   get field(): ?HTMLTextAreaElement {
@@ -271,6 +255,33 @@ class MarkdownToolbarElement extends HTMLElement {
     const field = document.getElementById(id)
     return field instanceof HTMLTextAreaElement ? field : null
   }
+}
+
+const focusListeners = new WeakMap()
+
+function focusKeydown(toolbar: MarkdownToolbarElement, event: KeyboardEvent) {
+  const key = event.key
+  if (key !== 'ArrowRight' && key !== 'ArrowLeft' && key !== 'Home' && key !== 'End') return
+  const target = event.target
+  if (!(target instanceof HTMLElement)) return
+  if (!target.hasAttribute('data-md-button')) return
+  if (target.closest('markdown-toolbar') !== toolbar) return
+
+  const buttons = []
+  for (const button of toolbar.querySelectorAll('[data-md-button]')) {
+    if (!(button instanceof MarkdownButtonElement)) continue
+    button.setAttribute('tabindex', '-1')
+    buttons.push(button)
+  }
+  let i = 0
+  if (key === 'ArrowLeft') i = buttons.indexOf(target) - 1
+  if (key === 'ArrowRight') i = buttons.indexOf(target) + 1
+  if (key === 'End') i = buttons.length - 1
+  if (i < 0) i = buttons.length - 1
+  if (i > buttons.length - 1) i = 0
+
+  buttons[i].setAttribute('tabindex', '0')
+  buttons[i].focus()
 }
 
 const shortcutListeners = new WeakMap()
