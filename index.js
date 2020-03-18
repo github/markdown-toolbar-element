@@ -265,7 +265,7 @@ function focusKeydown(toolbar: MarkdownToolbarElement, event: KeyboardEvent) {
   const target = event.target
   if (!(target instanceof HTMLElement)) return
   if (!target.hasAttribute('data-md-button')) return
-  if (target.closest('markdown-toolbar') !== toolbar) return
+  if (target.closest('markdown-toolbar') !== event.currentTarget) return
 
   const buttons = []
   for (const button of toolbar.querySelectorAll('[data-md-button]')) {
