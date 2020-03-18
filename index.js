@@ -9,13 +9,13 @@ function keydown(fn: KeyboardEventHandler): KeyboardEventHandler {
     }
     if (key === 'ArrowRight' || key === 'ArrowLeft' || key === 'Home' || key === 'End') {
       const target = event.currentTarget
-      if (!(target instanceof MarkdownButtonElement)) return
+      if (!(target instanceof HTMLElement)) return
+      if (!target.hasAttribute('data-md-button')) return
       const toolbar = target.closest('markdown-toolbar')
       if (!(toolbar instanceof MarkdownToolbarElement)) return
 
       const buttons = []
-      for (const button of toolbar.children) {
-        if (!(button instanceof MarkdownButtonElement)) continue
+      for (const button of toolbar.querySelectorAll('[data-md-button]')) {
         button.setAttribute('tabindex', '-1')
         buttons.push(button)
       }
@@ -54,6 +54,7 @@ class MarkdownButtonElement extends HTMLElement {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'button')
     }
+    this.setAttribute('data-md-button', '')
   }
 
   click() {
@@ -252,7 +253,7 @@ class MarkdownToolbarElement extends HTMLElement {
       this.field.addEventListener('keydown', fn)
       shortcutListeners.set(this, fn)
     }
-    const firstTabIndex = document.querySelector('[role="button"][tabindex]')
+    const firstTabIndex = document.querySelector('[data-md-button]')
     if (firstTabIndex) firstTabIndex.setAttribute('tabindex', '0')
   }
 
