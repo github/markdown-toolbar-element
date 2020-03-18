@@ -269,7 +269,6 @@ function focusKeydown(toolbar: MarkdownToolbarElement, event: KeyboardEvent) {
 
   const buttons = []
   for (const button of toolbar.querySelectorAll('[data-md-button]')) {
-    if (!(button instanceof MarkdownButtonElement)) continue
     button.setAttribute('tabindex', '-1')
     buttons.push(button)
   }
