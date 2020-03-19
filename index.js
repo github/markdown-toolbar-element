@@ -290,10 +290,9 @@ function focusKeydown(event: KeyboardEvent) {
 
   for (let i = 0; i < length; i += 1) {
     buttons[i].setAttribute('tabindex', i === n ? '0' : '-1')
-    if (i === n) {
-      buttons[i].focus()
-    }
   }
+
+  buttons[n].focus()
 }
 
 const shortcutListeners = new WeakMap()
