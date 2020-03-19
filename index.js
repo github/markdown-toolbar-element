@@ -33,10 +33,6 @@ class MarkdownButtonElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.hasAttribute('tabindex')) {
-      this.setAttribute('tabindex', '-1')
-    }
-
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'button')
     }
@@ -251,8 +247,11 @@ class MarkdownToolbarElement extends HTMLElement {
       this.field.addEventListener('keydown', fn)
       shortcutListeners.set(this, fn)
     }
-    const firstTabIndex = getButtons(this)[0]
-    if (firstTabIndex) firstTabIndex.setAttribute('tabindex', '0')
+    let tabindex = '0'
+    for (const button of getButtons(this)) {
+      button.setAttribute('tabindex', tabindex)
+      if (tabindex === '0') tabindex = '-1'
+    }
   }
 
   disconnectedCallback() {
