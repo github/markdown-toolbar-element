@@ -165,7 +165,6 @@ describe('markdown-toolbar-element', function() {
         pushKeyOnFocussedButton('ArrowRight')
         pushKeyOnFocussedButton('ArrowRight')
         assert.equal(getElementsWithTabindex(-1).length, 14)
-        console.log(getElementsWithTabindex(0))
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('div[data-md-button]')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
       })
