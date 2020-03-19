@@ -278,16 +278,17 @@ function focusKeydown(event: KeyboardEvent) {
   if (!(toolbar instanceof HTMLElement)) return
   const buttons = getButtons(toolbar)
   const index = buttons.indexOf(event.target)
+  const length = buttons.length
   if (index === -1) return
 
   let n = 0
   if (key === 'ArrowLeft') n = index - 1
   if (key === 'ArrowRight') n = index + 1
-  if (key === 'End') n = buttons.length - 1
-  if (n < 0) n = buttons.length - 1
-  if (n > buttons.length - 1) n = 0
+  if (key === 'End') n = length - 1
+  if (n < 0) n = length - 1
+  if (n > length - 1) n = 0
 
-  for (let i = 0; i < buttons.length; i += 1) {
+  for (let i = 0; i < length; i += 1) {
     buttons[i].setAttribute('tabindex', i === n ? '0' : '-1')
     if (i === n) {
       buttons[i].focus()
