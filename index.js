@@ -274,15 +274,15 @@ class MarkdownToolbarElement extends HTMLElement {
 function focusKeydown(event: KeyboardEvent) {
   const key = event.key
   if (key !== 'ArrowRight' && key !== 'ArrowLeft' && key !== 'Home' && key !== 'End') return
-  const target = event.target
   const toolbar = event.currentTarget
   if (!(toolbar instanceof HTMLElement)) return
   const buttons = getButtons(toolbar)
-  if (buttons.indexOf(event.target) === -1) return
+  const index = buttons.indexOf(event.target)
+  if (index === -1) return
 
   let n = 0
-  if (key === 'ArrowLeft') n = buttons.indexOf(target) - 1
-  if (key === 'ArrowRight') n = buttons.indexOf(target) + 1
+  if (key === 'ArrowLeft') n = index - 1
+  if (key === 'ArrowRight') n = index + 1
   if (key === 'End') n = buttons.length - 1
   if (n < 0) n = buttons.length - 1
   if (n > buttons.length - 1) n = 0
