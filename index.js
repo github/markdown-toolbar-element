@@ -1,7 +1,7 @@
 /* @flow strict */
 
 const buttonSelectors = ['[data-md-button]']
-function getButtons(toolbar: Element) {
+function getButtons(toolbar: Element): Element[] {
   const els = []
   for (const button of toolbar.querySelectorAll(buttonSelectors.join(', '))) {
     if (button.closest('markdown-toolbar') === toolbar) els.push(button)
