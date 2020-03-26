@@ -1,6 +1,20 @@
 /* @flow strict */
 
-const buttonSelectors = ['[data-md-button]']
+const buttonSelectors = [
+  '[data-md-button]',
+  'md-header',
+  'md-bold',
+  'md-italic',
+  'md-quote',
+  'md-code',
+  'md-link',
+  'md-image',
+  'md-unordered-list',
+  'md-ordered-list',
+  'md-task-list',
+  'md-mention',
+  'md-ref'
+]
 function getButtons(toolbar: Element): Element[] {
   const els = []
   for (const button of toolbar.querySelectorAll(buttonSelectors.join(', '))) {
@@ -64,7 +78,6 @@ class MarkdownHeaderButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-header')) {
   window.MarkdownHeaderButtonElement = MarkdownHeaderButtonElement
   window.customElements.define('md-header', MarkdownHeaderButtonElement)
-  buttonSelectors.push('md-header')
 }
 
 class MarkdownBoldButtonElement extends MarkdownButtonElement {
@@ -82,7 +95,6 @@ class MarkdownBoldButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-bold')) {
   window.MarkdownBoldButtonElement = MarkdownBoldButtonElement
   window.customElements.define('md-bold', MarkdownBoldButtonElement)
-  buttonSelectors.push('md-bold')
 }
 
 class MarkdownItalicButtonElement extends MarkdownButtonElement {
@@ -100,7 +112,6 @@ class MarkdownItalicButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-italic')) {
   window.MarkdownItalicButtonElement = MarkdownItalicButtonElement
   window.customElements.define('md-italic', MarkdownItalicButtonElement)
-  buttonSelectors.push('md-italic')
 }
 
 class MarkdownQuoteButtonElement extends MarkdownButtonElement {
@@ -113,7 +124,6 @@ class MarkdownQuoteButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-quote')) {
   window.MarkdownQuoteButtonElement = MarkdownQuoteButtonElement
   window.customElements.define('md-quote', MarkdownQuoteButtonElement)
-  buttonSelectors.push('md-quote')
 }
 
 class MarkdownCodeButtonElement extends MarkdownButtonElement {
@@ -126,7 +136,6 @@ class MarkdownCodeButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-code')) {
   window.MarkdownCodeButtonElement = MarkdownCodeButtonElement
   window.customElements.define('md-code', MarkdownCodeButtonElement)
-  buttonSelectors.push('md-code')
 }
 
 class MarkdownLinkButtonElement extends MarkdownButtonElement {
@@ -144,7 +153,6 @@ class MarkdownLinkButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-link')) {
   window.MarkdownLinkButtonElement = MarkdownLinkButtonElement
   window.customElements.define('md-link', MarkdownLinkButtonElement)
-  buttonSelectors.push('md-link')
 }
 
 class MarkdownImageButtonElement extends MarkdownButtonElement {
@@ -157,7 +165,6 @@ class MarkdownImageButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-image')) {
   window.MarkdownImageButtonElement = MarkdownImageButtonElement
   window.customElements.define('md-image', MarkdownImageButtonElement)
-  buttonSelectors.push('md-image')
 }
 
 class MarkdownUnorderedListButtonElement extends MarkdownButtonElement {
@@ -170,7 +177,6 @@ class MarkdownUnorderedListButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-unordered-list')) {
   window.MarkdownUnorderedListButtonElement = MarkdownUnorderedListButtonElement
   window.customElements.define('md-unordered-list', MarkdownUnorderedListButtonElement)
-  buttonSelectors.push('md-unordered-list')
 }
 
 class MarkdownOrderedListButtonElement extends MarkdownButtonElement {
@@ -183,7 +189,6 @@ class MarkdownOrderedListButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-ordered-list')) {
   window.MarkdownOrderedListButtonElement = MarkdownOrderedListButtonElement
   window.customElements.define('md-ordered-list', MarkdownOrderedListButtonElement)
-  buttonSelectors.push('md-ordered-list')
 }
 
 class MarkdownTaskListButtonElement extends MarkdownButtonElement {
@@ -201,7 +206,6 @@ class MarkdownTaskListButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-task-list')) {
   window.MarkdownTaskListButtonElement = MarkdownTaskListButtonElement
   window.customElements.define('md-task-list', MarkdownTaskListButtonElement)
-  buttonSelectors.push('md-task-list')
 }
 
 class MarkdownMentionButtonElement extends MarkdownButtonElement {
@@ -214,7 +218,6 @@ class MarkdownMentionButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-mention')) {
   window.MarkdownMentionButtonElement = MarkdownMentionButtonElement
   window.customElements.define('md-mention', MarkdownMentionButtonElement)
-  buttonSelectors.push('md-mention')
 }
 
 class MarkdownRefButtonElement extends MarkdownButtonElement {
@@ -227,7 +230,6 @@ class MarkdownRefButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-ref')) {
   window.MarkdownRefButtonElement = MarkdownRefButtonElement
   window.customElements.define('md-ref', MarkdownRefButtonElement)
-  buttonSelectors.push('md-ref')
 }
 
 const modifierKey = navigator.userAgent.match(/Macintosh/) ? 'Meta' : 'Control'
