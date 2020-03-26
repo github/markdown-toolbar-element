@@ -18,7 +18,7 @@ const buttonSelectors = [
 function getButtons(toolbar: Element): Element[] {
   const els = []
   for (const button of toolbar.querySelectorAll(buttonSelectors.join(', '))) {
-    if (button.closest('markdown-toolbar') === toolbar) els.push(button)
+    if (button.closest('markdown-toolbar') === toolbar && !button.hidden) els.push(button)
   }
   return els
 }
