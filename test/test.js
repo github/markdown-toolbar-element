@@ -71,7 +71,9 @@ describe('markdown-toolbar-element', function() {
           <md-bold>bold</md-bold>
           <md-header>header</md-header>
           <md-header level="1">h1</md-header>
-          <md-header level="5" hidden>h1</md-header>
+          <div hidden>
+            <md-header level="5">h1</md-header>
+          </div>
           <md-header level="10">h1</md-header>
           <div data-md-button>Other button</div>
           <md-italic>italic</md-italic>

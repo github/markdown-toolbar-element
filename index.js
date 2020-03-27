@@ -18,7 +18,9 @@ const buttonSelectors = [
 function getButtons(toolbar: Element): Element[] {
   const els = []
   for (const button of toolbar.querySelectorAll(buttonSelectors.join(', '))) {
-    if (button.closest('markdown-toolbar') === toolbar && !button.hidden) els.push(button)
+    // Skip buttons that are hidden, either via `hidden` attribute or CSS:
+    if (button.hidden || (button.offsetWidth <= 0 && button.offsetHeight <= 0)) continue
+    if (button.closest('markdown-toolbar') === toolbar) els.push(button)
   }
   return els
 }
