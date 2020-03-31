@@ -113,6 +113,10 @@ describe('markdown-toolbar-element', function() {
         return [...document.querySelectorAll(`markdown-toolbar [tabindex="${index}"]`)]
       }
 
+      beforeEach(() => {
+        document.querySelector('markdown-toolbar').focus()
+      })
+
       it('moves focus to next button when ArrowRight is pressed', function() {
         focusFirstButton()
         pushKeyOnFocussedButton('ArrowRight')

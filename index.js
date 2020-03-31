@@ -15,7 +15,7 @@ const buttonSelectors = [
   'md-mention',
   'md-ref'
 ]
-function getButtons(toolbar: Element): Element[] {
+function getButtons(toolbar: Element): HTMLElement[] {
   const els = []
   for (const button of toolbar.querySelectorAll(buttonSelectors.join(', '))) {
     // Skip buttons that are hidden, either via `hidden` attribute or CSS:
@@ -251,11 +251,8 @@ class MarkdownToolbarElement extends HTMLElement {
       this.field.addEventListener('keydown', fn)
       shortcutListeners.set(this, fn)
     }
-    let tabindex = '0'
-    for (const button of getButtons(this)) {
-      button.setAttribute('tabindex', tabindex)
-      if (tabindex === '0') tabindex = '-1'
-    }
+    this.setAttribute('tabindex', '0')
+    this.addEventListener('focus', onToolbarFocus)
   }
 
   disconnectedCallback() {
@@ -272,6 +269,19 @@ class MarkdownToolbarElement extends HTMLElement {
     if (!id) return
     const field = document.getElementById(id)
     return field instanceof HTMLTextAreaElement ? field : null
+  }
+}
+
+function onToolbarFocus({target}: FocusEvent) {
+  if (!(target instanceof Element)) return
+  let tabindex = '0'
+  target.removeAttribute('tabindex')
+  for (const button of getButtons(target)) {
+    button.setAttribute('tabindex', tabindex)
+    if (tabindex === '0') {
+      button.focus()
+      tabindex = '-1'
+    }
   }
 }
 
@@ -296,9 +306,7 @@ function focusKeydown(event: KeyboardEvent) {
     buttons[i].setAttribute('tabindex', i === n ? '0' : '-1')
   }
 
-  if (buttons[n] instanceof HTMLElement) {
-    buttons[n].focus()
-  }
+  buttons[n].focus()
 }
 
 const shortcutListeners = new WeakMap()
