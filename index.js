@@ -306,6 +306,9 @@ function focusKeydown(event: KeyboardEvent) {
     buttons[i].setAttribute('tabindex', i === n ? '0' : '-1')
   }
 
+  // Need to stop home/end scrolling:
+  event.preventDefault()
+
   buttons[n].focus()
 }
 
