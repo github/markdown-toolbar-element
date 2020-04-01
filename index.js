@@ -252,7 +252,7 @@ class MarkdownToolbarElement extends HTMLElement {
       shortcutListeners.set(this, fn)
     }
     this.setAttribute('tabindex', '0')
-    this.addEventListener('focus', onToolbarFocus)
+    this.addEventListener('focus', onToolbarFocus, {once: true})
   }
 
   disconnectedCallback() {
