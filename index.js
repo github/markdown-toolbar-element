@@ -274,8 +274,8 @@ class MarkdownToolbarElement extends HTMLElement {
 
 function onToolbarFocus({target}: FocusEvent) {
   if (!(target instanceof Element)) return
-  let tabindex = '0'
   target.removeAttribute('tabindex')
+  let tabindex = '0'
   for (const button of getButtons(target)) {
     button.setAttribute('tabindex', tabindex)
     if (tabindex === '0') {
