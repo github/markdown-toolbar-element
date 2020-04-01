@@ -28,9 +28,12 @@ import '@github/markdown-toolbar-element'
   <md-task-list>task-list</md-task-list>
   <md-mention>mention</md-mention>
   <md-ref>ref</md-ref>
+  <button data-md-button>Custom button</button>
 </markdown-toolbar>
 <textarea id="textarea_id"></textarea>
 ```
+
+Focus management for buttons inside of the toolbar is automatically managed by the toolbar itself. The `md-*` buttons that ship with this package are automatically managed, but custom buttons needs a `data-md-button` attribute added to them, which enrolls them into focus management.
 
 ## Browser support
 
