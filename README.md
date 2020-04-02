@@ -33,7 +33,7 @@ import '@github/markdown-toolbar-element'
 <textarea id="textarea_id"></textarea>
 ```
 
-Focus management for buttons inside of the toolbar is automatically managed by the toolbar itself. The `md-*` buttons that ship with this package are automatically managed, but custom buttons needs a `data-md-button` attribute added to them, which enrolls them into focus management.
+`<markdown-toolbar>` comes with focus management as advised in [WAI-ARIA Authoring Practices 1.1: Toolbar Design Pattern](https://www.w3.org/TR/wai-aria-practices-1.1/examples/toolbar/toolbar.html). The `md-*` buttons that ship with this package are automatically managed. Add a `data-md-button` attribute to any custom toolbar items to enroll them into focus management.
 
 ## Browser support
 
