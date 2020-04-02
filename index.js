@@ -1,5 +1,30 @@
 /* @flow strict */
 
+const buttonSelectors = [
+  '[data-md-button]',
+  'md-header',
+  'md-bold',
+  'md-italic',
+  'md-quote',
+  'md-code',
+  'md-link',
+  'md-image',
+  'md-unordered-list',
+  'md-ordered-list',
+  'md-task-list',
+  'md-mention',
+  'md-ref'
+]
+function getButtons(toolbar: Element): HTMLElement[] {
+  const els = []
+  for (const button of toolbar.querySelectorAll(buttonSelectors.join(', '))) {
+    // Skip buttons that are hidden, either via `hidden` attribute or CSS:
+    if (button.hidden || (button.offsetWidth <= 0 && button.offsetHeight <= 0)) continue
+    if (button.closest('markdown-toolbar') === toolbar) els.push(button)
+  }
+  return els
+}
+
 function keydown(fn: KeyboardEventHandler): KeyboardEventHandler {
   return function(event: KeyboardEvent) {
     if (event.key === ' ' || event.key === 'Enter') {
@@ -24,10 +49,6 @@ class MarkdownButtonElement extends HTMLElement {
   }
 
   connectedCallback() {
-    if (!this.hasAttribute('tabindex')) {
-      this.setAttribute('tabindex', '0')
-    }
-
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'button')
     }
@@ -221,11 +242,17 @@ class MarkdownToolbarElement extends HTMLElement {
   }
 
   connectedCallback() {
+    if (!this.hasAttribute('role')) {
+      this.setAttribute('role', 'toolbar')
+    }
+    this.addEventListener('keydown', focusKeydown)
     const fn = shortcut.bind(null, this)
     if (this.field) {
       this.field.addEventListener('keydown', fn)
       shortcutListeners.set(this, fn)
     }
+    this.setAttribute('tabindex', '0')
+    this.addEventListener('focus', onToolbarFocus, {once: true})
   }
 
   disconnectedCallback() {
@@ -234,6 +261,7 @@ class MarkdownToolbarElement extends HTMLElement {
       this.field.removeEventListener('keydown', fn)
       shortcutListeners.delete(this)
     }
+    this.removeEventListener('keydown', focusKeydown)
   }
 
   get field(): ?HTMLTextAreaElement {
@@ -242,6 +270,46 @@ class MarkdownToolbarElement extends HTMLElement {
     const field = document.getElementById(id)
     return field instanceof HTMLTextAreaElement ? field : null
   }
+}
+
+function onToolbarFocus({target}: FocusEvent) {
+  if (!(target instanceof Element)) return
+  target.removeAttribute('tabindex')
+  let tabindex = '0'
+  for (const button of getButtons(target)) {
+    button.setAttribute('tabindex', tabindex)
+    if (tabindex === '0') {
+      button.focus()
+      tabindex = '-1'
+    }
+  }
+}
+
+function focusKeydown(event: KeyboardEvent) {
+  const key = event.key
+  if (key !== 'ArrowRight' && key !== 'ArrowLeft' && key !== 'Home' && key !== 'End') return
+  const toolbar = event.currentTarget
+  if (!(toolbar instanceof HTMLElement)) return
+  const buttons = getButtons(toolbar)
+  const index = buttons.indexOf(event.target)
+  const length = buttons.length
+  if (index === -1) return
+
+  let n = 0
+  if (key === 'ArrowLeft') n = index - 1
+  if (key === 'ArrowRight') n = index + 1
+  if (key === 'End') n = length - 1
+  if (n < 0) n = length - 1
+  if (n > length - 1) n = 0
+
+  for (let i = 0; i < length; i += 1) {
+    buttons[i].setAttribute('tabindex', i === n ? '0' : '-1')
+  }
+
+  // Need to stop home/end scrolling:
+  event.preventDefault()
+
+  buttons[n].focus()
 }
 
 const shortcutListeners = new WeakMap()

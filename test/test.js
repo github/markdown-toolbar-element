@@ -71,7 +71,11 @@ describe('markdown-toolbar-element', function() {
           <md-bold>bold</md-bold>
           <md-header>header</md-header>
           <md-header level="1">h1</md-header>
+          <div hidden>
+            <md-header level="5">h5</md-header>
+          </div>
           <md-header level="10">h1</md-header>
+          <div data-md-button>Other button</div>
           <md-italic>italic</md-italic>
           <md-quote>quote</md-quote>
           <md-code>code</md-code>
@@ -90,6 +94,87 @@ describe('markdown-toolbar-element', function() {
 
     afterEach(function() {
       document.body.innerHTML = ''
+    })
+
+    describe('focus management', function() {
+      function focusFirstButton() {
+        const button = document.querySelector('md-bold')
+        button.focus()
+      }
+
+      function pushKeyOnFocussedButton(key) {
+        const event = document.createEvent('Event')
+        event.initEvent('keydown', true, true)
+        event.key = key
+        document.activeElement.dispatchEvent(event)
+      }
+
+      function getElementsWithTabindex(index) {
+        return [...document.querySelectorAll(`markdown-toolbar [tabindex="${index}"]`)]
+      }
+
+      beforeEach(() => {
+        document.querySelector('markdown-toolbar').focus()
+      })
+
+      it('moves focus to next button when ArrowRight is pressed', function() {
+        focusFirstButton()
+        pushKeyOnFocussedButton('ArrowRight')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('ArrowRight')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header[level="1"]')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('ArrowRight')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header[level="10"]')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+      })
+
+      it('cycles focus round to last element from first when ArrowLeft is pressed', function() {
+        focusFirstButton()
+        pushKeyOnFocussedButton('ArrowLeft')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('ArrowLeft')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-mention')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+      })
+
+      it('focussed first/last button when Home/End key is pressed', function() {
+        focusFirstButton()
+        pushKeyOnFocussedButton('End')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('End')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('Home')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        pushKeyOnFocussedButton('Home')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+      })
+
+      it('counts `data-md-button` elements in the focussable set', function() {
+        focusFirstButton()
+        pushKeyOnFocussedButton('ArrowRight')
+        pushKeyOnFocussedButton('ArrowRight')
+        pushKeyOnFocussedButton('ArrowRight')
+        pushKeyOnFocussedButton('ArrowRight')
+        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('div[data-md-button]')])
+        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+      })
     })
 
     describe('bold', function() {
