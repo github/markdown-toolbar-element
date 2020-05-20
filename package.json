@@ -3,8 +3,9 @@
   "version": "1.2.0",
   "description": "Markdown formatting buttons for text inputs.",
   "repository": "github/markdown-toolbar-element",
-  "main": "dist/index.js",
   "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
   "types": "index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
