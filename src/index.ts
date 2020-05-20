@@ -611,17 +611,7 @@ function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
       textarea.selectionEnd = endOfLine
     }
   } else {
-    lines = (function () {
-      let i
-      let len
-      let index
-      const results = []
-      for (index = i = 0, len = lines.length; i < len; index = ++i) {
-        const line = lines[index]
-        results.push(`${index + 1}. ${line}`)
-      }
-      return results
-    })()
+    lines = numberedLines(lines)
     text = lines.join('\n')
     const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
     selectionStart = textarea.selectionStart + newlinesToAppend.length
@@ -645,6 +635,18 @@ interface StyleArgs {
   surroundWithNewlines: boolean
   orderedList: boolean
   trimFirst: boolean
+}
+
+function numberedLines(lines: string[]) {
+  let i
+  let len
+  let index
+  const results = []
+  for (index = i = 0, len = lines.length; i < len; index = ++i) {
+    const line = lines[index]
+    results.push(`${index + 1}. ${line}`)
+  }
+  return results
 }
 
 function applyStyle(button: Element, stylesToApply: {}) {
