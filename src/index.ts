@@ -41,7 +41,7 @@ function getButtons(toolbar: Element): HTMLElement[] {
   return els
 }
 
-function keydown(fn: (arg0: KeyboardEvent) => void): (arg0: KeyboardEvent) => void {
+function keydown(fn: (event: KeyboardEvent) => void): (event: KeyboardEvent) => void {
   return function (event: KeyboardEvent) {
     if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault()
