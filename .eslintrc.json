@@ -2,21 +2,28 @@
   "extends": [
     "plugin:github/browser",
     "plugin:github/es6",
-    "plugin:github/flow"
+    "plugin:github/typescript"
   ],
-  "parser": "babel-eslint",
+  "globals": {
+    "MarkdownToolbarElement": "readable",
+    "MarkdownHeaderButtonElement": "readable",
+    "MarkdownBoldButtonElement": "readable",
+    "MarkdownItalicButtonElement": "readable",
+    "MarkdownQuoteButtonElement": "readable",
+    "MarkdownCodeButtonElement": "readable",
+    "MarkdownLinkButtonElement": "readable",
+    "MarkdownImageButtonElement": "readable",
+    "MarkdownUnorderedListButtonElement": "readable",
+    "MarkdownOrderedListButtonElement": "readable",
+    "MarkdownTaskListButtonElement": "readable",
+    "MarkdownMentionButtonElement": "readable",
+    "MarkdownRefButtonElement": "readable"
+  },
   "overrides": [
     {
       "files": "test/**/*.js",
       "rules": {
-        "flowtype/require-valid-file-annotation": "off",
         "github/unescaped-html-literal": "off"
-      }
-    },
-    {
-      "files": "prettier.config.js",
-      "rules": {
-        "flowtype/require-valid-file-annotation": "off"
       }
     }
   ]

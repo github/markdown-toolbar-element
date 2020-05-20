@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "module": "es2020",
+    "target": "es2017",
+    "strict": true,
+    "declaration": true,
+    "outDir": "dist",
+    "removeComments": true,
+    "preserveConstEnums": true
+  },
+  "files": [
+    "src/index.ts"
+  ]
+}

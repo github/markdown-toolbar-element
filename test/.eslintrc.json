@@ -1,12 +1,9 @@
 {
-  "rules": {
-    "flowtype/require-valid-file-annotation": "off"
-  },
+  "parser": "espree",
   "env": {
     "mocha": true
   },
   "globals": {
     "assert": true
-  },
-  "extends": "../.eslintrc.json"
+  }
 }

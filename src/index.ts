@@ -1,4 +1,20 @@
-/* @flow strict */
+declare global {
+  interface Window {
+    MarkdownToolbarElement: typeof MarkdownToolbarElement
+    MarkdownHeaderButtonElement: typeof MarkdownHeaderButtonElement
+    MarkdownBoldButtonElement: typeof MarkdownBoldButtonElement
+    MarkdownItalicButtonElement: typeof MarkdownItalicButtonElement
+    MarkdownQuoteButtonElement: typeof MarkdownQuoteButtonElement
+    MarkdownCodeButtonElement: typeof MarkdownCodeButtonElement
+    MarkdownLinkButtonElement: typeof MarkdownLinkButtonElement
+    MarkdownImageButtonElement: typeof MarkdownImageButtonElement
+    MarkdownUnorderedListButtonElement: typeof MarkdownUnorderedListButtonElement
+    MarkdownOrderedListButtonElement: typeof MarkdownOrderedListButtonElement
+    MarkdownTaskListButtonElement: typeof MarkdownTaskListButtonElement
+    MarkdownMentionButtonElement: typeof MarkdownMentionButtonElement
+    MarkdownRefButtonElement: typeof MarkdownRefButtonElement
+  }
+}
 
 const buttonSelectors = [
   '[data-md-button]',
@@ -17,7 +33,7 @@ const buttonSelectors = [
 ]
 function getButtons(toolbar: Element): HTMLElement[] {
   const els = []
-  for (const button of toolbar.querySelectorAll(buttonSelectors.join(', '))) {
+  for (const button of toolbar.querySelectorAll<HTMLElement>(buttonSelectors.join(', '))) {
     // Skip buttons that are hidden, either via `hidden` attribute or CSS:
     if (button.hidden || (button.offsetWidth <= 0 && button.offsetHeight <= 0)) continue
     if (button.closest('markdown-toolbar') === toolbar) els.push(button)
@@ -25,8 +41,8 @@ function getButtons(toolbar: Element): HTMLElement[] {
   return els
 }
 
-function keydown(fn: KeyboardEventHandler): KeyboardEventHandler {
-  return function(event: KeyboardEvent) {
+function keydown(fn: (event: KeyboardEvent) => void): (event: KeyboardEvent) => void {
+  return function (event: KeyboardEvent) {
     if (event.key === ' ' || event.key === 'Enter') {
       event.preventDefault()
       fn(event)
@@ -65,7 +81,7 @@ class MarkdownHeaderButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
 
-    const level = parseInt(this.getAttribute('level') || 3, 10)
+    const level = parseInt(this.getAttribute('level') || '3', 10)
     if (level < 1 || level > 6) {
       return
     }
@@ -264,9 +280,9 @@ class MarkdownToolbarElement extends HTMLElement {
     this.removeEventListener('keydown', focusKeydown)
   }
 
-  get field(): ?HTMLTextAreaElement {
+  get field(): HTMLTextAreaElement | null {
     const id = this.getAttribute('for')
-    if (!id) return
+    if (!id) return null
     const field = document.getElementById(id)
     return field instanceof HTMLTextAreaElement ? field : null
   }
@@ -291,7 +307,7 @@ function focusKeydown(event: KeyboardEvent) {
   const toolbar = event.currentTarget
   if (!(toolbar instanceof HTMLElement)) return
   const buttons = getButtons(toolbar)
-  const index = buttons.indexOf(event.target)
+  const index = buttons.indexOf(event.target as HTMLElement)
   const length = buttons.length
   if (index === -1) return
 
@@ -316,7 +332,7 @@ const shortcutListeners = new WeakMap()
 
 function shortcut(toolbar: Element, event: KeyboardEvent) {
   if ((event.metaKey && modifierKey === 'Meta') || (event.ctrlKey && modifierKey === 'Control')) {
-    const button = toolbar.querySelector(`[hotkey="${event.key}"]`)
+    const button = toolbar.querySelector<HTMLElement>(`[hotkey="${event.key}"]`)
     if (button) {
       button.click()
       event.preventDefault()
@@ -354,7 +370,7 @@ function wordSelectionEnd(text: string, i: number, multiline: boolean): number {
   return index
 }
 
-let canInsertText = null
+let canInsertText: boolean | null = null
 
 function insertText(textarea: HTMLTextAreaElement, {text, selectionStart, selectionEnd}: SelectionRange) {
   const originalSelectionStart = textarea.selectionStart
@@ -416,7 +432,7 @@ function expandSelectedText(
   textarea: HTMLTextAreaElement,
   prefixToUse: string,
   suffixToUse: string,
-  multiline: boolean = false
+  multiline = false
 ): string {
   if (textarea.selectionStart === textarea.selectionEnd) {
     textarea.selectionStart = wordSelectionStart(textarea.value, textarea.selectionStart)
@@ -434,12 +450,12 @@ function expandSelectedText(
   return textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
 }
 
-type Newlines = {
-  newlinesToAppend: string,
+interface Newlines {
+  newlinesToAppend: string
   newlinesToPrepend: string
 }
 
-function newlinesToSurroundSelectedText(textarea): Newlines {
+function newlinesToSurroundSelectedText(textarea: HTMLTextAreaElement): Newlines {
   const beforeSelection = textarea.value.slice(0, textarea.selectionStart)
   const afterSelection = textarea.value.slice(textarea.selectionEnd)
 
@@ -470,10 +486,10 @@ function newlinesToSurroundSelectedText(textarea): Newlines {
   return {newlinesToAppend, newlinesToPrepend}
 }
 
-type SelectionRange = {
-  text: string,
-  selectionStart: ?number,
-  selectionEnd: ?number
+interface SelectionRange {
+  text: string
+  selectionStart: number | undefined
+  selectionEnd: number | undefined
 }
 
 function blockStyle(textarea: HTMLTextAreaElement, arg: StyleArgs): SelectionRange {
@@ -595,17 +611,7 @@ function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
       textarea.selectionEnd = endOfLine
     }
   } else {
-    lines = (function() {
-      let i
-      let len
-      let index
-      const results = []
-      for (index = i = 0, len = lines.length; i < len; index = ++i) {
-        const line = lines[index]
-        results.push(`${index + 1}. ${line}`)
-      }
-      return results
-    })()
+    lines = numberedLines(lines)
     text = lines.join('\n')
     const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
     selectionStart = textarea.selectionStart + newlinesToAppend.length
@@ -617,18 +623,30 @@ function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
   return {text, selectionStart, selectionEnd}
 }
 
-type StyleArgs = {
-  prefix: string,
-  suffix: string,
-  blockPrefix: string,
-  blockSuffix: string,
-  multiline: boolean,
-  replaceNext: string,
-  prefixSpace: boolean,
-  scanFor: string,
-  surroundWithNewlines: boolean,
-  orderedList: boolean,
+interface StyleArgs {
+  prefix: string
+  suffix: string
+  blockPrefix: string
+  blockSuffix: string
+  multiline: boolean
+  replaceNext: string
+  prefixSpace: boolean
+  scanFor: string
+  surroundWithNewlines: boolean
+  orderedList: boolean
   trimFirst: boolean
+}
+
+function numberedLines(lines: string[]) {
+  let i
+  let len
+  let index
+  const results = []
+  for (index = i = 0, len = lines.length; i < len; index = ++i) {
+    const line = lines[index]
+    results.push(`${index + 1}. ${line}`)
+  }
+  return results
 }
 
 function applyStyle(button: Element, stylesToApply: {}) {
