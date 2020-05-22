@@ -14,6 +14,21 @@ declare global {
     MarkdownMentionButtonElement: typeof MarkdownMentionButtonElement
     MarkdownRefButtonElement: typeof MarkdownRefButtonElement
   }
+  interface HTMLElementTagNameMap {
+    'markdown-toolbar': MarkdownToolbarElement
+    'md-header': MarkdownHeaderButtonElement
+    'md-bold': MarkdownBoldButtonElement
+    'md-italic': MarkdownItalicButtonElement
+    'md-quote': MarkdownQuoteButtonElement
+    'md-code': MarkdownCodeButtonElement
+    'md-link': MarkdownLinkButtonElement
+    'md-image': MarkdownImageButtonElement
+    'md-unordered-list': MarkdownUnorderedListButtonElement
+    'md-ordered-list': MarkdownOrderedListButtonElement
+    'md-task-list': MarkdownTaskListButtonElement
+    'md-mention': MarkdownMentionButtonElement
+    'md-ref': MarkdownRefButtonElement
+  }
 }
 
 const buttonSelectors = [
