@@ -11,6 +11,21 @@ describe('markdown-toolbar-element', function () {
     })
   })
 
+  describe('in shadow DOM', function () {
+    it('finds field and inserts markdown', function () {
+      const div = document.createElement('div')
+      const shadow = div.attachShadow({mode: 'open'})
+      shadow.innerHTML = `<markdown-toolbar for="id"><md-bold>bold</md-bold></markdown-toolbar><textarea id="id"></textarea>`
+      document.body.append(div)
+
+      const toolbar = shadow.querySelector('markdown-toolbar')
+      assert(toolbar.field, 'textarea is found')
+
+      toolbar.querySelector('md-bold').click()
+      assert(toolbar.field.value, '****')
+    })
+  })
+
   describe('after tree insertion', function () {
     function focus() {
       const textarea = document.querySelector('textarea')
