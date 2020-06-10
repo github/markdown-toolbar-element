@@ -298,7 +298,7 @@ class MarkdownToolbarElement extends HTMLElement {
   get field(): HTMLTextAreaElement | null {
     const id = this.getAttribute('for')
     if (!id) return null
-    const root = this.getRootNode()
+    const root = 'getRootNode' in this ? this.getRootNode() : document
     let field
     if (root instanceof Document || root instanceof ShadowRoot) {
       field = root.getElementById(id)
