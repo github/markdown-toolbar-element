@@ -363,9 +363,18 @@ function focusKeydown(event: KeyboardEvent) {
 
 const shortcutListeners = new WeakMap()
 
+function findHotkey(toolbar: Element, key: string): HTMLElement | null {
+  for (const el of toolbar.querySelectorAll<HTMLElement>('[hotkey]')) {
+    if (el.getAttribute('hotkey') === key) {
+      return el
+    }
+  }
+  return null
+}
+
 function shortcut(toolbar: Element, event: KeyboardEvent) {
   if ((event.metaKey && modifierKey === 'Meta') || (event.ctrlKey && modifierKey === 'Control')) {
-    const button = toolbar.querySelector<HTMLElement>(`[hotkey="${event.key}"]`)
+    const button = findHotkey(toolbar, event.key)
     if (button) {
       button.click()
       event.preventDefault()
