@@ -9,7 +9,7 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "clean": "rm -rf dist",
-    "lint": "github-lint",
+    "lint": "eslint src/*.ts test/*.js",
     "prebuild": "npm run clean && npm run lint && mkdir dist",
     "build": "tsc",
     "pretest": "npm run build",
@@ -29,15 +29,15 @@
   "devDependencies": {
     "@github/prettier-config": "0.0.4",
     "chai": "^4.2.0",
-    "eslint": "^6.6.1",
-    "eslint-plugin-github": "^3.4.1",
-    "karma": "^5.0.9",
+    "eslint": "^7.6.0",
+    "eslint-plugin-github": "^4.1.1",
+    "karma": "^5.1.1",
     "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^2.2.0",
+    "karma-chrome-launcher": "^3.1.0",
     "karma-mocha": "^2.0.1",
     "karma-mocha-reporter": "^2.2.5",
-    "mocha": "^7.1.2",
-    "typescript": "^3.9.2"
+    "mocha": "^8.1.0",
+    "typescript": "^3.9.7"
   },
   "eslintIgnore": [
     "dist/"

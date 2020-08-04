@@ -1,7 +1,7 @@
 {
   "extends": [
     "plugin:github/browser",
-    "plugin:github/es6",
+    "plugin:github/recommended",
     "plugin:github/typescript"
   ],
   "globals": {

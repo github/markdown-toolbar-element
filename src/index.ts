@@ -65,7 +65,21 @@ function keydown(fn: (event: KeyboardEvent) => void): (event: KeyboardEvent) => 
   }
 }
 
-const styles = new WeakMap()
+type Style = {
+  prefix?: string
+  suffix?: string
+  trimFirst?: boolean
+  multiline?: boolean
+  surroundWithNewlines?: boolean
+  blockPrefix?: string
+  blockSuffix?: string
+  replaceNext?: string
+  scanFor?: string
+  orderedList?: boolean
+  prefixSpace?: boolean
+}
+
+const styles = new WeakMap<Element, Style>()
 
 class MarkdownButtonElement extends HTMLElement {
   constructor() {
@@ -272,7 +286,7 @@ class MarkdownToolbarElement extends HTMLElement {
     super()
   }
 
-  connectedCallback() {
+  connectedCallback(): void {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar')
     }
@@ -286,7 +300,7 @@ class MarkdownToolbarElement extends HTMLElement {
     this.addEventListener('focus', onToolbarFocus, {once: true})
   }
 
-  disconnectedCallback() {
+  disconnectedCallback(): void {
     const fn = shortcutListeners.get(this)
     if (fn && this.field) {
       this.field.removeEventListener('keydown', fn)
@@ -668,7 +682,7 @@ function numberedLines(lines: string[]) {
   return results
 }
 
-function applyStyle(button: Element, stylesToApply: {}) {
+function applyStyle(button: Element, stylesToApply: Style) {
   const toolbar = button.closest('markdown-toolbar')
   if (!(toolbar instanceof MarkdownToolbarElement)) return
 
