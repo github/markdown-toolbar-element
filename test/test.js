@@ -391,6 +391,62 @@ describe('markdown-toolbar-element', function () {
       })
     })
 
+    describe('strikethrough', function () {
+      it('strikes through selected text when you click the strikethrough icon', function () {
+        setVisualValue('The |quick| brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~|quick|~~ brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('strikes through when there is leading whitespace in selection', function () {
+        setVisualValue('|  \nHello world|')
+        clickToolbar('md-strikethrough')
+        assert.equal('  \n~~|Hello world|~~', visualValue())
+      })
+
+      it('strikes through when there is trailing whitespace in selection', function () {
+        setVisualValue('|Hello world\n \t|')
+        clickToolbar('md-strikethrough')
+        assert.equal('~~|Hello world|~~\n \t', visualValue())
+      })
+
+      it('strikes through empty selection and textarea inserts ~~ with cursor ready to type inside', function () {
+        setVisualValue('|')
+        clickToolbar('md-strikethrough')
+        assert.equal('~~|~~', visualValue())
+      })
+
+      it('strikes through empty selection with previous text inserts ~~ with cursor ready to type inside', function () {
+        setVisualValue('The |')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~|~~', visualValue())
+      })
+
+      it('strikes through selected word when cursor is at the start of the word', function () {
+        setVisualValue('The |quick brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~|quick~~ brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('strikes through selected word when cursor is in the middle of the word', function () {
+        setVisualValue('The qui|ck brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~qui|ck~~ brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('strikes through selected word when cursor is at the end of the word', function () {
+        setVisualValue('The quick| brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~quick|~~ brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('un-strikes through selected struck-through text when you click the strikethrough icon', function () {
+        setVisualValue('The ~~|quick|~~ brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
+        assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
+      })
+    })
+
     describe('quote level', function () {
       it('inserts selected quoted sample if you click the quote icon', function () {
         setVisualValue('')
