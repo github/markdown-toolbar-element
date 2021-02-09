@@ -92,6 +92,7 @@ describe('markdown-toolbar-element', function () {
           <md-header level="10">h1</md-header>
           <div data-md-button>Other button</div>
           <md-italic>italic</md-italic>
+          <md-strikethrough>strikethrough</md-strikethrough>
           <md-quote>quote</md-quote>
           <md-code>code</md-code>
           <md-link>link</md-link>
@@ -135,15 +136,15 @@ describe('markdown-toolbar-element', function () {
       it('moves focus to next button when ArrowRight is pressed', function () {
         focusFirstButton()
         pushKeyOnFocussedButton('ArrowRight')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('ArrowRight')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header[level="1"]')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('ArrowRight')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header[level="10"]')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
       })
@@ -151,11 +152,11 @@ describe('markdown-toolbar-element', function () {
       it('cycles focus round to last element from first when ArrowLeft is pressed', function () {
         focusFirstButton()
         pushKeyOnFocussedButton('ArrowLeft')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('ArrowLeft')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-mention')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
       })
@@ -163,19 +164,19 @@ describe('markdown-toolbar-element', function () {
       it('focussed first/last button when Home/End key is pressed', function () {
         focusFirstButton()
         pushKeyOnFocussedButton('End')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('End')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('Home')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('Home')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
       })
@@ -186,7 +187,7 @@ describe('markdown-toolbar-element', function () {
         pushKeyOnFocussedButton('ArrowRight')
         pushKeyOnFocussedButton('ArrowRight')
         pushKeyOnFocussedButton('ArrowRight')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('div[data-md-button]')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
       })
