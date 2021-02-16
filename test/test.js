@@ -92,6 +92,7 @@ describe('markdown-toolbar-element', function () {
           <md-header level="10">h1</md-header>
           <div data-md-button>Other button</div>
           <md-italic>italic</md-italic>
+          <md-strikethrough>strikethrough</md-strikethrough>
           <md-quote>quote</md-quote>
           <md-code>code</md-code>
           <md-link>link</md-link>
@@ -135,15 +136,15 @@ describe('markdown-toolbar-element', function () {
       it('moves focus to next button when ArrowRight is pressed', function () {
         focusFirstButton()
         pushKeyOnFocussedButton('ArrowRight')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('ArrowRight')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header[level="1"]')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('ArrowRight')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-header[level="10"]')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
       })
@@ -151,11 +152,11 @@ describe('markdown-toolbar-element', function () {
       it('cycles focus round to last element from first when ArrowLeft is pressed', function () {
         focusFirstButton()
         pushKeyOnFocussedButton('ArrowLeft')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('ArrowLeft')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-mention')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
       })
@@ -163,19 +164,19 @@ describe('markdown-toolbar-element', function () {
       it('focussed first/last button when Home/End key is pressed', function () {
         focusFirstButton()
         pushKeyOnFocussedButton('End')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('End')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-ref')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('Home')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
         pushKeyOnFocussedButton('Home')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
       })
@@ -186,7 +187,7 @@ describe('markdown-toolbar-element', function () {
         pushKeyOnFocussedButton('ArrowRight')
         pushKeyOnFocussedButton('ArrowRight')
         pushKeyOnFocussedButton('ArrowRight')
-        assert.equal(getElementsWithTabindex(-1).length, 14)
+        assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('div[data-md-button]')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
       })
@@ -386,6 +387,62 @@ describe('markdown-toolbar-element', function () {
       it('unitalicizes selected italic text when you click the italic icon', function () {
         setVisualValue('The _|quick|_ brown fox jumps over the lazy dog')
         clickToolbar('md-italic')
+        assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
+      })
+    })
+
+    describe('strikethrough', function () {
+      it('strikes through selected text when you click the strikethrough icon', function () {
+        setVisualValue('The |quick| brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~|quick|~~ brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('strikes through when there is leading whitespace in selection', function () {
+        setVisualValue('|  \nHello world|')
+        clickToolbar('md-strikethrough')
+        assert.equal('  \n~~|Hello world|~~', visualValue())
+      })
+
+      it('strikes through when there is trailing whitespace in selection', function () {
+        setVisualValue('|Hello world\n \t|')
+        clickToolbar('md-strikethrough')
+        assert.equal('~~|Hello world|~~\n \t', visualValue())
+      })
+
+      it('strikes through empty selection and textarea inserts ~~ with cursor ready to type inside', function () {
+        setVisualValue('|')
+        clickToolbar('md-strikethrough')
+        assert.equal('~~|~~', visualValue())
+      })
+
+      it('strikes through empty selection with previous text inserts ~~ with cursor ready to type inside', function () {
+        setVisualValue('The |')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~|~~', visualValue())
+      })
+
+      it('strikes through selected word when cursor is at the start of the word', function () {
+        setVisualValue('The |quick brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~|quick~~ brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('strikes through selected word when cursor is in the middle of the word', function () {
+        setVisualValue('The qui|ck brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~qui|ck~~ brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('strikes through selected word when cursor is at the end of the word', function () {
+        setVisualValue('The quick| brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
+        assert.equal('The ~~quick|~~ brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('un-strikes through selected struck-through text when you click the strikethrough icon', function () {
+        setVisualValue('The ~~|quick|~~ brown fox jumps over the lazy dog')
+        clickToolbar('md-strikethrough')
         assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
       })
     })

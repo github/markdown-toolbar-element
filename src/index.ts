@@ -13,6 +13,7 @@ declare global {
     MarkdownTaskListButtonElement: typeof MarkdownTaskListButtonElement
     MarkdownMentionButtonElement: typeof MarkdownMentionButtonElement
     MarkdownRefButtonElement: typeof MarkdownRefButtonElement
+    MarkdownStrikethroughButtonElement: typeof MarkdownStrikethroughButtonElement
   }
   interface HTMLElementTagNameMap {
     'markdown-toolbar': MarkdownToolbarElement
@@ -28,6 +29,7 @@ declare global {
     'md-task-list': MarkdownTaskListButtonElement
     'md-mention': MarkdownMentionButtonElement
     'md-ref': MarkdownRefButtonElement
+    'md-strikethrough': MarkdownStrikethroughButtonElement
   }
 }
 
@@ -44,7 +46,8 @@ const buttonSelectors = [
   'md-ordered-list',
   'md-task-list',
   'md-mention',
-  'md-ref'
+  'md-ref',
+  'md-strikethrough'
 ]
 function getButtons(toolbar: Element): HTMLElement[] {
   const els = []
@@ -277,6 +280,18 @@ class MarkdownRefButtonElement extends MarkdownButtonElement {
 if (!window.customElements.get('md-ref')) {
   window.MarkdownRefButtonElement = MarkdownRefButtonElement
   window.customElements.define('md-ref', MarkdownRefButtonElement)
+}
+
+class MarkdownStrikethroughButtonElement extends MarkdownButtonElement {
+  constructor() {
+    super()
+    styles.set(this, {prefix: '~~', suffix: '~~', trimFirst: true})
+  }
+}
+
+if (!window.customElements.get('md-strikethrough')) {
+  window.MarkdownStrikethroughButtonElement = MarkdownStrikethroughButtonElement
+  window.customElements.define('md-strikethrough', MarkdownStrikethroughButtonElement)
 }
 
 const modifierKey = navigator.userAgent.match(/Macintosh/) ? 'Meta' : 'Control'
