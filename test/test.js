@@ -614,6 +614,13 @@ describe('markdown-toolbar-element', function () {
         assert.equal("`|puts 'Hello, world!'|`", visualValue())
       })
 
+      it('surrounds a line with backticks via hotkey', function () {
+        focus()
+        setVisualValue("|puts 'Hello, world!'|")
+        pressHotkey('C')
+        assert.equal("`|puts 'Hello, world!'|`", visualValue())
+      })
+
       it('surrounds multiple lines with triple backticks if you click the code icon', function () {
         setVisualValue('|class Greeter\n  def hello_world\n    "Hello World!"\n  end\nend|')
         clickToolbar('md-code')

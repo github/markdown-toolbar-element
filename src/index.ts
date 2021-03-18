@@ -181,6 +181,11 @@ class MarkdownCodeButtonElement extends MarkdownButtonElement {
     super()
     styles.set(this, {prefix: '`', suffix: '`', blockPrefix: '```', blockSuffix: '```'})
   }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.setAttribute('hotkey', 'C')
+  }
 }
 
 if (!window.customElements.get('md-code')) {
