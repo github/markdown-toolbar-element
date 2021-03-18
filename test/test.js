@@ -193,6 +193,15 @@ describe('markdown-toolbar-element', function () {
       })
     })
 
+    describe('hotkey case-sensitivity', function () {
+      it('does not bold selected text when using the capitalized hotkey', function () {
+        focus()
+        setVisualValue('The |quick| brown fox jumps over the lazy dog')
+        pressHotkey('B') // capital `B` instead of lowercase `b`
+        assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
+      })
+    })
+
     describe('bold', function () {
       it('bold selected text when you click the bold icon', function () {
         setVisualValue('The |quick| brown fox jumps over the lazy dog')

@@ -389,7 +389,8 @@ function findHotkey(toolbar: Element, key: string): HTMLElement | null {
 
 function shortcut(toolbar: Element, event: KeyboardEvent) {
   if ((event.metaKey && modifierKey === 'Meta') || (event.ctrlKey && modifierKey === 'Control')) {
-    const button = findHotkey(toolbar, event.key)
+    const key = event.shiftKey ? event.key.toUpperCase() : event.key
+    const button = findHotkey(toolbar, key)
     if (button) {
       button.click()
       event.preventDefault()
