@@ -199,10 +199,17 @@ describe('markdown-toolbar-element', function () {
     })
 
     describe('hotkey case-sensitivity', function () {
-      it('does not bold selected text when using the capitalized hotkey', function () {
+      it('does not bold selected text when using the uppercased hotkey', function () {
         focus()
         setVisualValue('The |quick| brown fox jumps over the lazy dog')
         pressHotkey('B') // capital `B` instead of lowercase `b`
+        assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('does not codeblock selected text when using the lowercased hotkey', function () {
+        focus()
+        setVisualValue('The |quick| brown fox jumps over the lazy dog')
+        pressHotkey('c') // lowercase `c` instead of uppercase `C`
         assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
       })
     })
