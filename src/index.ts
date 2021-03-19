@@ -184,7 +184,7 @@ class MarkdownCodeButtonElement extends MarkdownButtonElement {
 
   connectedCallback() {
     super.connectedCallback()
-    this.setAttribute('hotkey', 'C')
+    this.setAttribute('hotkey', 'E')
   }
 }
 

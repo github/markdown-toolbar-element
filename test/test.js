@@ -209,7 +209,7 @@ describe('markdown-toolbar-element', function () {
       it('does not codeblock selected text when using the lowercased hotkey', function () {
         focus()
         setVisualValue('The |quick| brown fox jumps over the lazy dog')
-        pressHotkey('c') // lowercase `c` instead of uppercase `C`
+        pressHotkey('e') // lowercase `e` instead of uppercase `E`
         assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
       })
     })
@@ -629,7 +629,7 @@ describe('markdown-toolbar-element', function () {
       it('surrounds a line with backticks via hotkey', function () {
         focus()
         setVisualValue("|puts 'Hello, world!'|")
-        pressHotkey('C')
+        pressHotkey('E')
         assert.equal("`|puts 'Hello, world!'|`", visualValue())
       })
 
