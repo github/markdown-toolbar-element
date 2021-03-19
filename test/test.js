@@ -41,7 +41,12 @@ describe('markdown-toolbar-element', function () {
       event.initEvent('keydown', true, true)
       event.metaKey = osx
       event.ctrlKey = !osx
-      event.key = hotkey
+      event.shiftKey = hotkey === hotkey.toUpperCase()
+
+      // emulate existing osx browser bug
+      // https://bugs.webkit.org/show_bug.cgi?id=174782
+      event.key = osx ? hotkey.toLowerCase() : hotkey
+
       textarea.dispatchEvent(event)
     }
 
