@@ -41,7 +41,12 @@ describe('markdown-toolbar-element', function () {
       event.initEvent('keydown', true, true)
       event.metaKey = osx
       event.ctrlKey = !osx
-      event.key = hotkey
+      event.shiftKey = hotkey === hotkey.toUpperCase()
+
+      // emulate existing osx browser bug
+      // https://bugs.webkit.org/show_bug.cgi?id=174782
+      event.key = osx ? hotkey.toLowerCase() : hotkey
+
       textarea.dispatchEvent(event)
     }
 
@@ -190,6 +195,22 @@ describe('markdown-toolbar-element', function () {
         assert.equal(getElementsWithTabindex(-1).length, 15)
         assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('div[data-md-button]')])
         assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+      })
+    })
+
+    describe('hotkey case-sensitivity', function () {
+      it('does not bold selected text when using the uppercased hotkey', function () {
+        focus()
+        setVisualValue('The |quick| brown fox jumps over the lazy dog')
+        pressHotkey('B') // capital `B` instead of lowercase `b`
+        assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
+      })
+
+      it('does not codeblock selected text when using the lowercased hotkey', function () {
+        focus()
+        setVisualValue('The |quick| brown fox jumps over the lazy dog')
+        pressHotkey('e') // lowercase `e` instead of uppercase `E`
+        assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
       })
     })
 
@@ -602,6 +623,13 @@ describe('markdown-toolbar-element', function () {
       it('surrounds a line with backticks if you click the code icon', function () {
         setVisualValue("|puts 'Hello, world!'|")
         clickToolbar('md-code')
+        assert.equal("`|puts 'Hello, world!'|`", visualValue())
+      })
+
+      it('surrounds a line with backticks via hotkey', function () {
+        focus()
+        setVisualValue("|puts 'Hello, world!'|")
+        pressHotkey('E')
         assert.equal("`|puts 'Hello, world!'|`", visualValue())
       })
 

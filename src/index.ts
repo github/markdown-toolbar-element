@@ -181,6 +181,11 @@ class MarkdownCodeButtonElement extends MarkdownButtonElement {
     super()
     styles.set(this, {prefix: '`', suffix: '`', blockPrefix: '```', blockSuffix: '```'})
   }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.setAttribute('hotkey', 'E')
+  }
 }
 
 if (!window.customElements.get('md-code')) {
@@ -389,7 +394,8 @@ function findHotkey(toolbar: Element, key: string): HTMLElement | null {
 
 function shortcut(toolbar: Element, event: KeyboardEvent) {
   if ((event.metaKey && modifierKey === 'Meta') || (event.ctrlKey && modifierKey === 'Control')) {
-    const button = findHotkey(toolbar, event.key)
+    const key = event.shiftKey ? event.key.toUpperCase() : event.key
+    const button = findHotkey(toolbar, key)
     if (button) {
       button.click()
       event.preventDefault()
