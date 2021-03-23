@@ -205,13 +205,6 @@ describe('markdown-toolbar-element', function () {
         pressHotkey('B') // capital `B` instead of lowercase `b`
         assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
       })
-
-      it('does not codeblock selected text when using the lowercased hotkey', function () {
-        focus()
-        setVisualValue('The |quick| brown fox jumps over the lazy dog')
-        pressHotkey('e') // lowercase `e` instead of uppercase `E`
-        assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
-      })
     })
 
     describe('bold', function () {
@@ -629,7 +622,7 @@ describe('markdown-toolbar-element', function () {
       it('surrounds a line with backticks via hotkey', function () {
         focus()
         setVisualValue("|puts 'Hello, world!'|")
-        pressHotkey('E')
+        pressHotkey('e')
         assert.equal("`|puts 'Hello, world!'|`", visualValue())
       })
 
