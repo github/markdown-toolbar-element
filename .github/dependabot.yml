@@ -1,0 +1,51 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "03:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: eslint
+    versions:
+    - 7.18.0
+    - 7.19.0
+    - 7.20.0
+    - 7.21.0
+    - 7.23.0
+    - 7.24.0
+  - dependency-name: karma
+    versions:
+    - 6.0.3
+    - 6.0.4
+    - 6.1.0
+    - 6.1.1
+    - 6.1.2
+    - 6.3.0
+    - 6.3.1
+  - dependency-name: mocha
+    versions:
+    - 8.2.1
+    - 8.3.0
+    - 8.3.1
+  - dependency-name: chai
+    versions:
+    - 4.3.0
+    - 4.3.1
+    - 4.3.3
+  - dependency-name: socket.io
+    versions:
+    - 2.4.1
+  - dependency-name: dot-prop
+    versions:
+    - 4.2.1
+  - dependency-name: npm-watch
+    versions:
+    - 0.7.0
+  - dependency-name: lodash
+    versions:
+    - 4.17.20
+  - dependency-name: eslint-plugin-github
+    versions:
+    - 4.1.1
