@@ -1,23 +1,20 @@
 {
-  "extends": [
-    "plugin:github/browser",
-    "plugin:github/recommended",
-    "plugin:github/typescript"
-  ],
+  "root": true,
+  "extends": ["plugin:github/browser", "plugin:github/recommended", "plugin:github/typescript"],
   "globals": {
-    "MarkdownToolbarElement": "readable",
-    "MarkdownHeaderButtonElement": "readable",
-    "MarkdownBoldButtonElement": "readable",
-    "MarkdownItalicButtonElement": "readable",
-    "MarkdownQuoteButtonElement": "readable",
-    "MarkdownCodeButtonElement": "readable",
-    "MarkdownLinkButtonElement": "readable",
-    "MarkdownImageButtonElement": "readable",
-    "MarkdownUnorderedListButtonElement": "readable",
-    "MarkdownOrderedListButtonElement": "readable",
-    "MarkdownTaskListButtonElement": "readable",
-    "MarkdownMentionButtonElement": "readable",
-    "MarkdownRefButtonElement": "readable"
+    "MarkdownToolbarElement": "readonly",
+    "MarkdownHeaderButtonElement": "readonly",
+    "MarkdownBoldButtonElement": "readonly",
+    "MarkdownItalicButtonElement": "readonly",
+    "MarkdownQuoteButtonElement": "readonly",
+    "MarkdownCodeButtonElement": "readonly",
+    "MarkdownLinkButtonElement": "readonly",
+    "MarkdownImageButtonElement": "readonly",
+    "MarkdownUnorderedListButtonElement": "readonly",
+    "MarkdownOrderedListButtonElement": "readonly",
+    "MarkdownTaskListButtonElement": "readonly",
+    "MarkdownMentionButtonElement": "readonly",
+    "MarkdownRefButtonElement": "readonly"
   },
   "overrides": [
     {
