@@ -305,7 +305,7 @@ if (!window.customElements.get('md-strikethrough')) {
 class MarkdownTableButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
-    const tableMarkdown = '| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |'
+    const tableMarkdown = '| header | header |\n| ------ | ------ |\n| cell | cell |\n| cell | cell |\n'
     styles.set(this, {suffix: tableMarkdown})
   }
 }
