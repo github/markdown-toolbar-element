@@ -54,6 +54,15 @@ npm install
 npm test
 ```
 
+## Run example
+
+```
+python3 -m http.server
+
+```
+
+[StackOverflow: Start a server](https://stackoverflow.com/a/21608670)
+
 ## License
 
 Distributed under the MIT license. See LICENSE for details.
