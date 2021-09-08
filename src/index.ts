@@ -169,6 +169,11 @@ class MarkdownQuoteButtonElement extends MarkdownButtonElement {
     super()
     styles.set(this, {prefix: '> ', multiline: true, surroundWithNewlines: true})
   }
+
+  connectedCallback() {
+    super.connectedCallback()
+    this.setAttribute('hotkey', '.')
+  }
 }
 
 if (!window.customElements.get('md-quote')) {
