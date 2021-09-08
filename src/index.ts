@@ -249,6 +249,11 @@ class MarkdownOrderedListButtonElement extends MarkdownButtonElement {
     super()
     styles.set(this, {prefix: '1. ', multiline: true, orderedList: true})
   }
+  connectedCallback() {
+    super.connectedCallback()
+    this.setAttribute('hotkey', '9')
+    this.setAttribute('hotkey-requires-shift', 'true')
+  }
 }
 
 if (!window.customElements.get('md-ordered-list')) {
