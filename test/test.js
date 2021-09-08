@@ -468,6 +468,13 @@ describe('markdown-toolbar-element', function () {
         assert.equal('> |', visualValue())
       })
 
+      it('inserts selected quoted sample via hotkey', function () {
+        focus()
+        setVisualValue('')
+        pressHotkey('.')
+        assert.equal('> |', visualValue())
+      })
+
       it('quotes the selected text when you click the quote icon', function () {
         setVisualValue('|Butts|\n\nThe quick brown fox jumps over the lazy dog')
         clickToolbar('md-quote')
