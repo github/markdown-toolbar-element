@@ -232,6 +232,11 @@ class MarkdownUnorderedListButtonElement extends MarkdownButtonElement {
     super()
     styles.set(this, {prefix: '- ', multiline: true, surroundWithNewlines: true})
   }
+  connectedCallback() {
+    super.connectedCallback()
+    this.setAttribute('hotkey', '8')
+    this.setAttribute('hotkey-requires-shift', 'true')
+  }
 }
 
 if (!window.customElements.get('md-unordered-list')) {
@@ -387,10 +392,13 @@ function focusKeydown(event: KeyboardEvent) {
 }
 
 const shortcutListeners = new WeakMap()
+function elementHotkeyRequiresShift(element: Element): boolean {
+  return element.hasAttribute('hotkey-requires-shift') && element.getAttribute('hotkey-requires-shift') !== 'false'
+}
 
-function findHotkey(toolbar: Element, key: string): HTMLElement | null {
+function findHotkey(toolbar: Element, key: string, shiftPressed: boolean): HTMLElement | null {
   for (const el of toolbar.querySelectorAll<HTMLElement>('[hotkey]')) {
-    if (el.getAttribute('hotkey') === key) {
+    if (el.getAttribute('hotkey') === key && (!elementHotkeyRequiresShift(el) || shiftPressed)) {
       return el
     }
   }
@@ -400,7 +408,7 @@ function findHotkey(toolbar: Element, key: string): HTMLElement | null {
 function shortcut(toolbar: Element, event: KeyboardEvent) {
   if ((event.metaKey && modifierKey === 'Meta') || (event.ctrlKey && modifierKey === 'Control')) {
     const key = event.shiftKey ? event.key.toUpperCase() : event.key
-    const button = findHotkey(toolbar, key)
+    const button = findHotkey(toolbar, key, event.shiftKey)
     if (button) {
       button.click()
       event.preventDefault()
