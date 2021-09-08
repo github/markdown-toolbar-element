@@ -34,14 +34,14 @@ describe('markdown-toolbar-element', function () {
       textarea.dispatchEvent(event)
     }
 
-    function pressHotkey(hotkey) {
+    function pressHotkey(hotkey, explicitShiftKey = false) {
       const textarea = document.querySelector('textarea')
       const osx = navigator.userAgent.indexOf('Macintosh') !== -1
       const event = document.createEvent('Event')
       event.initEvent('keydown', true, true)
       event.metaKey = osx
       event.ctrlKey = !osx
-      event.shiftKey = hotkey === hotkey.toUpperCase()
+      event.shiftKey = (hotkey === hotkey.toUpperCase() && hotkey !== hotkey.toLowerCase()) || explicitShiftKey
 
       // emulate existing osx browser bug
       // https://bugs.webkit.org/show_bug.cgi?id=174782
@@ -554,6 +554,22 @@ describe('markdown-toolbar-element', function () {
         setVisualValue('One\n|Two\nThree|\n')
         clickToolbar('md-unordered-list')
         assert.equal('One\n\n|- Two\n- Three|\n', visualValue())
+      })
+
+      it('turns multiple lines into unordered list via hotkey, requiring shift', function () {
+        setVisualValue('One\n|Two\nThree|\n')
+        pressHotkey('8', false)
+        assert.equal('One\n|Two\nThree|\n', visualValue())
+        pressHotkey('8', true)
+        assert.equal('One\n\n|- Two\n- Three|\n', visualValue())
+      })
+
+      it('turns multiple lines into ordered list via hotkey, requiring shift', function () {
+        setVisualValue('One\n|Two\nThree|\n')
+        pressHotkey('9', false)
+        assert.equal('One\n|Two\nThree|\n', visualValue())
+        pressHotkey('9', true)
+        assert.equal('One\n\n|1. Two\n2. Three|\n', visualValue())
       })
 
       it('prefixes newlines when a list is created on the last line', function () {
