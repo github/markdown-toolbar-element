@@ -252,7 +252,7 @@ class MarkdownOrderedListButtonElement extends MarkdownButtonElement {
   }
   connectedCallback() {
     super.connectedCallback()
-    this.setAttribute('hotkey', '9')
+    this.setAttribute('hotkey', '7')
     this.setAttribute('hotkey-requires-shift', 'true')
   }
 }
