@@ -566,9 +566,9 @@ describe('markdown-toolbar-element', function () {
 
       it('turns multiple lines into ordered list via hotkey, requiring shift', function () {
         setVisualValue('One\n|Two\nThree|\n')
-        pressHotkey('9', false)
+        pressHotkey('7', false)
         assert.equal('One\n|Two\nThree|\n', visualValue())
-        pressHotkey('9', true)
+        pressHotkey('7', true)
         assert.equal('One\n\n|1. Two\n2. Three|\n', visualValue())
       })
 
