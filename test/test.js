@@ -468,10 +468,12 @@ describe('markdown-toolbar-element', function () {
         assert.equal('> |', visualValue())
       })
 
-      it('inserts selected quoted sample via hotkey', function () {
+      it('inserts selected quoted sample via hotkey, requiring shift', function () {
         focus()
         setVisualValue('')
-        pressHotkey('.')
+        pressHotkey('.', false)
+        assert.equal('|', visualValue())
+        pressHotkey('.', true)
         assert.equal('> |', visualValue())
       })
 

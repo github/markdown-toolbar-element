@@ -173,6 +173,7 @@ class MarkdownQuoteButtonElement extends MarkdownButtonElement {
   connectedCallback() {
     super.connectedCallback()
     this.setAttribute('hotkey', '.')
+    this.setAttribute('hotkey-requires-shift', 'true')
   }
 }
 
