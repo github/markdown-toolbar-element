@@ -274,8 +274,6 @@ if (!window.customElements.get('md-strikethrough')) {
   window.customElements.define('md-strikethrough', MarkdownStrikethroughButtonElement)
 }
 
-const modifierKey = navigator.userAgent.match(/Macintosh/) ? 'Meta' : 'Control'
-
 class MarkdownToolbarElement extends HTMLElement {
   constructor() {
     super()
@@ -286,21 +284,11 @@ class MarkdownToolbarElement extends HTMLElement {
       this.setAttribute('role', 'toolbar')
     }
     this.addEventListener('keydown', focusKeydown)
-    const fn = shortcut.bind(null, this)
-    if (this.field) {
-      this.field.addEventListener('keydown', fn)
-      shortcutListeners.set(this, fn)
-    }
     this.setAttribute('tabindex', '0')
     this.addEventListener('focus', onToolbarFocus, {once: true})
   }
 
   disconnectedCallback(): void {
-    const fn = shortcutListeners.get(this)
-    if (fn && this.field) {
-      this.field.removeEventListener('keydown', fn)
-      shortcutListeners.delete(this)
-    }
     this.removeEventListener('keydown', focusKeydown)
   }
 
@@ -354,31 +342,6 @@ function focusKeydown(event: KeyboardEvent) {
   event.preventDefault()
 
   buttons[n].focus()
-}
-
-const shortcutListeners = new WeakMap()
-function elementHotkeyRequiresShift(element: Element): boolean {
-  return element.hasAttribute('hotkey-requires-shift') && element.getAttribute('hotkey-requires-shift') !== 'false'
-}
-
-function findHotkey(toolbar: Element, key: string, shiftPressed: boolean): HTMLElement | null {
-  for (const el of toolbar.querySelectorAll<HTMLElement>('[hotkey]')) {
-    if (el.getAttribute('hotkey') === key && (!elementHotkeyRequiresShift(el) || shiftPressed)) {
-      return el
-    }
-  }
-  return null
-}
-
-function shortcut(toolbar: Element, event: KeyboardEvent) {
-  if ((event.metaKey && modifierKey === 'Meta') || (event.ctrlKey && modifierKey === 'Control')) {
-    const key = event.shiftKey ? event.key.toUpperCase() : event.key
-    const button = findHotkey(toolbar, key, event.shiftKey)
-    if (button) {
-      button.click()
-      event.preventDefault()
-    }
-  }
 }
 
 if (!window.customElements.get('markdown-toolbar')) {
