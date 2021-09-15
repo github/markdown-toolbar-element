@@ -27,29 +27,6 @@ describe('markdown-toolbar-element', function () {
   })
 
   describe('after tree insertion', function () {
-    function focus() {
-      const textarea = document.querySelector('textarea')
-      const event = document.createEvent('Event')
-      event.initEvent('focus', false, true)
-      textarea.dispatchEvent(event)
-    }
-
-    function pressHotkey(hotkey, explicitShiftKey = false) {
-      const textarea = document.querySelector('textarea')
-      const osx = navigator.userAgent.indexOf('Macintosh') !== -1
-      const event = document.createEvent('Event')
-      event.initEvent('keydown', true, true)
-      event.metaKey = osx
-      event.ctrlKey = !osx
-      event.shiftKey = (hotkey === hotkey.toUpperCase() && hotkey !== hotkey.toLowerCase()) || explicitShiftKey
-
-      // emulate existing osx browser bug
-      // https://bugs.webkit.org/show_bug.cgi?id=174782
-      event.key = osx ? hotkey.toLowerCase() : hotkey
-
-      textarea.dispatchEvent(event)
-    }
-
     function clickToolbar(selector) {
       const toolbar = document.querySelector('markdown-toolbar')
       toolbar.querySelector(selector).click()
@@ -198,26 +175,10 @@ describe('markdown-toolbar-element', function () {
       })
     })
 
-    describe('hotkey case-sensitivity', function () {
-      it('does not bold selected text when using the uppercased hotkey', function () {
-        focus()
-        setVisualValue('The |quick| brown fox jumps over the lazy dog')
-        pressHotkey('B') // capital `B` instead of lowercase `b`
-        assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
-      })
-    })
-
     describe('bold', function () {
       it('bold selected text when you click the bold icon', function () {
         setVisualValue('The |quick| brown fox jumps over the lazy dog')
         clickToolbar('md-bold')
-        assert.equal('The **|quick|** brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('bolds selected text with hotkey', function () {
-        focus()
-        setVisualValue('The |quick| brown fox jumps over the lazy dog')
-        pressHotkey('b')
         assert.equal('The **|quick|** brown fox jumps over the lazy dog', visualValue())
       })
 
@@ -349,13 +310,6 @@ describe('markdown-toolbar-element', function () {
         assert.equal('The _|quick|_ brown fox jumps over the lazy dog', visualValue())
       })
 
-      it('italicizes selected text with hotkey', function () {
-        focus()
-        setVisualValue('The |quick| brown fox jumps over the lazy dog')
-        pressHotkey('i')
-        assert.equal('The _|quick|_ brown fox jumps over the lazy dog', visualValue())
-      })
-
       it('italicize when there is leading whitespace in selection', function () {
         setVisualValue('|  \nHello world|')
         clickToolbar('md-italic')
@@ -468,15 +422,6 @@ describe('markdown-toolbar-element', function () {
         assert.equal('> |', visualValue())
       })
 
-      it('inserts selected quoted sample via hotkey, requiring shift', function () {
-        focus()
-        setVisualValue('')
-        pressHotkey('.', false)
-        assert.equal('|', visualValue())
-        pressHotkey('.', true)
-        assert.equal('> |', visualValue())
-      })
-
       it('quotes the selected text when you click the quote icon', function () {
         setVisualValue('|Butts|\n\nThe quick brown fox jumps over the lazy dog')
         clickToolbar('md-quote')
@@ -558,22 +503,6 @@ describe('markdown-toolbar-element', function () {
         assert.equal('One\n\n|- Two\n- Three|\n', visualValue())
       })
 
-      it('turns multiple lines into unordered list via hotkey, requiring shift', function () {
-        setVisualValue('One\n|Two\nThree|\n')
-        pressHotkey('8', false)
-        assert.equal('One\n|Two\nThree|\n', visualValue())
-        pressHotkey('8', true)
-        assert.equal('One\n\n|- Two\n- Three|\n', visualValue())
-      })
-
-      it('turns multiple lines into ordered list via hotkey, requiring shift', function () {
-        setVisualValue('One\n|Two\nThree|\n')
-        pressHotkey('7', false)
-        assert.equal('One\n|Two\nThree|\n', visualValue())
-        pressHotkey('7', true)
-        assert.equal('One\n\n|1. Two\n2. Three|\n', visualValue())
-      })
-
       it('prefixes newlines when a list is created on the last line', function () {
         setVisualValue("Here's a list:|One|")
         clickToolbar('md-unordered-list')
@@ -641,13 +570,6 @@ describe('markdown-toolbar-element', function () {
       it('surrounds a line with backticks if you click the code icon', function () {
         setVisualValue("|puts 'Hello, world!'|")
         clickToolbar('md-code')
-        assert.equal("`|puts 'Hello, world!'|`", visualValue())
-      })
-
-      it('surrounds a line with backticks via hotkey', function () {
-        focus()
-        setVisualValue("|puts 'Hello, world!'|")
-        pressHotkey('e')
         assert.equal("`|puts 'Hello, world!'|`", visualValue())
       })
 
