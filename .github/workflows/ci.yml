@@ -1,0 +1,49 @@
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: npm
+      - run: npm ci
+      - run: npm run test
+      - run: npm run build
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: lts/*
+          cache: npm
+          registry-url: 'https://registry.npmjs.org'
+      - run: npm ci
+      - run: npm run build
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@0f24da7de3e7e135102609a4c9633b025be8411b
+        with:
+          branch: gh-pages
+          folder: examples
+      - name: Establish version
+        run: |
+          LOCAL=$(node -p "require('./package.json').version")
+          echo "::set-output name=local::${LOCAL}"
+          echo "::set-output name=remote::$(npm view markdown-toolbar-element version)"
+          if git ls-remote --tags --exit-code origin ${LOCAL}; then
+            echo "::set-output name=tagged::yes"
+          fi
+        id: version
+      - name: Tag version
+        if: ${{ steps.version.outputs.tagged != 'yes' }}
+        run: git tag ${{ steps.version.outputs.local }} && git push --tags
+      - name: Release to NPM
+        if: ${{ steps.version.outputs.local != steps.version.outputs.remote }}
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.ALPHAGOV_NPM_AUTOMATION_TOKEN }}
