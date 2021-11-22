@@ -417,6 +417,30 @@ function insertText(textarea: HTMLTextAreaElement, {text, selectionStart, select
   }
 }
 
+function undoOrderedListStyle(textarea: HTMLTextAreaElement): string[] {
+  const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+  const lines = text.split('\n')
+  const orderedListRegex = /^\d+\.\s+/
+  const result = lines
+  const shouldUndoOrderedList = lines.every(line => orderedListRegex.test(line))
+  if (shouldUndoOrderedList) {
+    return lines.map(line => line.replace(orderedListRegex, ''))
+  }
+  return result
+}
+
+function undoUnorderedListStyle(textarea: HTMLTextAreaElement): string[] {
+  const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+  const lines = text.split('\n')
+  const unorderedListPrefix = '- '
+  const shouldUndoUnorderedList = lines.every(line => line.startsWith(unorderedListPrefix))
+  const result = lines
+  if (shouldUndoUnorderedList) {
+    return lines.map(line => line.slice(unorderedListPrefix.length, line.length))
+  }
+  return result
+}
+
 function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) {
   const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
 
@@ -568,7 +592,7 @@ function multilineStyle(textarea: HTMLTextAreaElement, arg: StyleArgs) {
   let text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
   let selectionStart = textarea.selectionStart
   let selectionEnd = textarea.selectionEnd
-  const lines = text.split('\n')
+  const lines = undoOrderedListStyle(textarea)
   const undoStyle = lines.every(line => line.startsWith(prefix) && line.endsWith(suffix))
 
   if (undoStyle) {
@@ -602,6 +626,7 @@ function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
     endOfLine = wordSelectionEnd(textarea.value, textarea.selectionStart, true)
     textToUnstyle = textarea.value.slice(startOfLine, endOfLine)
   }
+  lines = undoUnorderedListStyle(textarea)
   const linesToUnstyle = textToUnstyle.split('\n')
   const undoStyling = linesToUnstyle.every(line => orderedListRegex.test(line))
 
