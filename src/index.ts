@@ -618,7 +618,6 @@ function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
   let selectionStart
   let text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
   let textToUnstyle = text
-  let lines = text.split('\n')
   let startOfLine, endOfLine
   if (noInitialSelection) {
     const linesBefore = textarea.value.slice(0, textarea.selectionStart).split(/\n/)
@@ -626,7 +625,7 @@ function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
     endOfLine = wordSelectionEnd(textarea.value, textarea.selectionStart, true)
     textToUnstyle = textarea.value.slice(startOfLine, endOfLine)
   }
-  lines = undoUnorderedListStyle(textarea)
+  let lines = undoUnorderedListStyle(textarea)
   const linesToUnstyle = textToUnstyle.split('\n')
   const undoStyling = linesToUnstyle.every(line => orderedListRegex.test(line))
 
