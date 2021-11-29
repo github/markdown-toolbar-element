@@ -484,6 +484,51 @@ describe('markdown-toolbar-element', function () {
       })
     })
 
+    describe('unordered list', function () {
+      it('turns line into list if cursor at end of line', function () {
+        setVisualValue('One\nTwo|\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if cursor at end of document', function () {
+        setVisualValue('One\nTwo\nThree|')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\nTwo\n\n- Three|', visualValue())
+      })
+
+      it('turns line into list if cursor at beginning of line', function () {
+        setVisualValue('One\n|Two\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- |Two\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if cursor at middle of line', function () {
+        setVisualValue('One\nT|wo\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- T|wo\n\nThree\n', visualValue())
+      })
+
+      it('turns selection into list if partial line is selected', function () {
+        setVisualValue('One\nT|w|o\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- T|w|o\n\nThree\n', visualValue())
+      })
+
+      it('turns selection into list if two lines are selected', function () {
+        setVisualValue('|One\nTwo|\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('|- One\n- Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns selection into list if 2 lines are partially selected', function () {
+        setVisualValue('O|ne\nTw|o\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('- O|ne\n- Tw|o\n\nThree\n', visualValue())
+      })
+      // TODO: Add undo test for all of this
+    })
+
     describe('lists', function () {
       it('turns line into list when you click the unordered list icon with selection', function () {
         setVisualValue('One\n|Two|\nThree\n')
