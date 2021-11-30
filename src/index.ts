@@ -438,11 +438,11 @@ function expandSelectionToLine(textarea: HTMLTextAreaElement) {
   let counter = 0
   for (let index = 0; index < lines.length; index++) {
     const lineLength = lines[index].length + 1
-    if (textarea.selectionStart >= counter && textarea.selectionStart <= counter + lineLength) {
+    if (textarea.selectionStart >= counter && textarea.selectionStart < counter + lineLength) {
       textarea.selectionStart = counter
     }
-    if (textarea.selectionEnd > counter && textarea.selectionEnd <= counter + lineLength) {
-      textarea.selectionEnd = counter + lineLength
+    if (textarea.selectionEnd >= counter && textarea.selectionEnd < counter + lineLength) {
+      textarea.selectionEnd = counter + lineLength - 1
     }
     counter += lineLength
   }
@@ -642,49 +642,31 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   const noInitialSelection = textarea.selectionStart === textarea.selectionEnd
   let selectionStart = textarea.selectionStart
   let selectionEnd = textarea.selectionEnd
-  let lines: string[] = []
-  let text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
-  let startOfLine, endOfLine
 
   undoOrderedListStyle(textarea)
   undoUnorderedListStyle(textarea)
 
   const prefix = '- '
 
-  // Expand selection to full lines
-
+  // Select whole line
   expandSelectionToLine(textarea)
 
-  // Style only the selected line
+  const selectedText = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+  const lines = selectedText.split('\n').map((value, index) => {
+    return `${prefix}${value}`
+  })
+
+  const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
+
   if (noInitialSelection) {
-    const linesBefore = textarea.value.slice(0, textarea.selectionStart).split(/\n/)
-    lines = textarea.value.split('\n')
-
-    const currentLine = linesBefore.length - 1
-    const currentLineText = lines[currentLine]
-
-    // Select whole line
-    const range = selectionIndexForLine(lines, currentLine)
-    // if (range) {
-    //   textarea.selectionStart = range.selectionStart ?? 0
-    //   textarea.selectionEnd = range.selectionEnd ?? 0
-    // }
-
-    // line with caret
-    //lines[linesBefore.length - 1] = prefix + linesBefore[linesBefore.length - 1]
-
-    text = prefix + currentLineText
-
-    // if (style.surroundWithNewlines) {
-    const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
-    selectionStart = selectionStart + prefix.length + 1
-    selectionEnd = selectionEnd + prefix.length + 1
-    text = newlinesToAppend + text + newlinesToPrepend
-
-    return {text, selectionStart, selectionEnd}
+    selectionStart = Math.max(selectionStart + prefix.length + newlinesToAppend.length, 0)
+    selectionEnd = selectionStart
+  } else {
+    selectionStart = Math.max(selectionStart + prefix.length + newlinesToAppend.length, 0)
+    selectionEnd = selectionEnd + newlinesToAppend.length + prefix.length * lines.length
   }
 
-  text = lines.join('\n')
+  const text = newlinesToAppend + lines.join('\n') + newlinesToPrepend
 
   return {text, selectionStart, selectionEnd}
 }

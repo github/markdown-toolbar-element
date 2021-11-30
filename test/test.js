@@ -518,7 +518,7 @@ describe('markdown-toolbar-element', function () {
       it('turns two lines into list if two lines are selected', function () {
         setVisualValue('|One\nTwo|\nThree\n')
         clickToolbar('md-unordered-list')
-        assert.equal('|- One\n- Two|\n\nThree\n', visualValue())
+        assert.equal('- |One\n- Two|\n\nThree\n', visualValue())
       })
 
       it('turns two lines into list if 2 lines are partially selected', function () {
