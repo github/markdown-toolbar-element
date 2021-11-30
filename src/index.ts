@@ -79,6 +79,7 @@ type Style = {
   replaceNext?: string
   scanFor?: string
   orderedList?: boolean
+  unorderedList?: boolean
   prefixSpace?: boolean
 }
 
@@ -205,7 +206,7 @@ if (!window.customElements.get('md-image')) {
 class MarkdownUnorderedListButtonElement extends MarkdownButtonElement {
   constructor() {
     super()
-    styles.set(this, {prefix: '- ', multiline: true, surroundWithNewlines: true})
+    styles.set(this, {prefix: '- ', multiline: true, unorderedList: true})
   }
 }
 
@@ -421,8 +422,8 @@ function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) 
   const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
 
   let result
-  if (styleArgs.orderedList) {
-    result = orderedList(textarea)
+  if (styleArgs.orderedList || styleArgs.unorderedList) {
+    result = listStyle(textarea, styleArgs)
   } else if (styleArgs.multiline && isMultipleLines(text)) {
     result = multilineStyle(textarea, styleArgs)
   } else {
@@ -430,6 +431,17 @@ function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) 
   }
 
   insertText(textarea, result)
+}
+
+export function selectionIndexForLine(lines: string[], line: number): SelectionRange | null {
+  let counter = 0
+  for (let index = 0; index < lines.length; index++) {
+    if (index === line) {
+      return {selectionStart: counter, selectionEnd: counter + lines[index].length, text: ''}
+    }
+    counter += lines[index].length + 1
+  }
+  return null
 }
 
 function expandSelectedText(
@@ -587,6 +599,79 @@ function multilineStyle(textarea: HTMLTextAreaElement, arg: StyleArgs) {
   return {text, selectionStart, selectionEnd}
 }
 
+function undoOrderedListStyle(textarea: HTMLTextAreaElement): string[] {
+  const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+  const lines = text.split('\n')
+  const orderedListRegex = /^\d+\.\s+/
+  const result = lines
+  const shouldUndoOrderedList = lines.every(line => orderedListRegex.test(line))
+  if (shouldUndoOrderedList) {
+    return lines.map(line => line.replace(orderedListRegex, ''))
+  }
+  return result
+}
+
+function undoUnorderedListStyle(textarea: HTMLTextAreaElement): string[] {
+  const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+  const lines = text.split('\n')
+  const unorderedListPrefix = '- '
+  const shouldUndoUnorderedList = lines.every(line => line.startsWith(unorderedListPrefix))
+  const result = lines
+  if (shouldUndoUnorderedList) {
+    return lines.map(line => line.slice(unorderedListPrefix.length, line.length))
+  }
+  return result
+}
+
+function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRange {
+  const noInitialSelection = textarea.selectionStart === textarea.selectionEnd
+  let selectionStart = textarea.selectionStart
+  let selectionEnd = textarea.selectionEnd
+  let lines: string[] = []
+  let text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+  let startOfLine, endOfLine
+
+  undoOrderedListStyle(textarea)
+  undoUnorderedListStyle(textarea)
+
+  const prefix = '- '
+
+  //let selectedText = expandSelectedText(textarea, prefix, '', style.multiline)
+
+  // Style only the selected line
+  if (noInitialSelection) {
+    const linesBefore = textarea.value.slice(0, textarea.selectionStart).split(/\n/)
+    lines = textarea.value.split('\n')
+
+    const currentLine = linesBefore.length - 1
+    const currentLineText = lines[currentLine]
+
+    // Select whole line
+    const range = selectionIndexForLine(lines, currentLine)
+    if (range) {
+      textarea.selectionStart = range.selectionStart ?? 0
+      textarea.selectionEnd = range.selectionEnd ?? 0
+    }
+
+    // line with caret
+    //lines[linesBefore.length - 1] = prefix + linesBefore[linesBefore.length - 1]
+
+    text = prefix + currentLineText
+
+    // if (style.surroundWithNewlines) {
+    const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
+    selectionStart = selectionStart + prefix.length + 1
+    selectionEnd = selectionStart
+    text = newlinesToAppend + text + newlinesToPrepend
+
+    return {text, selectionStart, selectionEnd}
+  }
+
+  text = lines.join('\n')
+
+  return {text, selectionStart, selectionEnd}
+}
+
 function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
   const orderedListRegex = /^\d+\.\s+/
   const noInitialSelection = textarea.selectionStart === textarea.selectionEnd
@@ -638,6 +723,7 @@ interface StyleArgs {
   scanFor: string
   surroundWithNewlines: boolean
   orderedList: boolean
+  unorderedList: boolean
   trimFirst: boolean
 }
 
@@ -668,6 +754,7 @@ function applyStyle(button: Element, stylesToApply: Style) {
     scanFor: '',
     surroundWithNewlines: false,
     orderedList: false,
+    unorderedList: false,
     trimFirst: false
   }
 

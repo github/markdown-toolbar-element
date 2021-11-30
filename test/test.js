@@ -571,6 +571,20 @@ describe('markdown-toolbar-element', function () {
     })
 
     describe('lists', function () {
+      it('does not stack list styles when selecting multiple lines', function () {
+        setVisualValue('One\n|Two\nThree|\n')
+        clickToolbar('md-ordered-list')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n|- Two\n- Three|\n', visualValue())
+      })
+
+      it('does not stack list styles when selecting one line', function () {
+        setVisualValue('One\n|Two|\nThree|\n')
+        clickToolbar('md-ordered-list')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n|- Two\n- Three|\n', visualValue())
+      })
+
       it('turns line into list when you click the unordered list icon with selection', function () {
         setVisualValue('One\n|Two|\nThree\n')
         clickToolbar('md-unordered-list')
