@@ -484,6 +484,50 @@ describe('markdown-toolbar-element', function () {
       })
     })
 
+    describe('ordered list', function () {
+      it('turns line into list if cursor at end of line', function () {
+        setVisualValue('One\nTwo|\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n1. Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if cursor at end of document', function () {
+        setVisualValue('One\nTwo\nThree|')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\nTwo\n\n1. Three|', visualValue())
+      })
+
+      it('turns line into list if cursor at beginning of line', function () {
+        setVisualValue('One\n|Two\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n1. |Two\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if cursor at middle of line', function () {
+        setVisualValue('One\nT|wo\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n1. T|wo\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if partial line is selected', function () {
+        setVisualValue('One\nT|w|o\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n1. T|w|o\n\nThree\n', visualValue())
+      })
+
+      it('turns two lines into list if two lines are selected', function () {
+        setVisualValue('|One\nTwo|\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('1. |One\n2. Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns two lines into list if 2 lines are partially selected', function () {
+        setVisualValue('O|ne\nTw|o\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('1. O|ne\n2. Tw|o\n\nThree\n', visualValue())
+      })
+    })
+
     describe('unordered list', function () {
       it('turns line into list if cursor at end of line', function () {
         setVisualValue('One\nTwo|\nThree\n')

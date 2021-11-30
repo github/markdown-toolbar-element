@@ -656,7 +656,14 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   // Select whole line
   expandSelectionToLine(textarea)
 
-  const prefix = '- '
+  const prefix = (index: number): string => {
+    if (style.unorderedList) {
+      return '- '
+    } else if (style.orderedList) {
+      return `${index + 1}. `
+    }
+    return ''
+  }
 
   let selectedText = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
 
@@ -664,30 +671,34 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   const undoUnorderedListResult = undoUnorderedListStyle(undoOrderedListResult.text)
 
   if (undoOrderedListResult.processed || undoUnorderedListResult.processed) {
-    if (noInitialSelection) {
-      selectionStart = Math.max(selectionStart - prefix.length, 0)
-      selectionEnd = selectionStart
-    } else {
-      selectionStart = Math.max(selectionStart - prefix.length, 0)
-      selectionEnd = selectionEnd + prefix.length // * lines.length
-    }
+    // if (noInitialSelection) {
+    //   selectionStart = Math.max(selectionStart - prefix.length, 0)
+    //   selectionEnd = selectionStart
+    // } else {
+    //   selectionStart = Math.max(selectionStart - prefix.length, 0)
+    //   selectionEnd = selectionEnd + prefix.length // * lines.length
+    // }
     return {text: undoUnorderedListResult.text, selectionStart, selectionEnd}
   }
 
   selectedText = undoUnorderedListResult.text
 
   const lines = selectedText.split('\n').map((value, index) => {
-    return `${prefix}${value}`
+    return `${prefix(index)}${value}`
   })
+
+  const totalPrefixLength = lines.reduce((previousValue, currentValue, currentIndex) => {
+    return previousValue + prefix(currentIndex).length
+  }, 0)
 
   const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
 
   if (noInitialSelection) {
-    selectionStart = Math.max(selectionStart + prefix.length + newlinesToAppend.length, 0)
+    selectionStart = Math.max(selectionStart + prefix(0).length + newlinesToAppend.length, 0)
     selectionEnd = selectionStart
   } else {
-    selectionStart = Math.max(selectionStart + prefix.length + newlinesToAppend.length, 0)
-    selectionEnd = selectionEnd + newlinesToAppend.length + prefix.length * lines.length
+    selectionStart = Math.max(selectionStart + prefix(0).length + newlinesToAppend.length, 0)
+    selectionEnd = selectionEnd + newlinesToAppend.length + totalPrefixLength
   }
 
   const text = newlinesToAppend + lines.join('\n') + newlinesToPrepend
