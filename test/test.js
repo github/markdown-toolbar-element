@@ -526,19 +526,19 @@ describe('markdown-toolbar-element', function () {
         assertNormalizedList('One\n\n- |Two|\n\nThree\n', orderedList)
       })
 
-      it('turns selection into list if partial line is selected', function () {
+      it('turns line into list if partial line is selected', function () {
         setVisualValue('One\nT|w|o\nThree\n')
         clickToolbar(toolbarItem)
         assertNormalizedList('One\n\n- T|w|o\n\nThree\n', orderedList)
       })
 
-      it('turns selection into list if two lines are selected', function () {
+      it('turns two lines into list if two lines are selected', function () {
         setVisualValue('|One\nTwo|\nThree\n')
         clickToolbar(toolbarItem)
         assertNormalizedList('|- One\n- Two|\n\nThree\n', orderedList)
       })
 
-      it('turns selection into list if 2 lines are partially selected', function () {
+      it('turns two lines into list if 2 lines are partially selected', function () {
         setVisualValue('O|ne\nTw|o\nThree\n')
         clickToolbar(toolbarItem)
         assertNormalizedList('- O|ne\n- Tw|o\n\nThree\n', orderedList)
