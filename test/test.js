@@ -32,17 +32,6 @@ describe('markdown-toolbar-element', function () {
       toolbar.querySelector(selector).click()
     }
 
-    function assertNormalizedList(str, ordered = false) {
-      let listIndex = 0
-      const stringToCompare = ordered
-        ? str.replace('- ', (matched, index, original) => {
-            ++listIndex
-            return `${listIndex}. `
-          })
-        : str
-      assert.equal(stringToCompare, visualValue())
-    }
-
     function visualValue() {
       const textarea = document.querySelector('textarea')
       const before = textarea.value.slice(0, textarea.selectionStart)
@@ -495,63 +484,49 @@ describe('markdown-toolbar-element', function () {
       })
     })
 
-    function listTests(toolbarItem, orderedList) {
+    describe('unordered list', function () {
       it('turns line into list if cursor at end of line', function () {
         setVisualValue('One\nTwo|\nThree\n')
-        clickToolbar(toolbarItem)
-        assertNormalizedList('One\n\n- Two|\n\nThree\n', orderedList)
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- Two|\n\nThree\n', visualValue())
       })
 
       it('turns line into list if cursor at end of document', function () {
         setVisualValue('One\nTwo\nThree|')
-        clickToolbar(toolbarItem)
-        assertNormalizedList('One\nTwo\n\n- Three|', orderedList)
+        clickToolbar('md-unordered-list')
+        assert.equal('One\nTwo\n\n- Three|', visualValue())
       })
 
       it('turns line into list if cursor at beginning of line', function () {
         setVisualValue('One\n|Two\nThree\n')
-        clickToolbar(toolbarItem)
-        assertNormalizedList('One\n\n- |Two\n\nThree\n', orderedList)
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- |Two\n\nThree\n', visualValue())
       })
 
       it('turns line into list if cursor at middle of line', function () {
         setVisualValue('One\nT|wo\nThree\n')
-        clickToolbar(toolbarItem)
-        assertNormalizedList('One\n\n- T|wo\n\nThree\n', orderedList)
-      })
-
-      it('turns selection into list if line is selected', function () {
-        setVisualValue('One\n|Two|\nThree\n')
-        clickToolbar(toolbarItem)
-        assertNormalizedList('One\n\n- |Two|\n\nThree\n', orderedList)
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- T|wo\n\nThree\n', visualValue())
       })
 
       it('turns line into list if partial line is selected', function () {
         setVisualValue('One\nT|w|o\nThree\n')
-        clickToolbar(toolbarItem)
-        assertNormalizedList('One\n\n- T|w|o\n\nThree\n', orderedList)
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- T|w|o\n\nThree\n', visualValue())
       })
 
       it('turns two lines into list if two lines are selected', function () {
         setVisualValue('|One\nTwo|\nThree\n')
-        clickToolbar(toolbarItem)
-        assertNormalizedList('|- One\n- Two|\n\nThree\n', orderedList)
+        clickToolbar('md-unordered-list')
+        assert.equal('|- One\n- Two|\n\nThree\n', visualValue())
       })
 
       it('turns two lines into list if 2 lines are partially selected', function () {
         setVisualValue('O|ne\nTw|o\nThree\n')
-        clickToolbar(toolbarItem)
-        assertNormalizedList('- O|ne\n- Tw|o\n\nThree\n', orderedList)
+        clickToolbar('md-unordered-list')
+        assert.equal('- O|ne\n- Tw|o\n\nThree\n', visualValue())
       })
       // TODO: Add undo test for all of this
-    }
-
-    describe('unordered list', function () {
-      listTests('md-unordered-list', false)
-    })
-
-    describe('ordered list', function () {
-      listTests('md-ordered-list', true)
     })
 
     describe('lists', function () {
