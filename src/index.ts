@@ -614,28 +614,38 @@ function multilineStyle(textarea: HTMLTextAreaElement, arg: StyleArgs) {
   return {text, selectionStart, selectionEnd}
 }
 
-function undoOrderedListStyle(textarea: HTMLTextAreaElement): string[] {
-  const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+interface UndoResult {
+  text: string
+  processed: boolean
+}
+function undoOrderedListStyle(text: string): UndoResult {
   const lines = text.split('\n')
   const orderedListRegex = /^\d+\.\s+/
-  const result = lines
   const shouldUndoOrderedList = lines.every(line => orderedListRegex.test(line))
+  let result = lines
   if (shouldUndoOrderedList) {
-    return lines.map(line => line.replace(orderedListRegex, ''))
+    result = lines.map(line => line.replace(orderedListRegex, ''))
   }
-  return result
+
+  return {
+    text: result.join('\n'),
+    processed: shouldUndoOrderedList
+  }
 }
 
-function undoUnorderedListStyle(textarea: HTMLTextAreaElement): string[] {
-  const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+function undoUnorderedListStyle(text: string): UndoResult {
   const lines = text.split('\n')
   const unorderedListPrefix = '- '
   const shouldUndoUnorderedList = lines.every(line => line.startsWith(unorderedListPrefix))
-  const result = lines
+  let result = lines
   if (shouldUndoUnorderedList) {
-    return lines.map(line => line.slice(unorderedListPrefix.length, line.length))
+    result = lines.map(line => line.slice(unorderedListPrefix.length, line.length))
   }
-  return result
+
+  return {
+    text: result.join('\n'),
+    processed: shouldUndoUnorderedList
+  }
 }
 
 function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRange {
@@ -643,15 +653,29 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   let selectionStart = textarea.selectionStart
   let selectionEnd = textarea.selectionEnd
 
-  undoOrderedListStyle(textarea)
-  undoUnorderedListStyle(textarea)
-
-  const prefix = '- '
-
   // Select whole line
   expandSelectionToLine(textarea)
 
-  const selectedText = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+  const prefix = '- '
+
+  let selectedText = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+
+  const undoOrderedListResult = undoOrderedListStyle(selectedText)
+  const undoUnorderedListResult = undoUnorderedListStyle(undoOrderedListResult.text)
+
+  if (undoOrderedListResult.processed || undoUnorderedListResult.processed) {
+    if (noInitialSelection) {
+      selectionStart = Math.max(selectionStart - prefix.length, 0)
+      selectionEnd = selectionStart
+    } else {
+      selectionStart = Math.max(selectionStart - prefix.length, 0)
+      selectionEnd = selectionEnd + prefix.length // * lines.length
+    }
+    return {text: undoUnorderedListResult.text, selectionStart, selectionEnd}
+  }
+
+  selectedText = undoUnorderedListResult.text
+
   const lines = selectedText.split('\n').map((value, index) => {
     return `${prefix}${value}`
   })
@@ -667,7 +691,6 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   }
 
   const text = newlinesToAppend + lines.join('\n') + newlinesToPrepend
-
   return {text, selectionStart, selectionEnd}
 }
 
