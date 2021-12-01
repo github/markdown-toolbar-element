@@ -703,8 +703,8 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
     selectionStart = Math.max(selectionStart + prefix(0).length + newlinesToAppend.length, 0)
     selectionEnd = selectionStart
   } else {
-    selectionStart = Math.max(selectionStart + prefix(0).length + newlinesToAppend.length, 0)
-    selectionEnd = selectionEnd + newlinesToAppend.length + totalPrefixLength
+    selectionStart = Math.max(textarea.selectionStart + newlinesToAppend.length, 0)
+    selectionEnd = textarea.selectionEnd + newlinesToAppend.length + totalPrefixLength
   }
 
   const text = newlinesToAppend + lines.join('\n') + newlinesToPrepend
