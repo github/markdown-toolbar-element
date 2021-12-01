@@ -688,7 +688,7 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
       selectionEnd = selectionStart
     } else {
       selectionStart = textarea.selectionStart
-      selectionEnd = textarea.selectionEnd - prefix(0, style.unorderedList).length
+      selectionEnd = textarea.selectionEnd - totalPrefixLength
     }
     return {text: undoResult.text, selectionStart, selectionEnd}
   }

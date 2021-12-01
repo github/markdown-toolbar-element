@@ -560,13 +560,13 @@ describe('markdown-toolbar-element', function () {
       it('undo two lines list if two lines are selected', function () {
         setVisualValue('|1. One\n2. Two|\n\nThree\n')
         clickToolbar('md-ordered-list')
-        assert.equal('|One\nTwo\n\n|Three\n', visualValue())
+        assert.equal('|One\nTwo|\n\nThree\n', visualValue())
       })
 
       it('undo two lines list if 2 lines are partially selected', function () {
         setVisualValue('1. O|ne\n2. Tw|o\n\nThree\n')
         clickToolbar('md-ordered-list')
-        assert.equal('|One\nTwo\n\n|Three\n', visualValue())
+        assert.equal('|One\nTwo|\n\nThree\n', visualValue())
       })
     })
 
@@ -646,13 +646,13 @@ describe('markdown-toolbar-element', function () {
       it('undo two lines list if two lines are selected', function () {
         setVisualValue('|- One\n- Two|\n\nThree\n')
         clickToolbar('md-unordered-list')
-        assert.equal('|One\nTwo\n\n|Three\n', visualValue())
+        assert.equal('|One\nTwo|\n\nThree\n', visualValue())
       })
 
       it('undo two lines list if 2 lines are partially selected', function () {
         setVisualValue('- O|ne\n- Tw|o\n\nThree\n')
         clickToolbar('md-unordered-list')
-        assert.equal('|One\nTwo\n\n|Three\n', visualValue())
+        assert.equal('|One\nTwo|\n\nThree\n', visualValue())
       })
     })
 
@@ -748,7 +748,7 @@ describe('markdown-toolbar-element', function () {
       it('undo an ordered list by selecting multiple styled lines', function () {
         setVisualValue('|1. One\n2. Two\n3. Three|\n')
         clickToolbar('md-ordered-list')
-        assert.equal('|One\nTwo\nThree\n|', visualValue())
+        assert.equal('|One\nTwo\nThree|\n', visualValue())
       })
     })
 
