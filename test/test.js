@@ -619,20 +619,20 @@ describe('markdown-toolbar-element', function () {
         setVisualValue('One\n|Two\nThree|\n')
         clickToolbar('md-ordered-list')
         clickToolbar('md-unordered-list')
-        assert.equal('One\n\n- Two|\n- Three\n|', visualValue())
+        assert.equal('One\n\n|- Two\n- Three\n|', visualValue())
       })
 
       it('does not stack list styles when selecting one line', function () {
-        setVisualValue('One\n|Two|\nThree|\n')
+        setVisualValue('One\n|Two|\nThree\n')
         clickToolbar('md-ordered-list')
         clickToolbar('md-unordered-list')
-        assert.equal('One\n\n- Two|\n\nT|hree', visualValue())
+        assert.equal('One\n\n|- Two|\n\nThree', visualValue())
       })
 
       it('turns line into list when you click the unordered list icon with selection', function () {
         setVisualValue('One\n|Two|\nThree\n')
         clickToolbar('md-unordered-list')
-        assert.equal('One\n\n- |Two|\n\nThree\n', visualValue())
+        assert.equal('One\n\n|- Two|\n\nThree\n', visualValue())
       })
 
       it('turns line into list when you click the unordered list icon without selection', function () {
@@ -648,21 +648,21 @@ describe('markdown-toolbar-element', function () {
       })
 
       it('prefixes newlines when a list is created on the last line', function () {
-        setVisualValue("Here's a list:|One|")
+        setVisualValue("Here's a |list:|")
         clickToolbar('md-unordered-list')
-        assert.equal("Here's a list:\n\n- |One|", visualValue())
+        assert.equal("|- Here's a list:|", visualValue())
       })
 
       it('surrounds list with newlines when a list is created on an existing line', function () {
         setVisualValue("Here's a list:|One|\nThis is text after the list")
         clickToolbar('md-unordered-list')
-        assert.equal("Here's a list:\n\n- |One|\n\nThis is text after the list", visualValue())
+        assert.equal("|- Here's a list:One|\n\nThis is text after the list", visualValue())
       })
 
       it('undo the list when button is clicked again', function () {
         setVisualValue('|Two|')
         clickToolbar('md-unordered-list')
-        assert.equal('- |Two|', visualValue())
+        assert.equal('|- Two|', visualValue())
         clickToolbar('md-unordered-list')
         assert.equal('|Two|', visualValue())
       })
@@ -670,7 +670,7 @@ describe('markdown-toolbar-element', function () {
       it('creates ordered list without selection', function () {
         setVisualValue('apple\n|pear\nbanana\n')
         clickToolbar('md-ordered-list')
-        assert.equal('apple\n\n1. |\n\npear\nbanana\n', visualValue())
+        assert.equal('apple\n\n1. |pear\n\nbanana\n', visualValue())
       })
 
       it('undo an ordered list without selection', function () {
