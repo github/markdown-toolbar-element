@@ -448,17 +448,6 @@ function expandSelectionToLine(textarea: HTMLTextAreaElement) {
   }
 }
 
-function selectionIndexForLine(lines: string[], line: number): SelectionRange | null {
-  let counter = 0
-  for (let index = 0; index < lines.length; index++) {
-    if (index === line) {
-      return {selectionStart: counter, selectionEnd: counter + lines[index].length, text: ''}
-    }
-    counter += lines[index].length + 1
-  }
-  return null
-}
-
 function expandSelectedText(
   textarea: HTMLTextAreaElement,
   prefixToUse: string,
@@ -723,46 +712,6 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   return {text, selectionStart, selectionEnd}
 }
 
-function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
-  const orderedListRegex = /^\d+\.\s+/
-  const noInitialSelection = textarea.selectionStart === textarea.selectionEnd
-  let selectionEnd
-  let selectionStart
-  let text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
-  let textToUnstyle = text
-  let lines = text.split('\n')
-  let startOfLine, endOfLine
-  if (noInitialSelection) {
-    const linesBefore = textarea.value.slice(0, textarea.selectionStart).split(/\n/)
-    startOfLine = textarea.selectionStart - linesBefore[linesBefore.length - 1].length
-    endOfLine = wordSelectionEnd(textarea.value, textarea.selectionStart, true)
-    textToUnstyle = textarea.value.slice(startOfLine, endOfLine)
-  }
-  const linesToUnstyle = textToUnstyle.split('\n')
-  const undoStyling = linesToUnstyle.every(line => orderedListRegex.test(line))
-
-  if (undoStyling) {
-    lines = linesToUnstyle.map(line => line.replace(orderedListRegex, ''))
-    text = lines.join('\n')
-    if (noInitialSelection && startOfLine && endOfLine) {
-      const lengthDiff = linesToUnstyle[0].length - lines[0].length
-      selectionStart = selectionEnd = textarea.selectionStart - lengthDiff
-      textarea.selectionStart = startOfLine
-      textarea.selectionEnd = endOfLine
-    }
-  } else {
-    lines = numberedLines(lines)
-    text = lines.join('\n')
-    const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
-    selectionStart = textarea.selectionStart + newlinesToAppend.length
-    selectionEnd = selectionStart + text.length
-    if (noInitialSelection) selectionStart = selectionEnd
-    text = newlinesToAppend + text + newlinesToPrepend
-  }
-
-  return {text, selectionStart, selectionEnd}
-}
-
 interface StyleArgs {
   prefix: string
   suffix: string
@@ -776,18 +725,6 @@ interface StyleArgs {
   orderedList: boolean
   unorderedList: boolean
   trimFirst: boolean
-}
-
-function numberedLines(lines: string[]) {
-  let i
-  let len
-  let index
-  const results = []
-  for (index = i = 0, len = lines.length; i < len; index = ++i) {
-    const line = lines[index]
-    results.push(`${index + 1}. ${line}`)
-  }
-  return results
 }
 
 function applyStyle(button: Element, stylesToApply: Style) {
