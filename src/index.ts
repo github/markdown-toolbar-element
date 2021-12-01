@@ -667,21 +667,29 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
 
   let selectedText = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
 
-  const undoOrderedListResult = undoOrderedListStyle(selectedText)
-  const undoUnorderedListResult = undoUnorderedListStyle(undoOrderedListResult.text)
-
-  if (undoOrderedListResult.processed || undoUnorderedListResult.processed) {
-    // if (noInitialSelection) {
-    //   selectionStart = Math.max(selectionStart - prefix.length, 0)
-    //   selectionEnd = selectionStart
-    // } else {
-    //   selectionStart = Math.max(selectionStart - prefix.length, 0)
-    //   selectionEnd = selectionEnd + prefix.length // * lines.length
-    // }
-    return {text: undoUnorderedListResult.text, selectionStart, selectionEnd}
+  // If the user intent was to do an undo, we will stop after this.
+  // Otherwise, we will still undo to other list type to prevent list stacking
+  let undoResult: UndoResult
+  if (style.orderedList) {
+    undoResult = undoOrderedListStyle(selectedText)
+    selectedText = undoUnorderedListStyle(undoResult.text).text
+  } else {
+    undoResult = undoUnorderedListStyle(selectedText)
+    selectedText = undoOrderedListStyle(undoResult.text).text
   }
 
-  selectedText = undoUnorderedListResult.text
+  if (undoResult.processed) {
+    //   // if (noInitialSelection) {
+    //   //   selectionStart = Math.max(selectionStart - prefix.length, 0)
+    //   //   selectionEnd = selectionStart
+    //   // } else {
+    //   //   selectionStart = Math.max(selectionStart - prefix.length, 0)
+    //   //   selectionEnd = selectionEnd + prefix.length // * lines.length
+    //   // }
+    return {text: undoResult.text, selectionStart, selectionEnd}
+  }
+
+  // selectedText = undoResult.text
 
   const lines = selectedText.split('\n').map((value, index) => {
     return `${prefix(index)}${value}`
