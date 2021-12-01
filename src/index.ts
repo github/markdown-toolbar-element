@@ -648,6 +648,14 @@ function undoUnorderedListStyle(text: string): UndoResult {
   }
 }
 
+const prefix = (index: number, unorderedList: boolean): string => {
+  if (unorderedList) {
+    return '- '
+  } else {
+    return `${index + 1}. `
+  }
+}
+
 function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRange {
   const noInitialSelection = textarea.selectionStart === textarea.selectionEnd
   let selectionStart = textarea.selectionStart
@@ -656,43 +664,42 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   // Select whole line
   expandSelectionToLine(textarea)
 
-  const prefix = (index: number): string => {
-    if (style.unorderedList) {
-      return '- '
-    } else if (style.orderedList) {
-      return `${index + 1}. `
-    }
-    return ''
-  }
-
   let selectedText = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
 
   // If the user intent was to do an undo, we will stop after this.
   // Otherwise, we will still undo to other list type to prevent list stacking
+  let undoResultOpositeList: UndoResult
   let undoResult: UndoResult
+
   if (style.orderedList) {
     undoResult = undoOrderedListStyle(selectedText)
-    selectedText = undoUnorderedListStyle(undoResult.text).text
+    undoResultOpositeList = undoUnorderedListStyle(undoResult.text)
+    selectedText = undoResultOpositeList.text
   } else {
     undoResult = undoUnorderedListStyle(selectedText)
-    selectedText = undoOrderedListStyle(undoResult.text).text
+    undoResultOpositeList = undoOrderedListStyle(undoResult.text)
+    selectedText = undoResultOpositeList.text
   }
 
   const lines = selectedText.split('\n').map((value, index) => {
-    return `${prefix(index)}${value}`
+    return `${prefix(index, style.unorderedList)}${value}`
   })
 
   const totalPrefixLength = lines.reduce((previousValue, currentValue, currentIndex) => {
-    return previousValue + prefix(currentIndex).length
+    return previousValue + prefix(currentIndex, style.unorderedList).length
+  }, 0)
+
+  const totalPrefixLengthOpositeList = lines.reduce((previousValue, currentValue, currentIndex) => {
+    return previousValue + prefix(currentIndex, !style.unorderedList).length
   }, 0)
 
   if (undoResult.processed) {
     if (noInitialSelection) {
-      selectionStart = Math.max(selectionStart - prefix(0).length, 0)
+      selectionStart = Math.max(selectionStart - prefix(0, style.unorderedList).length, 0)
       selectionEnd = selectionStart
     } else {
-      selectionStart = Math.max(selectionStart - prefix(0).length, 0)
-      selectionEnd = selectionEnd - totalPrefixLength
+      selectionStart = textarea.selectionStart
+      selectionEnd = textarea.selectionEnd - prefix(0, style.unorderedList).length
     }
     return {text: undoResult.text, selectionStart, selectionEnd}
   }
@@ -700,11 +707,16 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
 
   if (noInitialSelection) {
-    selectionStart = Math.max(selectionStart + prefix(0).length + newlinesToAppend.length, 0)
+    selectionStart = Math.max(selectionStart + prefix(0, style.unorderedList).length + newlinesToAppend.length, 0)
     selectionEnd = selectionStart
   } else {
-    selectionStart = Math.max(textarea.selectionStart + newlinesToAppend.length, 0)
-    selectionEnd = textarea.selectionEnd + newlinesToAppend.length + totalPrefixLength
+    if (undoResultOpositeList.processed) {
+      selectionStart = Math.max(textarea.selectionStart + newlinesToAppend.length, 0)
+      selectionEnd = textarea.selectionEnd + newlinesToAppend.length + totalPrefixLength - totalPrefixLengthOpositeList
+    } else {
+      selectionStart = Math.max(textarea.selectionStart + newlinesToAppend.length, 0)
+      selectionEnd = textarea.selectionEnd + newlinesToAppend.length + totalPrefixLength
+    }
   }
 
   const text = newlinesToAppend + lines.join('\n') + newlinesToPrepend

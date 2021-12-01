@@ -598,19 +598,19 @@ describe('markdown-toolbar-element', function () {
       it('undo list if partial line is selected', function () {
         setVisualValue('One\n\n- T|w|o\n\nThree\n')
         clickToolbar('md-unordered-list')
-        assert.equal('One\n\nT|w|o\n\nThree\n', visualValue())
+        assert.equal('One\n\n|Two|\n\nThree\n', visualValue())
       })
 
       it('undo two lines list if two lines are selected', function () {
         setVisualValue('|- One\n- Two|\n\nThree\n')
         clickToolbar('md-unordered-list')
-        assert.equal('|One\nTwo|\n\nThree\n', visualValue())
+        assert.equal('|One\nTwo\n\n|Three\n', visualValue())
       })
 
       it('undo two lines list if 2 lines are partially selected', function () {
         setVisualValue('- O|ne\n- Tw|o\n\nThree\n')
         clickToolbar('md-unordered-list')
-        assert.equal('O|ne\nTw|o\n\nThree\n', visualValue())
+        assert.equal('|One\nTwo\n\n|Three\n', visualValue())
       })
     })
 
@@ -619,14 +619,14 @@ describe('markdown-toolbar-element', function () {
         setVisualValue('One\n|Two\nThree|\n')
         clickToolbar('md-ordered-list')
         clickToolbar('md-unordered-list')
-        assert.equal('One\n\n|- Two\n- Three\n|', visualValue())
+        assert.equal('One\n\n|- Two\n- Three|\n', visualValue())
       })
 
       it('does not stack list styles when selecting one line', function () {
         setVisualValue('One\n|Two|\nThree\n')
         clickToolbar('md-ordered-list')
         clickToolbar('md-unordered-list')
-        assert.equal('One\n\n|- Two|\n\nThree', visualValue())
+        assert.equal('One\n\n|- Two|\n\nThree\n', visualValue())
       })
 
       it('turns line into list when you click the unordered list icon with selection', function () {
@@ -706,7 +706,7 @@ describe('markdown-toolbar-element', function () {
       it('undo an ordered list by selecting multiple styled lines', function () {
         setVisualValue('|1. One\n2. Two\n3. Three|\n')
         clickToolbar('md-ordered-list')
-        assert.equal('|One\nTwo\nThree|\n', visualValue())
+        assert.equal('|One\nTwo\nThree\n|', visualValue())
       })
     })
 
