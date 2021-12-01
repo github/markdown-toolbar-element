@@ -692,7 +692,7 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
       selectionEnd = selectionStart
     } else {
       selectionStart = Math.max(selectionStart - prefix(0).length, 0)
-      selectionEnd = selectionEnd + totalPrefixLength
+      selectionEnd = selectionEnd - totalPrefixLength
     }
     return {text: undoResult.text, selectionStart, selectionEnd}
   }
