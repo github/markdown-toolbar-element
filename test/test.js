@@ -526,6 +526,48 @@ describe('markdown-toolbar-element', function () {
         clickToolbar('md-ordered-list')
         assert.equal('|1. One\n2. Two|\n\nThree\n', visualValue())
       })
+
+      it('undo list if cursor at end of line', function () {
+        setVisualValue('One\n\n1. Two|\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\nTwo|\n\nThree\n', visualValue())
+      })
+
+      it('undo list if cursor at end of document', function () {
+        setVisualValue('One\nTwo\n\n1. Three|')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\nTwo\n\nThree|', visualValue())
+      })
+
+      it('undo list if cursor at beginning of line', function () {
+        setVisualValue('One\n\n1. |Two\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n|Two\n\nThree\n', visualValue())
+      })
+
+      it('undo list if cursor at middle of line', function () {
+        setVisualValue('One\n\n1. T|wo\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\nT|wo\n\nThree\n', visualValue())
+      })
+
+      it('undo list if partial line is selected', function () {
+        setVisualValue('One\n\n1. T|w|o\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n|Two|\n\nThree\n', visualValue())
+      })
+
+      it('undo two lines list if two lines are selected', function () {
+        setVisualValue('|1. One\n2. Two|\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('|One\nTwo\n\n|Three\n', visualValue())
+      })
+
+      it('undo two lines list if 2 lines are partially selected', function () {
+        setVisualValue('1. O|ne\n2. Tw|o\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('|One\nTwo\n\n|Three\n', visualValue())
+      })
     })
 
     describe('unordered list', function () {
