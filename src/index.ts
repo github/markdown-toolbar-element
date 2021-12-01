@@ -678,19 +678,6 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
     selectedText = undoOrderedListStyle(undoResult.text).text
   }
 
-  if (undoResult.processed) {
-    //   // if (noInitialSelection) {
-    //   //   selectionStart = Math.max(selectionStart - prefix.length, 0)
-    //   //   selectionEnd = selectionStart
-    //   // } else {
-    //   //   selectionStart = Math.max(selectionStart - prefix.length, 0)
-    //   //   selectionEnd = selectionEnd + prefix.length // * lines.length
-    //   // }
-    return {text: undoResult.text, selectionStart, selectionEnd}
-  }
-
-  // selectedText = undoResult.text
-
   const lines = selectedText.split('\n').map((value, index) => {
     return `${prefix(index)}${value}`
   })
@@ -698,6 +685,17 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   const totalPrefixLength = lines.reduce((previousValue, currentValue, currentIndex) => {
     return previousValue + prefix(currentIndex).length
   }, 0)
+
+  if (undoResult.processed) {
+    if (noInitialSelection) {
+      selectionStart = Math.max(selectionStart - prefix(0).length, 0)
+      selectionEnd = selectionStart
+    } else {
+      selectionStart = Math.max(selectionStart - prefix.length, 0)
+      selectionEnd = selectionEnd + totalPrefixLength
+    }
+    return {text: undoResult.text, selectionStart, selectionEnd}
+  }
 
   const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
 
