@@ -637,7 +637,7 @@ function undoUnorderedListStyle(text: string): UndoResult {
   }
 }
 
-const prefix = (index: number, unorderedList: boolean): string => {
+function makePrefix(index: number, unorderedList: boolean): string {
   if (unorderedList) {
     return '- '
   } else {
@@ -671,20 +671,20 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   }
 
   const lines = selectedText.split('\n').map((value, index) => {
-    return `${prefix(index, style.unorderedList)}${value}`
+    return `${makePrefix(index, style.unorderedList)}${value}`
   })
 
   const totalPrefixLength = lines.reduce((previousValue, currentValue, currentIndex) => {
-    return previousValue + prefix(currentIndex, style.unorderedList).length
+    return previousValue + makePrefix(currentIndex, style.unorderedList).length
   }, 0)
 
   const totalPrefixLengthOpositeList = lines.reduce((previousValue, currentValue, currentIndex) => {
-    return previousValue + prefix(currentIndex, !style.unorderedList).length
+    return previousValue + makePrefix(currentIndex, !style.unorderedList).length
   }, 0)
 
   if (undoResult.processed) {
     if (noInitialSelection) {
-      selectionStart = Math.max(selectionStart - prefix(0, style.unorderedList).length, 0)
+      selectionStart = Math.max(selectionStart - makePrefix(0, style.unorderedList).length, 0)
       selectionEnd = selectionStart
     } else {
       selectionStart = textarea.selectionStart
@@ -696,7 +696,7 @@ function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRa
   const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
 
   if (noInitialSelection) {
-    selectionStart = Math.max(selectionStart + prefix(0, style.unorderedList).length + newlinesToAppend.length, 0)
+    selectionStart = Math.max(selectionStart + makePrefix(0, style.unorderedList).length + newlinesToAppend.length, 0)
     selectionEnd = selectionStart
   } else {
     if (undoResultOpositeList.processed) {
