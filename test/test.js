@@ -860,6 +860,15 @@ describe('markdown-toolbar-element', function () {
         clickToolbar('md-header[level="10"]')
         assert.equal('|title|', visualValue())
       })
+
+      it('dynamically changes header level based on the level attribute', function () {
+        setVisualValue('|title|')
+        const headerButton = document.querySelector('md-header[level="1"]')
+        headerButton.setAttribute('level', '2')
+        headerButton.click()
+
+        assert.equal('## |title|', visualValue())
+      })
     })
   })
 })

@@ -113,6 +113,20 @@ class MarkdownButtonElement extends HTMLElement {
 class MarkdownHeaderButtonElement extends MarkdownButtonElement {
   connectedCallback() {
     const level = parseInt(this.getAttribute('level') || '3', 10)
+    this.#setLevelStyle(level)
+  }
+
+  static get observedAttributes() {
+    return ['level']
+  }
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    if (name !== 'level') return
+    const level = parseInt(newValue || '3', 10)
+    this.#setLevelStyle(level)
+  }
+
+  #setLevelStyle(level: number) {
     if (level < 1 || level > 6) {
       return
     }
