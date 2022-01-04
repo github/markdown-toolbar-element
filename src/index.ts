@@ -274,10 +274,6 @@ if (!window.customElements.get('md-strikethrough')) {
 }
 
 class MarkdownToolbarElement extends HTMLElement {
-  constructor() {
-    super()
-  }
-
   connectedCallback(): void {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar')
