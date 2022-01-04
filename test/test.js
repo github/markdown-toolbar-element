@@ -831,6 +831,18 @@ describe('markdown-toolbar-element', function () {
     })
 
     describe('header', function () {
+      it('sets the level correctly even when dynamically created', function () {
+        const headerElement = document.createElement('md-header')
+        headerElement.setAttribute('level', '2')
+        headerElement.textContent = 'h2'
+        const toolbar = document.querySelector('markdown-toolbar')
+        toolbar.appendChild(headerElement)
+
+        setVisualValue('|title|')
+        clickToolbar('md-header[level="2"]')
+        assert.equal('## |title|', visualValue())
+      })
+
       it('inserts header syntax with cursor in description', function () {
         setVisualValue('|title|')
         clickToolbar('md-header')
