@@ -111,9 +111,7 @@ class MarkdownButtonElement extends HTMLElement {
 }
 
 class MarkdownHeaderButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-
+  connectedCallback() {
     const level = parseInt(this.getAttribute('level') || '3', 10)
     if (level < 1 || level > 6) {
       return
