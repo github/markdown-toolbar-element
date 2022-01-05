@@ -111,10 +111,22 @@ class MarkdownButtonElement extends HTMLElement {
 }
 
 class MarkdownHeaderButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-
+  connectedCallback() {
     const level = parseInt(this.getAttribute('level') || '3', 10)
+    this.#setLevelStyle(level)
+  }
+
+  static get observedAttributes() {
+    return ['level']
+  }
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    if (name !== 'level') return
+    const level = parseInt(newValue || '3', 10)
+    this.#setLevelStyle(level)
+  }
+
+  #setLevelStyle(level: number) {
     if (level < 1 || level > 6) {
       return
     }
@@ -132,8 +144,7 @@ if (!window.customElements.get('md-header')) {
 }
 
 class MarkdownBoldButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '**', suffix: '**', trimFirst: true})
   }
 }
@@ -144,8 +155,7 @@ if (!window.customElements.get('md-bold')) {
 }
 
 class MarkdownItalicButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '_', suffix: '_', trimFirst: true})
   }
 }
@@ -156,8 +166,7 @@ if (!window.customElements.get('md-italic')) {
 }
 
 class MarkdownQuoteButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '> ', multiline: true, surroundWithNewlines: true})
   }
 }
@@ -168,8 +177,7 @@ if (!window.customElements.get('md-quote')) {
 }
 
 class MarkdownCodeButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '`', suffix: '`', blockPrefix: '```', blockSuffix: '```'})
   }
 }
@@ -180,8 +188,7 @@ if (!window.customElements.get('md-code')) {
 }
 
 class MarkdownLinkButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '[', suffix: '](url)', replaceNext: 'url', scanFor: 'https?://'})
   }
 }
@@ -192,8 +199,7 @@ if (!window.customElements.get('md-link')) {
 }
 
 class MarkdownImageButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '![', suffix: '](url)', replaceNext: 'url', scanFor: 'https?://'})
   }
 }
@@ -204,8 +210,7 @@ if (!window.customElements.get('md-image')) {
 }
 
 class MarkdownUnorderedListButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '- ', multiline: true, unorderedList: true})
   }
 }
@@ -216,8 +221,7 @@ if (!window.customElements.get('md-unordered-list')) {
 }
 
 class MarkdownOrderedListButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '1. ', multiline: true, orderedList: true})
   }
 }
@@ -228,8 +232,7 @@ if (!window.customElements.get('md-ordered-list')) {
 }
 
 class MarkdownTaskListButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '- [ ] ', multiline: true, surroundWithNewlines: true})
   }
 }
@@ -240,8 +243,7 @@ if (!window.customElements.get('md-task-list')) {
 }
 
 class MarkdownMentionButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '@', prefixSpace: true})
   }
 }
@@ -252,8 +254,7 @@ if (!window.customElements.get('md-mention')) {
 }
 
 class MarkdownRefButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '#', prefixSpace: true})
   }
 }
@@ -264,8 +265,7 @@ if (!window.customElements.get('md-ref')) {
 }
 
 class MarkdownStrikethroughButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '~~', suffix: '~~', trimFirst: true})
   }
 }
@@ -276,10 +276,6 @@ if (!window.customElements.get('md-strikethrough')) {
 }
 
 class MarkdownToolbarElement extends HTMLElement {
-  constructor() {
-    super()
-  }
-
   connectedCallback(): void {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar')
