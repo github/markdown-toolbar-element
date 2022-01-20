@@ -27,29 +27,6 @@ describe('markdown-toolbar-element', function () {
   })
 
   describe('after tree insertion', function () {
-    function focus() {
-      const textarea = document.querySelector('textarea')
-      const event = document.createEvent('Event')
-      event.initEvent('focus', false, true)
-      textarea.dispatchEvent(event)
-    }
-
-    function pressHotkey(hotkey) {
-      const textarea = document.querySelector('textarea')
-      const osx = navigator.userAgent.indexOf('Macintosh') !== -1
-      const event = document.createEvent('Event')
-      event.initEvent('keydown', true, true)
-      event.metaKey = osx
-      event.ctrlKey = !osx
-      event.shiftKey = hotkey === hotkey.toUpperCase()
-
-      // emulate existing osx browser bug
-      // https://bugs.webkit.org/show_bug.cgi?id=174782
-      event.key = osx ? hotkey.toLowerCase() : hotkey
-
-      textarea.dispatchEvent(event)
-    }
-
     function clickToolbar(selector) {
       const toolbar = document.querySelector('markdown-toolbar')
       toolbar.querySelector(selector).click()
@@ -198,26 +175,10 @@ describe('markdown-toolbar-element', function () {
       })
     })
 
-    describe('hotkey case-sensitivity', function () {
-      it('does not bold selected text when using the uppercased hotkey', function () {
-        focus()
-        setVisualValue('The |quick| brown fox jumps over the lazy dog')
-        pressHotkey('B') // capital `B` instead of lowercase `b`
-        assert.equal('The |quick| brown fox jumps over the lazy dog', visualValue())
-      })
-    })
-
     describe('bold', function () {
       it('bold selected text when you click the bold icon', function () {
         setVisualValue('The |quick| brown fox jumps over the lazy dog')
         clickToolbar('md-bold')
-        assert.equal('The **|quick|** brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('bolds selected text with hotkey', function () {
-        focus()
-        setVisualValue('The |quick| brown fox jumps over the lazy dog')
-        pressHotkey('b')
         assert.equal('The **|quick|** brown fox jumps over the lazy dog', visualValue())
       })
 
@@ -346,13 +307,6 @@ describe('markdown-toolbar-element', function () {
       it('italicizes selected text when you click the italics icon', function () {
         setVisualValue('The |quick| brown fox jumps over the lazy dog')
         clickToolbar('md-italic')
-        assert.equal('The _|quick|_ brown fox jumps over the lazy dog', visualValue())
-      })
-
-      it('italicizes selected text with hotkey', function () {
-        focus()
-        setVisualValue('The |quick| brown fox jumps over the lazy dog')
-        pressHotkey('i')
         assert.equal('The _|quick|_ brown fox jumps over the lazy dog', visualValue())
       })
 
@@ -530,11 +484,197 @@ describe('markdown-toolbar-element', function () {
       })
     })
 
+    describe('ordered list', function () {
+      it('turns line into list if cursor at end of line', function () {
+        setVisualValue('One\nTwo|\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n1. Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if cursor at end of document', function () {
+        setVisualValue('One\nTwo\nThree|')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\nTwo\n\n1. Three|', visualValue())
+      })
+
+      it('turns line into list if cursor at beginning of line', function () {
+        setVisualValue('One\n|Two\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n1. |Two\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if cursor at middle of line', function () {
+        setVisualValue('One\nT|wo\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n1. T|wo\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if partial line is selected', function () {
+        setVisualValue('One\nT|w|o\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n|1. Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns two lines into list if two lines are selected', function () {
+        setVisualValue('|One\nTwo|\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('|1. One\n2. Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns two lines into list if 2 lines are partially selected', function () {
+        setVisualValue('O|ne\nTw|o\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('|1. One\n2. Two|\n\nThree\n', visualValue())
+      })
+
+      it('undo list if cursor at end of line', function () {
+        setVisualValue('One\n\n1. Two|\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\nTwo|\n\nThree\n', visualValue())
+      })
+
+      it('undo list if cursor at end of document', function () {
+        setVisualValue('One\nTwo\n\n1. Three|')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\nTwo\n\nThree|', visualValue())
+      })
+
+      it('undo list if cursor at beginning of line', function () {
+        setVisualValue('One\n\n1. |Two\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n|Two\n\nThree\n', visualValue())
+      })
+
+      it('undo list if cursor at middle of line', function () {
+        setVisualValue('One\n\n1. T|wo\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\nT|wo\n\nThree\n', visualValue())
+      })
+
+      it('undo list if partial line is selected', function () {
+        setVisualValue('One\n\n1. T|w|o\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('One\n\n|Two|\n\nThree\n', visualValue())
+      })
+
+      it('undo two lines list if two lines are selected', function () {
+        setVisualValue('|1. One\n2. Two|\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('|One\nTwo|\n\nThree\n', visualValue())
+      })
+
+      it('undo two lines list if 2 lines are partially selected', function () {
+        setVisualValue('1. O|ne\n2. Tw|o\n\nThree\n')
+        clickToolbar('md-ordered-list')
+        assert.equal('|One\nTwo|\n\nThree\n', visualValue())
+      })
+    })
+
+    describe('unordered list', function () {
+      it('turns line into list if cursor at end of line', function () {
+        setVisualValue('One\nTwo|\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if cursor at end of document', function () {
+        setVisualValue('One\nTwo\nThree|')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\nTwo\n\n- Three|', visualValue())
+      })
+
+      it('turns line into list if cursor at beginning of line', function () {
+        setVisualValue('One\n|Two\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- |Two\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if cursor at middle of line', function () {
+        setVisualValue('One\nT|wo\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n- T|wo\n\nThree\n', visualValue())
+      })
+
+      it('turns line into list if partial line is selected', function () {
+        setVisualValue('One\nT|w|o\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n|- Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns two lines into list if two lines are selected', function () {
+        setVisualValue('|One\nTwo|\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('|- One\n- Two|\n\nThree\n', visualValue())
+      })
+
+      it('turns two lines into list if 2 lines are partially selected', function () {
+        setVisualValue('O|ne\nTw|o\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('|- One\n- Two|\n\nThree\n', visualValue())
+      })
+
+      it('undo list if cursor at end of line', function () {
+        setVisualValue('One\n\n- Two|\n\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\nTwo|\n\nThree\n', visualValue())
+      })
+
+      it('undo list if cursor at end of document', function () {
+        setVisualValue('One\nTwo\n\n- Three|')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\nTwo\n\nThree|', visualValue())
+      })
+
+      it('undo list if cursor at beginning of line', function () {
+        setVisualValue('One\n\n- |Two\n\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n|Two\n\nThree\n', visualValue())
+      })
+
+      it('undo list if cursor at middle of line', function () {
+        setVisualValue('One\n\n- T|wo\n\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\nT|wo\n\nThree\n', visualValue())
+      })
+
+      it('undo list if partial line is selected', function () {
+        setVisualValue('One\n\n- T|w|o\n\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n|Two|\n\nThree\n', visualValue())
+      })
+
+      it('undo two lines list if two lines are selected', function () {
+        setVisualValue('|- One\n- Two|\n\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('|One\nTwo|\n\nThree\n', visualValue())
+      })
+
+      it('undo two lines list if 2 lines are partially selected', function () {
+        setVisualValue('- O|ne\n- Tw|o\n\nThree\n')
+        clickToolbar('md-unordered-list')
+        assert.equal('|One\nTwo|\n\nThree\n', visualValue())
+      })
+    })
+
     describe('lists', function () {
+      it('does not stack list styles when selecting multiple lines', function () {
+        setVisualValue('One\n|Two\nThree|\n')
+        clickToolbar('md-ordered-list')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n|- Two\n- Three|\n', visualValue())
+      })
+
+      it('does not stack list styles when selecting one line', function () {
+        setVisualValue('One\n|Two|\nThree\n')
+        clickToolbar('md-ordered-list')
+        clickToolbar('md-unordered-list')
+        assert.equal('One\n\n|- Two|\n\nThree\n', visualValue())
+      })
+
       it('turns line into list when you click the unordered list icon with selection', function () {
         setVisualValue('One\n|Two|\nThree\n')
         clickToolbar('md-unordered-list')
-        assert.equal('One\n\n- |Two|\n\nThree\n', visualValue())
+        assert.equal('One\n\n|- Two|\n\nThree\n', visualValue())
       })
 
       it('turns line into list when you click the unordered list icon without selection', function () {
@@ -550,21 +690,21 @@ describe('markdown-toolbar-element', function () {
       })
 
       it('prefixes newlines when a list is created on the last line', function () {
-        setVisualValue("Here's a list:|One|")
+        setVisualValue("Here's a |list:|")
         clickToolbar('md-unordered-list')
-        assert.equal("Here's a list:\n\n- |One|", visualValue())
+        assert.equal("|- Here's a list:|", visualValue())
       })
 
       it('surrounds list with newlines when a list is created on an existing line', function () {
         setVisualValue("Here's a list:|One|\nThis is text after the list")
         clickToolbar('md-unordered-list')
-        assert.equal("Here's a list:\n\n- |One|\n\nThis is text after the list", visualValue())
+        assert.equal("|- Here's a list:One|\n\nThis is text after the list", visualValue())
       })
 
       it('undo the list when button is clicked again', function () {
         setVisualValue('|Two|')
         clickToolbar('md-unordered-list')
-        assert.equal('- |Two|', visualValue())
+        assert.equal('|- Two|', visualValue())
         clickToolbar('md-unordered-list')
         assert.equal('|Two|', visualValue())
       })
@@ -572,7 +712,7 @@ describe('markdown-toolbar-element', function () {
       it('creates ordered list without selection', function () {
         setVisualValue('apple\n|pear\nbanana\n')
         clickToolbar('md-ordered-list')
-        assert.equal('apple\n\n1. |\n\npear\nbanana\n', visualValue())
+        assert.equal('apple\n\n1. |pear\n\nbanana\n', visualValue())
       })
 
       it('undo an ordered list without selection', function () {
@@ -616,13 +756,6 @@ describe('markdown-toolbar-element', function () {
       it('surrounds a line with backticks if you click the code icon', function () {
         setVisualValue("|puts 'Hello, world!'|")
         clickToolbar('md-code')
-        assert.equal("`|puts 'Hello, world!'|`", visualValue())
-      })
-
-      it('surrounds a line with backticks via hotkey', function () {
-        focus()
-        setVisualValue("|puts 'Hello, world!'|")
-        pressHotkey('e')
         assert.equal("`|puts 'Hello, world!'|`", visualValue())
       })
 
@@ -698,6 +831,18 @@ describe('markdown-toolbar-element', function () {
     })
 
     describe('header', function () {
+      it('sets the level correctly even when dynamically created', function () {
+        const headerElement = document.createElement('md-header')
+        headerElement.setAttribute('level', '2')
+        headerElement.textContent = 'h2'
+        const toolbar = document.querySelector('markdown-toolbar')
+        toolbar.appendChild(headerElement)
+
+        setVisualValue('|title|')
+        clickToolbar('md-header[level="2"]')
+        assert.equal('## |title|', visualValue())
+      })
+
       it('inserts header syntax with cursor in description', function () {
         setVisualValue('|title|')
         clickToolbar('md-header')
@@ -714,6 +859,15 @@ describe('markdown-toolbar-element', function () {
         setVisualValue('|title|')
         clickToolbar('md-header[level="10"]')
         assert.equal('|title|', visualValue())
+      })
+
+      it('dynamically changes header level based on the level attribute', function () {
+        setVisualValue('|title|')
+        const headerButton = document.querySelector('md-header[level="1"]')
+        headerButton.setAttribute('level', '2')
+        headerButton.click()
+
+        assert.equal('## |title|', visualValue())
       })
     })
   })

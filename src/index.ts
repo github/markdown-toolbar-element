@@ -82,6 +82,7 @@ type Style = {
   replaceNext?: string
   scanFor?: string
   orderedList?: boolean
+  unorderedList?: boolean
   prefixSpace?: boolean
 }
 
@@ -113,10 +114,22 @@ class MarkdownButtonElement extends HTMLElement {
 }
 
 class MarkdownHeaderButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-
+  connectedCallback() {
     const level = parseInt(this.getAttribute('level') || '3', 10)
+    this.#setLevelStyle(level)
+  }
+
+  static get observedAttributes() {
+    return ['level']
+  }
+
+  attributeChangedCallback(name: string, oldValue: string, newValue: string) {
+    if (name !== 'level') return
+    const level = parseInt(newValue || '3', 10)
+    this.#setLevelStyle(level)
+  }
+
+  #setLevelStyle(level: number) {
     if (level < 1 || level > 6) {
       return
     }
@@ -134,14 +147,8 @@ if (!window.customElements.get('md-header')) {
 }
 
 class MarkdownBoldButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-    styles.set(this, {prefix: '**', suffix: '**', trimFirst: true})
-  }
-
   connectedCallback() {
-    super.connectedCallback()
-    this.setAttribute('hotkey', 'b')
+    styles.set(this, {prefix: '**', suffix: '**', trimFirst: true})
   }
 }
 
@@ -151,14 +158,8 @@ if (!window.customElements.get('md-bold')) {
 }
 
 class MarkdownItalicButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-    styles.set(this, {prefix: '_', suffix: '_', trimFirst: true})
-  }
-
   connectedCallback() {
-    super.connectedCallback()
-    this.setAttribute('hotkey', 'i')
+    styles.set(this, {prefix: '_', suffix: '_', trimFirst: true})
   }
 }
 
@@ -168,8 +169,7 @@ if (!window.customElements.get('md-italic')) {
 }
 
 class MarkdownQuoteButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '> ', multiline: true, surroundWithNewlines: true})
   }
 }
@@ -180,14 +180,8 @@ if (!window.customElements.get('md-quote')) {
 }
 
 class MarkdownCodeButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-    styles.set(this, {prefix: '`', suffix: '`', blockPrefix: '```', blockSuffix: '```'})
-  }
-
   connectedCallback() {
-    super.connectedCallback()
-    this.setAttribute('hotkey', 'e')
+    styles.set(this, {prefix: '`', suffix: '`', blockPrefix: '```', blockSuffix: '```'})
   }
 }
 
@@ -197,14 +191,8 @@ if (!window.customElements.get('md-code')) {
 }
 
 class MarkdownLinkButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-    styles.set(this, {prefix: '[', suffix: '](url)', replaceNext: 'url', scanFor: 'https?://'})
-  }
-
   connectedCallback() {
-    super.connectedCallback()
-    this.setAttribute('hotkey', 'k')
+    styles.set(this, {prefix: '[', suffix: '](url)', replaceNext: 'url', scanFor: 'https?://'})
   }
 }
 
@@ -214,8 +202,7 @@ if (!window.customElements.get('md-link')) {
 }
 
 class MarkdownImageButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '![', suffix: '](url)', replaceNext: 'url', scanFor: 'https?://'})
   }
 }
@@ -226,9 +213,8 @@ if (!window.customElements.get('md-image')) {
 }
 
 class MarkdownUnorderedListButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-    styles.set(this, {prefix: '- ', multiline: true, surroundWithNewlines: true})
+  connectedCallback() {
+    styles.set(this, {prefix: '- ', multiline: true, unorderedList: true})
   }
 }
 
@@ -238,8 +224,7 @@ if (!window.customElements.get('md-unordered-list')) {
 }
 
 class MarkdownOrderedListButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '1. ', multiline: true, orderedList: true})
   }
 }
@@ -250,14 +235,8 @@ if (!window.customElements.get('md-ordered-list')) {
 }
 
 class MarkdownTaskListButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
-    styles.set(this, {prefix: '- [ ] ', multiline: true, surroundWithNewlines: true})
-  }
-
   connectedCallback() {
-    super.connectedCallback()
-    this.setAttribute('hotkey', 'L')
+    styles.set(this, {prefix: '- [ ] ', multiline: true, surroundWithNewlines: true})
   }
 }
 
@@ -267,8 +246,7 @@ if (!window.customElements.get('md-task-list')) {
 }
 
 class MarkdownMentionButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '@', prefixSpace: true})
   }
 }
@@ -279,8 +257,7 @@ if (!window.customElements.get('md-mention')) {
 }
 
 class MarkdownRefButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '#', prefixSpace: true})
   }
 }
@@ -291,8 +268,7 @@ if (!window.customElements.get('md-ref')) {
 }
 
 class MarkdownStrikethroughButtonElement extends MarkdownButtonElement {
-  constructor() {
-    super()
+  connectedCallback() {
     styles.set(this, {prefix: '~~', suffix: '~~', trimFirst: true})
   }
 }
@@ -318,30 +294,16 @@ if (!window.customElements.get('md-table')) {
 const modifierKey = navigator.userAgent.match(/Macintosh/) ? 'Meta' : 'Control'
 
 class MarkdownToolbarElement extends HTMLElement {
-  constructor() {
-    super()
-  }
-
   connectedCallback(): void {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar')
     }
     this.addEventListener('keydown', focusKeydown)
-    const fn = shortcut.bind(null, this)
-    if (this.field) {
-      this.field.addEventListener('keydown', fn)
-      shortcutListeners.set(this, fn)
-    }
     this.setAttribute('tabindex', '0')
     this.addEventListener('focus', onToolbarFocus, {once: true})
   }
 
   disconnectedCallback(): void {
-    const fn = shortcutListeners.get(this)
-    if (fn && this.field) {
-      this.field.removeEventListener('keydown', fn)
-      shortcutListeners.delete(this)
-    }
     this.removeEventListener('keydown', focusKeydown)
   }
 
@@ -395,28 +357,6 @@ function focusKeydown(event: KeyboardEvent) {
   event.preventDefault()
 
   buttons[n].focus()
-}
-
-const shortcutListeners = new WeakMap()
-
-function findHotkey(toolbar: Element, key: string): HTMLElement | null {
-  for (const el of toolbar.querySelectorAll<HTMLElement>('[hotkey]')) {
-    if (el.getAttribute('hotkey') === key) {
-      return el
-    }
-  }
-  return null
-}
-
-function shortcut(toolbar: Element, event: KeyboardEvent) {
-  if ((event.metaKey && modifierKey === 'Meta') || (event.ctrlKey && modifierKey === 'Control')) {
-    const key = event.shiftKey ? event.key.toUpperCase() : event.key
-    const button = findHotkey(toolbar, key)
-    if (button) {
-      button.click()
-      event.preventDefault()
-    }
-  }
 }
 
 if (!window.customElements.get('markdown-toolbar')) {
@@ -496,8 +436,8 @@ function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) 
   const text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
 
   let result
-  if (styleArgs.orderedList) {
-    result = orderedList(textarea)
+  if (styleArgs.orderedList || styleArgs.unorderedList) {
+    result = listStyle(textarea, styleArgs)
   } else if (styleArgs.multiline && isMultipleLines(text)) {
     result = multilineStyle(textarea, styleArgs)
   } else {
@@ -505,6 +445,21 @@ function styleSelectedText(textarea: HTMLTextAreaElement, styleArgs: StyleArgs) 
   }
 
   insertText(textarea, result)
+}
+
+function expandSelectionToLine(textarea: HTMLTextAreaElement) {
+  const lines = textarea.value.split('\n')
+  let counter = 0
+  for (let index = 0; index < lines.length; index++) {
+    const lineLength = lines[index].length + 1
+    if (textarea.selectionStart >= counter && textarea.selectionStart < counter + lineLength) {
+      textarea.selectionStart = counter
+    }
+    if (textarea.selectionEnd >= counter && textarea.selectionEnd < counter + lineLength) {
+      textarea.selectionEnd = counter + lineLength - 1
+    }
+    counter += lineLength
+  }
 }
 
 function expandSelectedText(
@@ -662,41 +617,115 @@ function multilineStyle(textarea: HTMLTextAreaElement, arg: StyleArgs) {
   return {text, selectionStart, selectionEnd}
 }
 
-function orderedList(textarea: HTMLTextAreaElement): SelectionRange {
+interface UndoResult {
+  text: string
+  processed: boolean
+}
+function undoOrderedListStyle(text: string): UndoResult {
+  const lines = text.split('\n')
   const orderedListRegex = /^\d+\.\s+/
-  const noInitialSelection = textarea.selectionStart === textarea.selectionEnd
-  let selectionEnd
-  let selectionStart
-  let text = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
-  let textToUnstyle = text
-  let lines = text.split('\n')
-  let startOfLine, endOfLine
-  if (noInitialSelection) {
-    const linesBefore = textarea.value.slice(0, textarea.selectionStart).split(/\n/)
-    startOfLine = textarea.selectionStart - linesBefore[linesBefore.length - 1].length
-    endOfLine = wordSelectionEnd(textarea.value, textarea.selectionStart, true)
-    textToUnstyle = textarea.value.slice(startOfLine, endOfLine)
+  const shouldUndoOrderedList = lines.every(line => orderedListRegex.test(line))
+  let result = lines
+  if (shouldUndoOrderedList) {
+    result = lines.map(line => line.replace(orderedListRegex, ''))
   }
-  const linesToUnstyle = textToUnstyle.split('\n')
-  const undoStyling = linesToUnstyle.every(line => orderedListRegex.test(line))
 
-  if (undoStyling) {
-    lines = linesToUnstyle.map(line => line.replace(orderedListRegex, ''))
-    text = lines.join('\n')
-    if (noInitialSelection && startOfLine && endOfLine) {
-      const lengthDiff = linesToUnstyle[0].length - lines[0].length
-      selectionStart = selectionEnd = textarea.selectionStart - lengthDiff
-      textarea.selectionStart = startOfLine
-      textarea.selectionEnd = endOfLine
-    }
+  return {
+    text: result.join('\n'),
+    processed: shouldUndoOrderedList
+  }
+}
+
+function undoUnorderedListStyle(text: string): UndoResult {
+  const lines = text.split('\n')
+  const unorderedListPrefix = '- '
+  const shouldUndoUnorderedList = lines.every(line => line.startsWith(unorderedListPrefix))
+  let result = lines
+  if (shouldUndoUnorderedList) {
+    result = lines.map(line => line.slice(unorderedListPrefix.length, line.length))
+  }
+
+  return {
+    text: result.join('\n'),
+    processed: shouldUndoUnorderedList
+  }
+}
+
+function makePrefix(index: number, unorderedList: boolean): string {
+  if (unorderedList) {
+    return '- '
   } else {
-    lines = numberedLines(lines)
-    text = lines.join('\n')
-    const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
-    selectionStart = textarea.selectionStart + newlinesToAppend.length
-    selectionEnd = selectionStart + text.length
-    if (noInitialSelection) selectionStart = selectionEnd
-    text = newlinesToAppend + text + newlinesToPrepend
+    return `${index + 1}. `
+  }
+}
+
+function clearExistingListStyle(style: StyleArgs, selectedText: string): [UndoResult, UndoResult, string] {
+  let undoResultOpositeList: UndoResult
+  let undoResult: UndoResult
+  let pristineText
+  if (style.orderedList) {
+    undoResult = undoOrderedListStyle(selectedText)
+    undoResultOpositeList = undoUnorderedListStyle(undoResult.text)
+    pristineText = undoResultOpositeList.text
+  } else {
+    undoResult = undoUnorderedListStyle(selectedText)
+    undoResultOpositeList = undoOrderedListStyle(undoResult.text)
+    pristineText = undoResultOpositeList.text
+  }
+  return [undoResult, undoResultOpositeList, pristineText]
+}
+
+function listStyle(textarea: HTMLTextAreaElement, style: StyleArgs): SelectionRange {
+  const noInitialSelection = textarea.selectionStart === textarea.selectionEnd
+  let selectionStart = textarea.selectionStart
+  let selectionEnd = textarea.selectionEnd
+
+  // Select whole line
+  expandSelectionToLine(textarea)
+
+  const selectedText = textarea.value.slice(textarea.selectionStart, textarea.selectionEnd)
+
+  // If the user intent was to do an undo, we will stop after this.
+  // Otherwise, we will still undo to other list type to prevent list stacking
+  const [undoResult, undoResultOpositeList, pristineText] = clearExistingListStyle(style, selectedText)
+
+  const prefixedLines = pristineText.split('\n').map((value, index) => {
+    return `${makePrefix(index, style.unorderedList)}${value}`
+  })
+
+  const totalPrefixLength = prefixedLines.reduce((previousValue, _currentValue, currentIndex) => {
+    return previousValue + makePrefix(currentIndex, style.unorderedList).length
+  }, 0)
+
+  const totalPrefixLengthOpositeList = prefixedLines.reduce((previousValue, _currentValue, currentIndex) => {
+    return previousValue + makePrefix(currentIndex, !style.unorderedList).length
+  }, 0)
+
+  if (undoResult.processed) {
+    if (noInitialSelection) {
+      selectionStart = Math.max(selectionStart - makePrefix(0, style.unorderedList).length, 0)
+      selectionEnd = selectionStart
+    } else {
+      selectionStart = textarea.selectionStart
+      selectionEnd = textarea.selectionEnd - totalPrefixLength
+    }
+    return {text: pristineText, selectionStart, selectionEnd}
+  }
+
+  const {newlinesToAppend, newlinesToPrepend} = newlinesToSurroundSelectedText(textarea)
+  const text = newlinesToAppend + prefixedLines.join('\n') + newlinesToPrepend
+
+  if (noInitialSelection) {
+    selectionStart = Math.max(selectionStart + makePrefix(0, style.unorderedList).length + newlinesToAppend.length, 0)
+    selectionEnd = selectionStart
+  } else {
+    if (undoResultOpositeList.processed) {
+      selectionStart = Math.max(textarea.selectionStart + newlinesToAppend.length, 0)
+      selectionEnd = textarea.selectionEnd + newlinesToAppend.length + totalPrefixLength - totalPrefixLengthOpositeList
+    } else {
+      selectionStart = Math.max(textarea.selectionStart + newlinesToAppend.length, 0)
+      selectionEnd = textarea.selectionEnd + newlinesToAppend.length + totalPrefixLength
+    }
   }
 
   return {text, selectionStart, selectionEnd}
@@ -713,19 +742,8 @@ interface StyleArgs {
   scanFor: string
   surroundWithNewlines: boolean
   orderedList: boolean
+  unorderedList: boolean
   trimFirst: boolean
-}
-
-function numberedLines(lines: string[]) {
-  let i
-  let len
-  let index
-  const results = []
-  for (index = i = 0, len = lines.length; i < len; index = ++i) {
-    const line = lines[index]
-    results.push(`${index + 1}. ${line}`)
-  }
-  return results
 }
 
 function applyStyle(button: Element, stylesToApply: Style) {
@@ -743,6 +761,7 @@ function applyStyle(button: Element, stylesToApply: Style) {
     scanFor: '',
     surroundWithNewlines: false,
     orderedList: false,
+    unorderedList: false,
     trimFirst: false
   }
 

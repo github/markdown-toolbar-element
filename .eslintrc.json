@@ -20,7 +20,9 @@
     {
       "files": "test/**/*.js",
       "rules": {
-        "github/unescaped-html-literal": "off"
+        "github/unescaped-html-literal": "off",
+        "github/no-inner-html": "off",
+        "i18n-text/no-en": "off"
       }
     }
   ]
