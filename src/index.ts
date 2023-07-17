@@ -84,6 +84,39 @@ type Style = {
 }
 
 const styles = new WeakMap<Element, Style>()
+const manualStyles = {
+  'header-1': {prefix: '# '},
+  'header-2': {prefix: '## '},
+  'header-3': {prefix: '### '},
+  'header-4': {prefix: '#### '},
+  'header-5': {prefix: '##### '},
+  'header-6': {prefix: '###### '},
+  bold: {prefix: '**', suffix: '**', trimFirst: true},
+  italic: {prefix: '_', suffix: '_', trimFirst: true},
+  quote: {prefix: '> ', multiline: true, surroundWithNewlines: true},
+  code: {
+    prefix: '`',
+    suffix: '`',
+    blockPrefix: '```',
+    blockSuffix: '```'
+  },
+  link: {prefix: '[', suffix: '](url)', replaceNext: 'url', scanFor: 'https?://'},
+  image: {prefix: '![', suffix: '](url)', replaceNext: 'url', scanFor: 'https?://'},
+  'unordered-list': {
+    prefix: '- ',
+    multiline: true,
+    unorderedList: true
+  },
+  'ordered-list': {
+    prefix: '1. ',
+    multiline: true,
+    orderedList: true
+  },
+  'task-list': {prefix: '- [ ] ', multiline: true, surroundWithNewlines: true},
+  mention: {prefix: '@', prefixSpace: true},
+  ref: {prefix: '#', prefixSpace: true},
+  strikethrough: {prefix: '~~', suffix: '~~', trimFirst: true}
+} as const
 
 class MarkdownButtonElement extends HTMLElement {
   constructor() {
@@ -275,6 +308,17 @@ if (!window.customElements.get('md-strikethrough')) {
   window.customElements.define('md-strikethrough', MarkdownStrikethroughButtonElement)
 }
 
+function applyFromToolbar(event: Event) {
+  const {target, currentTarget} = event
+  if (!(target instanceof HTMLElement)) return
+  const mdButton = target.closest('[data-md-button]')
+  if (!mdButton || mdButton.closest('markdown-toolbar') !== currentTarget) return
+  const mdButtonStyle = target.getAttribute('data-md-button')
+  const style = manualStyles[mdButtonStyle as keyof typeof manualStyles]
+  if (!style) return
+  applyStyle(target, style)
+}
+
 class MarkdownToolbarElement extends HTMLElement {
   connectedCallback(): void {
     if (!this.hasAttribute('role')) {
@@ -283,6 +327,8 @@ class MarkdownToolbarElement extends HTMLElement {
     this.addEventListener('keydown', focusKeydown)
     this.setAttribute('tabindex', '0')
     this.addEventListener('focus', onToolbarFocus, {once: true})
+    this.addEventListener('keydown', keydown(applyFromToolbar))
+    this.addEventListener('click', applyFromToolbar)
   }
 
   disconnectedCallback(): void {
