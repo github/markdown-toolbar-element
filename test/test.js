@@ -869,6 +869,17 @@ describe('markdown-toolbar-element', function () {
 
         assert.equal('## |title|', visualValue())
       })
+
+      it('can be triggered from a data-md-button', function () {
+        const headerElement = document.createElement('button')
+        headerElement.setAttribute('data-md-button', 'header-6')
+        const toolbar = document.querySelector('markdown-toolbar')
+        toolbar.appendChild(headerElement)
+        setVisualValue('|title|')
+        headerElement.click()
+
+        assert.equal('###### |title|', visualValue())
+      })
     })
   })
 })
