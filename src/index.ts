@@ -324,9 +324,11 @@ class MarkdownToolbarElement extends HTMLElement {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar')
     }
-    this.addEventListener('keydown', focusKeydown)
-    this.setAttribute('tabindex', '0')
-    this.addEventListener('focus', onToolbarFocus, {once: true})
+    if (!this.hasAttribute('data-no-focus')) {
+      this.addEventListener('keydown', focusKeydown)
+      this.setAttribute('tabindex', '0')
+      this.addEventListener('focus', onToolbarFocus, {once: true})
+    }
     this.addEventListener('keydown', keydown(applyFromToolbar))
     this.addEventListener('click', applyFromToolbar)
   }
@@ -349,7 +351,6 @@ class MarkdownToolbarElement extends HTMLElement {
 
 function onToolbarFocus({target}: FocusEvent) {
   if (!(target instanceof Element)) return
-  if (target.hasAttribute('data-no-focus')) return
   target.removeAttribute('tabindex')
   let tabindex = '0'
   for (const button of getButtons(target)) {
@@ -366,7 +367,6 @@ function focusKeydown(event: KeyboardEvent) {
   if (key !== 'ArrowRight' && key !== 'ArrowLeft' && key !== 'Home' && key !== 'End') return
   const toolbar = event.currentTarget
   if (!(toolbar instanceof HTMLElement)) return
-  if (toolbar.hasAttribute('data-no-focus')) return
   const buttons = getButtons(toolbar)
   const index = buttons.indexOf(event.target as HTMLElement)
   const length = buttons.length
