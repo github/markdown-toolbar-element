@@ -1,5 +1,3 @@
-chai.config.truncateThreshold = Infinity
-
 describe('markdown-toolbar-element', function () {
   describe('element creation', function () {
     it('creates from document.createElement', function () {
