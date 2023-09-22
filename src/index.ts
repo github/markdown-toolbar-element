@@ -320,20 +320,43 @@ function applyFromToolbar(event: Event) {
   applyStyle(target, style)
 }
 
+function setFocusManagement(toolbar: MarkdownToolbarElement) {
+  toolbar.addEventListener('keydown', focusKeydown)
+  toolbar.setAttribute('tabindex', '0')
+  toolbar.addEventListener('focus', onToolbarFocus, {once: true})
+}
+
+function unsetFocusManagement(toolbar: MarkdownToolbarElement) {
+  toolbar.removeEventListener('keydown', focusKeydown)
+  toolbar.removeAttribute('tabindex')
+  toolbar.removeEventListener('focus', onToolbarFocus)
+}
+
 class MarkdownToolbarElement extends HTMLElement {
+  static observedAttributes = ['data-no-focus']
+
   connectedCallback(): void {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar')
     }
-    this.addEventListener('keydown', focusKeydown)
-    this.setAttribute('tabindex', '0')
-    this.addEventListener('focus', onToolbarFocus, {once: true})
+    if (!this.hasAttribute('data-no-focus')) {
+      setFocusManagement(this)
+    }
     this.addEventListener('keydown', keydown(applyFromToolbar))
     this.addEventListener('click', applyFromToolbar)
   }
 
+  attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
+    if (name !== 'data-no-focus') return
+    if (newValue === null) {
+      setFocusManagement(this)
+    } else {
+      unsetFocusManagement(this)
+    }
+  }
+
   disconnectedCallback(): void {
-    this.removeEventListener('keydown', focusKeydown)
+    unsetFocusManagement(this)
   }
 
   get field(): HTMLTextAreaElement | null {
@@ -350,7 +373,6 @@ class MarkdownToolbarElement extends HTMLElement {
 
 function onToolbarFocus({target}: FocusEvent) {
   if (!(target instanceof Element)) return
-  if (target.hasAttribute('data-no-focus')) return
   target.removeAttribute('tabindex')
   let tabindex = '0'
   for (const button of getButtons(target)) {
@@ -367,7 +389,6 @@ function focusKeydown(event: KeyboardEvent) {
   if (key !== 'ArrowRight' && key !== 'ArrowLeft' && key !== 'Home' && key !== 'End') return
   const toolbar = event.currentTarget
   if (!(toolbar instanceof HTMLElement)) return
-  if (toolbar.hasAttribute('data-no-focus')) return
   const buttons = getButtons(toolbar)
   const index = buttons.indexOf(event.target as HTMLElement)
   const length = buttons.length

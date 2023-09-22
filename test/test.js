@@ -96,6 +96,7 @@ describe('markdown-toolbar-element', function () {
 
     describe('focus management', function () {
       function focusFirstButton() {
+        document.querySelector('markdown-toolbar').focus()
         const button = document.querySelector('md-bold')
         button.focus()
       }
@@ -110,10 +111,6 @@ describe('markdown-toolbar-element', function () {
       function getElementsWithTabindex(index) {
         return [...document.querySelectorAll(`markdown-toolbar [tabindex="${index}"]`)]
       }
-
-      beforeEach(() => {
-        document.querySelector('markdown-toolbar').focus()
-      })
 
       it('moves focus to next button when ArrowRight is pressed', function () {
         focusFirstButton()
@@ -135,8 +132,7 @@ describe('markdown-toolbar-element', function () {
         document.querySelector('markdown-toolbar').setAttribute('data-no-focus', '')
         focusFirstButton()
         pushKeyOnFocussedButton('ArrowRight')
-        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
-        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        assert.lengthOf(getElementsWithTabindex(0), 0)
       })
 
       it('cycles focus round to last element from first when ArrowLeft is pressed', function () {
