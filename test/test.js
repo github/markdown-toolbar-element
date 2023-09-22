@@ -96,6 +96,7 @@ describe('markdown-toolbar-element', function () {
 
     describe('focus management', function () {
       function focusFirstButton() {
+        document.querySelector('markdown-toolbar').focus()
         const button = document.querySelector('md-bold')
         button.focus()
       }
@@ -110,10 +111,6 @@ describe('markdown-toolbar-element', function () {
       function getElementsWithTabindex(index) {
         return [...document.querySelectorAll(`markdown-toolbar [tabindex="${index}"]`)]
       }
-
-      beforeEach(() => {
-        document.querySelector('markdown-toolbar').focus()
-      })
 
       it('moves focus to next button when ArrowRight is pressed', function () {
         focusFirstButton()
