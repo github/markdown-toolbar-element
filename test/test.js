@@ -135,8 +135,7 @@ describe('markdown-toolbar-element', function () {
         document.querySelector('markdown-toolbar').setAttribute('data-no-focus', '')
         focusFirstButton()
         pushKeyOnFocussedButton('ArrowRight')
-        assert.deepEqual(getElementsWithTabindex(0), [document.querySelector('md-bold')])
-        assert.deepEqual(getElementsWithTabindex(0), [document.activeElement])
+        assert.lengthOf(getElementsWithTabindex(0), 0)
       })
 
       it('cycles focus round to last element from first when ArrowLeft is pressed', function () {
