@@ -62,7 +62,6 @@ function getButtons(toolbar: Element): HTMLElement[] {
 function keydown(fn: (event: KeyboardEvent) => void): (event: KeyboardEvent) => void {
   return function (event: KeyboardEvent) {
     if (event.key === ' ' || event.key === 'Enter') {
-      event.preventDefault()
       fn(event)
     }
   }
@@ -121,9 +120,10 @@ const manualStyles = {
 class MarkdownButtonElement extends HTMLElement {
   constructor() {
     super()
-    const apply = () => {
+    const apply = (event: Event) => {
       const style = styles.get(this)
       if (!style) return
+      event.preventDefault()
       applyStyle(this, style)
     }
     this.addEventListener('keydown', keydown(apply))
@@ -316,6 +316,7 @@ function applyFromToolbar(event: Event) {
   const mdButtonStyle = target.getAttribute('data-md-button')
   const style = manualStyles[mdButtonStyle as keyof typeof manualStyles]
   if (!style) return
+  event.preventDefault()
   applyStyle(target, style)
 }
 
