@@ -313,7 +313,7 @@ function applyFromToolbar(event: Event) {
   if (!(target instanceof Element)) return
   const mdButton = target.closest('[data-md-button]')
   if (!mdButton || mdButton.closest('markdown-toolbar') !== currentTarget) return
-  const mdButtonStyle = target.getAttribute('data-md-button')
+  const mdButtonStyle = mdButton.getAttribute('data-md-button')
   const style = manualStyles[mdButtonStyle as keyof typeof manualStyles]
   if (!style) return
   event.preventDefault()
