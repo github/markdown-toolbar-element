@@ -310,7 +310,7 @@ if (!window.customElements.get('md-strikethrough')) {
 
 function applyFromToolbar(event: Event) {
   const {target, currentTarget} = event
-  if (!(target instanceof HTMLElement)) return
+  if (!(target instanceof Element)) return
   const mdButton = target.closest('[data-md-button]')
   if (!mdButton || mdButton.closest('markdown-toolbar') !== currentTarget) return
   const mdButtonStyle = target.getAttribute('data-md-button')
