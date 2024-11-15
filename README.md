@@ -1,4 +1,8 @@
-# &lt;markdown-toolbar&gt; element
+# &lt;markdown-toolbar&gt; element (DEPRECATED)
+
+> **NOTE**: This project is deprecated and is [planned to be retired](https://trello.com/c/v6AT6hNR/88-remove-markdown-toolbar-element-from-content-publisher).
+
+---
 
 Markdown formatting buttons for text inputs.
 
