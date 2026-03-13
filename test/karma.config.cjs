@@ -1,4 +1,4 @@
-process.env.CHROME_BIN = require('chromium').path
+process.env.CHROME_BIN = process.env.CHROME_BIN || 'google-chrome'
 
 module.exports = function (config) {
   config.set({
