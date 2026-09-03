@@ -1,6 +1,9 @@
 {
   "root": true,
   "extends": ["plugin:github/browser", "plugin:github/recommended", "plugin:github/typescript"],
+  "parserOptions": {
+    "ecmaVersion": 2022
+  },
   "globals": {
     "MarkdownToolbarElement": "readonly",
     "MarkdownHeaderButtonElement": "readonly",

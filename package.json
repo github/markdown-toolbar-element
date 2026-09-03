@@ -41,5 +41,8 @@
   },
   "eslintIgnore": [
     "dist/"
-  ]
+  ],
+  "overrides": {
+    "eslint-plugin-escompat": "3.12.0"
+  }
 }
