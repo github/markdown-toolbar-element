@@ -43,6 +43,6 @@
     "dist/"
   ],
   "overrides": {
-    "eslint-plugin-escompat": "3.12.0"
+    "eslint-plugin-escompat": "3.11.6"
   }
 }
