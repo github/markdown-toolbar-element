@@ -11,6 +11,43 @@ describe('markdown-toolbar-element', function () {
     })
   })
 
+  describe('role attribute', function () {
+    afterEach(function () {
+      document.body.innerHTML = ''
+    })
+
+    const buttonTags = [
+      'md-header',
+      'md-bold',
+      'md-italic',
+      'md-quote',
+      'md-code',
+      'md-link',
+      'md-image',
+      'md-unordered-list',
+      'md-ordered-list',
+      'md-task-list',
+      'md-mention',
+      'md-ref',
+      'md-strikethrough'
+    ]
+
+    for (const tag of buttonTags) {
+      it(`sets role="button" on <${tag}> when connected`, function () {
+        const el = document.createElement(tag)
+        document.body.append(el)
+        assert.equal(el.getAttribute('role'), 'button')
+      })
+
+      it(`preserves custom role on <${tag}> if already present`, function () {
+        const el = document.createElement(tag)
+        el.setAttribute('role', 'none')
+        document.body.append(el)
+        assert.equal(el.getAttribute('role'), 'none')
+      })
+    }
+  })
+
   describe('in shadow DOM', function () {
     it('finds field and inserts markdown', function () {
       const div = document.createElement('div')
