@@ -921,6 +921,18 @@ describe('markdown-toolbar-element', function () {
 
         assert.equal('###### |title|', visualValue())
       })
+
+      it('applies a data-md-button style once from the keyboard after the toolbar is moved', function () {
+        const headerElement = document.createElement('button')
+        headerElement.setAttribute('data-md-button', 'header-6')
+        const toolbar = document.querySelector('markdown-toolbar')
+        toolbar.appendChild(headerElement)
+        toolbar.parentElement.append(toolbar)
+        setVisualValue('|title|')
+        headerElement.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true, cancelable: true}))
+
+        assert.equal('###### |title|', visualValue())
+      })
     })
   })
 })

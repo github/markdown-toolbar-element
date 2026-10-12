@@ -348,6 +348,12 @@ function unsetFocusManagement(toolbar: MarkdownToolbarElement) {
 class MarkdownToolbarElement extends HTMLElement {
   static observedAttributes = ['data-no-focus']
 
+  constructor() {
+    super()
+    this.addEventListener('keydown', keydown(applyFromToolbar))
+    this.addEventListener('click', applyFromToolbar)
+  }
+
   connectedCallback(): void {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'toolbar')
@@ -355,8 +361,6 @@ class MarkdownToolbarElement extends HTMLElement {
     if (!this.hasAttribute('data-no-focus')) {
       setFocusManagement(this)
     }
-    this.addEventListener('keydown', keydown(applyFromToolbar))
-    this.addEventListener('click', applyFromToolbar)
   }
 
   attributeChangedCallback(name: string, oldValue: string, newValue: string): void {
