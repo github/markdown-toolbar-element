@@ -32,6 +32,22 @@ describe('markdown-toolbar-element', function () {
       'md-strikethrough'
     ]
 
+    const defaultTitles = {
+      'md-header': 'Heading',
+      'md-bold': 'Bold',
+      'md-italic': 'Italic',
+      'md-quote': 'Quote',
+      'md-code': 'Code',
+      'md-link': 'Link',
+      'md-image': 'Image',
+      'md-unordered-list': 'Unordered list',
+      'md-ordered-list': 'Ordered list',
+      'md-task-list': 'Task list',
+      'md-mention': 'Mention',
+      'md-ref': 'Reference',
+      'md-strikethrough': 'Strikethrough'
+    }
+
     for (const tag of buttonTags) {
       it(`sets role="button" on <${tag}> when connected`, function () {
         const el = document.createElement(tag)
@@ -46,6 +62,30 @@ describe('markdown-toolbar-element', function () {
         assert.equal(el.getAttribute('role'), 'none')
       })
     }
+
+    it('sets descriptive default titles on built-in buttons', function () {
+      for (const [tag, title] of Object.entries(defaultTitles)) {
+        const el = document.createElement(tag)
+        document.body.append(el)
+        assert.equal(el.getAttribute('title'), title)
+      }
+    })
+
+    it('preserves an explicit title when a button reconnects', function () {
+      const el = document.createElement('md-bold')
+      el.setAttribute('title', 'Emphasis')
+      document.body.append(el)
+      document.body.removeChild(el)
+      document.body.append(el)
+      assert.equal(el.getAttribute('title'), 'Emphasis')
+    })
+
+    it('preserves an explicit empty title', function () {
+      const el = document.createElement('md-bold')
+      el.setAttribute('title', '')
+      document.body.append(el)
+      assert.equal(el.getAttribute('title'), '')
+    })
   })
 
   describe('in shadow DOM', function () {

@@ -83,6 +83,21 @@ type Style = {
 }
 
 const styles = new WeakMap<Element, Style>()
+const defaultTitles: Record<string, string> = {
+  'md-header': 'Heading',
+  'md-bold': 'Bold',
+  'md-italic': 'Italic',
+  'md-quote': 'Quote',
+  'md-code': 'Code',
+  'md-link': 'Link',
+  'md-image': 'Image',
+  'md-unordered-list': 'Unordered list',
+  'md-ordered-list': 'Ordered list',
+  'md-task-list': 'Task list',
+  'md-mention': 'Mention',
+  'md-ref': 'Reference',
+  'md-strikethrough': 'Strikethrough'
+}
 const manualStyles = {
   'header-1': {prefix: '# '},
   'header-2': {prefix: '## '},
@@ -133,6 +148,10 @@ class MarkdownButtonElement extends HTMLElement {
   connectedCallback() {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'button')
+    }
+    if (!this.hasAttribute('title')) {
+      const title = defaultTitles[this.localName]
+      if (title) this.setAttribute('title', title)
     }
   }
 
