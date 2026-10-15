@@ -35,7 +35,9 @@ import '@github/markdown-toolbar-element'
 
 `<markdown-toolbar>` comes with focus management as advised in [WAI-ARIA Authoring Practices 1.1: Toolbar Design Pattern](https://www.w3.org/TR/wai-aria-practices-1.1/examples/toolbar/toolbar.html). The `md-*` buttons that ship with this package are automatically managed. Add a `data-md-button` attribute to any custom toolbar items to enroll them into focus management.
 
-Built-in buttons receive an English default `title` when the attribute is absent. This provides a fallback accessible name and tooltip. Visible text, `aria-label`, and `aria-labelledby` still determine the accessible name. Set `title` to localize the tooltip, or `title=""` to suppress it.
+Built-in buttons receive an English default `title` when the attribute is absent. This provides a fallback accessible name and a native tooltip. Visible text, `aria-label`, and `aria-labelledby` still determine the accessible name, but the title can also be exposed as an accessible description. A localized ARIA name does not suppress the English title. Set `title` to localize it, or `title=""` to suppress it when providing a custom tooltip.
+
+Setting `title=""` also removes the fallback accessible name. An icon-only button must then have another accessible name, supplied through visible text, `aria-label`, or `aria-labelledby`. Applications with custom tooltips should suppress the native title to avoid displaying both tooltips.
 
 ## Browser support
 
