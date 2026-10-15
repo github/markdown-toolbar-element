@@ -149,7 +149,14 @@ class MarkdownButtonElement extends HTMLElement {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'button')
     }
-    if (!this.hasAttribute('title')) {
+    const hasAccessibleName = [
+      // innerText excludes hidden descendants from rendered button text.
+      // eslint-disable-next-line github/no-innerText
+      this.innerText,
+      this.getAttribute('aria-label'),
+      this.getAttribute('aria-labelledby')
+    ].some(value => value?.trim())
+    if (!this.hasAttribute('title') && !hasAccessibleName) {
       const title = defaultTitles[this.localName]
       if (title) this.setAttribute('title', title)
     }

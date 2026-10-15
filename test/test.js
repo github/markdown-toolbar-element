@@ -86,6 +86,49 @@ describe('markdown-toolbar-element', function () {
       document.body.append(el)
       assert.equal(el.getAttribute('title'), '')
     })
+
+    it('does not add a default title when a button has an accessible name', function () {
+      const namedButtons = [
+        {textContent: 'Bold'},
+        {attribute: ['aria-label', 'Emphasis']},
+        {attribute: ['aria-labelledby', 'button-label']}
+      ]
+
+      for (const namedButton of namedButtons) {
+        const el = document.createElement('md-bold')
+        if (namedButton.textContent) el.textContent = namedButton.textContent
+        if (namedButton.attribute) el.setAttribute(...namedButton.attribute)
+        document.body.append(el)
+        assert.isNull(el.getAttribute('title'))
+        document.body.removeChild(el)
+      }
+    })
+
+    it('adds a default title when supplied names contain only whitespace', function () {
+      const textButton = document.createElement('md-bold')
+      textButton.textContent = '  \n  '
+      document.body.append(textButton)
+      assert.equal(textButton.getAttribute('title'), 'Bold')
+      document.body.removeChild(textButton)
+
+      const ariaButton = document.createElement('md-bold')
+      ariaButton.setAttribute('aria-label', '  ')
+      document.body.append(ariaButton)
+      assert.equal(ariaButton.getAttribute('title'), 'Bold')
+    })
+
+    it('ignores hidden descendant content when deciding whether text is visible', function () {
+      const hiddenTextButton = document.createElement('md-bold')
+      hiddenTextButton.innerHTML = '<span hidden>Not a name</span>'
+      document.body.append(hiddenTextButton)
+      assert.equal(hiddenTextButton.getAttribute('title'), 'Bold')
+      document.body.removeChild(hiddenTextButton)
+
+      const ariaHiddenSvgButton = document.createElement('md-bold')
+      ariaHiddenSvgButton.innerHTML = '<svg aria-hidden="true"><title>Decorative</title></svg>'
+      document.body.append(ariaHiddenSvgButton)
+      assert.equal(ariaHiddenSvgButton.getAttribute('title'), 'Bold')
+    })
   })
 
   describe('in shadow DOM', function () {
