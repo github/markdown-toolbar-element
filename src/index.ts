@@ -98,6 +98,47 @@ const defaultTitles: Record<string, string> = {
   'md-ref': 'Reference',
   'md-strikethrough': 'Strikethrough'
 }
+
+function hasNamingContent(element: Element, ignoreHidden: boolean, allowHiddenRoot = false, isRoot = true): boolean {
+  const style = element.ownerDocument.defaultView?.getComputedStyle(element)
+  const hiddenByStyle = !isRoot && (style?.display === 'none' || style?.visibility === 'hidden')
+  if (
+    ignoreHidden &&
+    ((!allowHiddenRoot &&
+      (element.hasAttribute('hidden') || element.getAttribute('aria-hidden')?.toLowerCase() === 'true')) ||
+      hiddenByStyle)
+  ) {
+    return false
+  }
+  if (element.getAttribute('aria-label')?.trim()) return true
+  if (element.localName === 'img') {
+    return Boolean(element.getAttribute('alt')?.trim())
+  }
+  for (const child of element.childNodes) {
+    if (child.nodeType === 3 && child.textContent?.trim()) return true
+    if (child.nodeType === 1 && hasNamingContent(child as Element, ignoreHidden, false, false)) return true
+  }
+  return false
+}
+
+function getReferencedElement(element: Element, id: string): Element | null {
+  const root = element.getRootNode()
+  if (root.nodeType !== 9 && root.nodeType !== 11) return null
+  return (root as Document).getElementById(id)
+}
+
+function hasAccessibleName(element: Element): boolean {
+  if (element.getAttribute('aria-label')?.trim()) return true
+  const labelledBy = element.getAttribute('aria-labelledby')?.trim()
+  if (labelledBy) {
+    for (const id of labelledBy.split(/\s+/)) {
+      const label = getReferencedElement(element, id)
+      if (label && hasNamingContent(label, true, true)) return true
+    }
+  }
+  return hasNamingContent(element, true, true)
+}
+
 const manualStyles = {
   'header-1': {prefix: '# '},
   'header-2': {prefix: '## '},
@@ -149,16 +190,15 @@ class MarkdownButtonElement extends HTMLElement {
     if (!this.hasAttribute('role')) {
       this.setAttribute('role', 'button')
     }
-    const hasAccessibleName = [
-      // innerText excludes hidden descendants from rendered button text.
-      // eslint-disable-next-line github/no-innerText
-      this.innerText,
-      this.getAttribute('aria-label'),
-      this.getAttribute('aria-labelledby')
-    ].some(value => value?.trim())
-    if (!this.hasAttribute('title') && !hasAccessibleName) {
+    const setDefaultTitle = () => {
+      if (!this.isConnected || this.hasAttribute('title') || hasAccessibleName(this)) return
       const title = defaultTitles[this.localName]
       if (title) this.setAttribute('title', title)
+    }
+    if (this.ownerDocument.readyState === 'loading') {
+      this.ownerDocument.addEventListener('DOMContentLoaded', setDefaultTitle, {once: true})
+    } else {
+      setDefaultTitle()
     }
   }
 

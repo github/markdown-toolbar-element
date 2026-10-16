@@ -91,17 +91,40 @@ describe('markdown-toolbar-element', function () {
       const namedButtons = [
         {textContent: 'Bold'},
         {attribute: ['aria-label', 'Emphasis']},
-        {attribute: ['aria-labelledby', 'button-label']}
+        {attribute: ['aria-labelledby', 'button-label'], labelText: 'Emphasis'}
       ]
 
       for (const namedButton of namedButtons) {
         const el = document.createElement('md-bold')
         if (namedButton.textContent) el.textContent = namedButton.textContent
         if (namedButton.attribute) el.setAttribute(...namedButton.attribute)
+        if (namedButton.labelText) {
+          const label = document.createElement('span')
+          label.id = 'button-label'
+          label.textContent = namedButton.labelText
+          document.body.append(label)
+        }
         document.body.append(el)
         assert.isNull(el.getAttribute('title'))
         document.body.removeChild(el)
+        document.querySelector('#button-label')?.remove()
       }
+    })
+
+    it('requires a referenced label to contain naming content', function () {
+      const button = document.createElement('md-bold')
+      button.setAttribute('aria-labelledby', 'missing-label')
+      document.body.append(button)
+      assert.equal(button.getAttribute('title'), 'Bold')
+    })
+
+    it('resolves referenced labels in the button root', function () {
+      const host = document.createElement('div')
+      const shadow = host.attachShadow({mode: 'open'})
+      shadow.innerHTML =
+        '<span id="shadow-label" hidden aria-label="Fett"></span><md-bold aria-labelledby="shadow-label"></md-bold>'
+      document.body.append(host)
+      assert.isNull(shadow.querySelector('md-bold').getAttribute('title'))
     })
 
     it('adds a default title when supplied names contain only whitespace', function () {
@@ -128,6 +151,72 @@ describe('markdown-toolbar-element', function () {
       ariaHiddenSvgButton.innerHTML = '<svg aria-hidden="true"><title>Decorative</title></svg>'
       document.body.append(ariaHiddenSvgButton)
       assert.equal(ariaHiddenSvgButton.getAttribute('title'), 'Bold')
+
+      const ariaHiddenTextButton = document.createElement('md-bold')
+      ariaHiddenTextButton.innerHTML = '<span aria-hidden="true">Decorative</span>'
+      document.body.append(ariaHiddenTextButton)
+      assert.equal(ariaHiddenTextButton.getAttribute('title'), 'Bold')
+
+      const cssHiddenTextButton = document.createElement('md-bold')
+      cssHiddenTextButton.innerHTML =
+        '<span style="display:none">Decorative</span><span style="visibility:hidden">Decorative</span>'
+      document.body.append(cssHiddenTextButton)
+      assert.equal(cssHiddenTextButton.getAttribute('title'), 'Bold')
+    })
+
+    it('ignores hidden decoration when the host starts display:none', function () {
+      const button = document.createElement('md-bold')
+      button.style.display = 'none'
+      button.innerHTML = '<span aria-hidden="true">Decorative</span>'
+      document.body.append(button)
+      button.style.display = ''
+      assert.equal(button.getAttribute('title'), 'Bold')
+    })
+
+    it('keeps text naming when a hidden host is revealed', function () {
+      const hiddenButton = document.createElement('md-bold')
+      hiddenButton.hidden = true
+      hiddenButton.textContent = 'Gras'
+      document.body.append(hiddenButton)
+      hiddenButton.hidden = false
+      assert.isNull(hiddenButton.getAttribute('title'))
+
+      const ariaHiddenButton = document.createElement('md-bold')
+      ariaHiddenButton.setAttribute('aria-hidden', 'true')
+      ariaHiddenButton.textContent = 'Gras'
+      document.body.append(ariaHiddenButton)
+      ariaHiddenButton.removeAttribute('aria-hidden')
+      assert.isNull(ariaHiddenButton.getAttribute('title'))
+    })
+
+    it('recognizes image alternative text as an accessible name', function () {
+      const button = document.createElement('md-bold')
+      button.innerHTML = '<img alt="Fett">'
+      document.body.append(button)
+      assert.isNull(button.getAttribute('title'))
+    })
+
+    it('waits for parser-created children before deciding the fallback title', function (done) {
+      const frame = document.createElement('iframe')
+      frame.srcdoc = `
+        <script>
+          class ParserButton extends HTMLElement {
+            connectedCallback() {
+              parent.MarkdownBoldButtonElement.prototype.connectedCallback.call(this)
+            }
+          }
+          customElements.define('md-bold', ParserButton)
+          document.write('<md-bold id="parser-name">Fett</md-bold>')
+        </script>`
+      frame.addEventListener('load', function () {
+        const button = frame.contentDocument.querySelector('#parser-name')
+        if (!button) return
+        assert.equal(button.textContent, 'Fett')
+        assert.isNull(button.getAttribute('title'))
+        frame.remove()
+        done()
+      })
+      document.body.append(frame)
     })
   })
 
