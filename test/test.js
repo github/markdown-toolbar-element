@@ -32,6 +32,22 @@ describe('markdown-toolbar-element', function () {
       'md-strikethrough'
     ]
 
+    const defaultTitles = {
+      'md-header': 'Heading',
+      'md-bold': 'Bold',
+      'md-italic': 'Italic',
+      'md-quote': 'Quote',
+      'md-code': 'Code',
+      'md-link': 'Link',
+      'md-image': 'Image',
+      'md-unordered-list': 'Unordered list',
+      'md-ordered-list': 'Ordered list',
+      'md-task-list': 'Task list',
+      'md-mention': 'Mention',
+      'md-ref': 'Reference',
+      'md-strikethrough': 'Strikethrough'
+    }
+
     for (const tag of buttonTags) {
       it(`sets role="button" on <${tag}> when connected`, function () {
         const el = document.createElement(tag)
@@ -46,6 +62,162 @@ describe('markdown-toolbar-element', function () {
         assert.equal(el.getAttribute('role'), 'none')
       })
     }
+
+    it('sets descriptive default titles on built-in buttons', function () {
+      for (const [tag, title] of Object.entries(defaultTitles)) {
+        const el = document.createElement(tag)
+        document.body.append(el)
+        assert.equal(el.getAttribute('title'), title)
+      }
+    })
+
+    it('preserves an explicit title when a button reconnects', function () {
+      const el = document.createElement('md-bold')
+      el.setAttribute('title', 'Emphasis')
+      document.body.append(el)
+      document.body.removeChild(el)
+      document.body.append(el)
+      assert.equal(el.getAttribute('title'), 'Emphasis')
+    })
+
+    it('preserves an explicit empty title', function () {
+      const el = document.createElement('md-bold')
+      el.setAttribute('title', '')
+      document.body.append(el)
+      assert.equal(el.getAttribute('title'), '')
+    })
+
+    it('does not add a default title when a button has an accessible name', function () {
+      const namedButtons = [
+        {textContent: 'Bold'},
+        {attribute: ['aria-label', 'Emphasis']},
+        {attribute: ['aria-labelledby', 'button-label'], labelText: 'Emphasis'}
+      ]
+
+      for (const namedButton of namedButtons) {
+        const el = document.createElement('md-bold')
+        if (namedButton.textContent) el.textContent = namedButton.textContent
+        if (namedButton.attribute) el.setAttribute(...namedButton.attribute)
+        if (namedButton.labelText) {
+          const label = document.createElement('span')
+          label.id = 'button-label'
+          label.textContent = namedButton.labelText
+          document.body.append(label)
+        }
+        document.body.append(el)
+        assert.isNull(el.getAttribute('title'))
+        document.body.removeChild(el)
+        document.querySelector('#button-label')?.remove()
+      }
+    })
+
+    it('requires a referenced label to contain naming content', function () {
+      const button = document.createElement('md-bold')
+      button.setAttribute('aria-labelledby', 'missing-label')
+      document.body.append(button)
+      assert.equal(button.getAttribute('title'), 'Bold')
+    })
+
+    it('resolves referenced labels in the button root', function () {
+      const host = document.createElement('div')
+      const shadow = host.attachShadow({mode: 'open'})
+      shadow.innerHTML =
+        '<span id="shadow-label" hidden aria-label="Fett"></span><md-bold aria-labelledby="shadow-label"></md-bold>'
+      document.body.append(host)
+      assert.isNull(shadow.querySelector('md-bold').getAttribute('title'))
+    })
+
+    it('adds a default title when supplied names contain only whitespace', function () {
+      const textButton = document.createElement('md-bold')
+      textButton.textContent = '  \n  '
+      document.body.append(textButton)
+      assert.equal(textButton.getAttribute('title'), 'Bold')
+      document.body.removeChild(textButton)
+
+      const ariaButton = document.createElement('md-bold')
+      ariaButton.setAttribute('aria-label', '  ')
+      document.body.append(ariaButton)
+      assert.equal(ariaButton.getAttribute('title'), 'Bold')
+    })
+
+    it('ignores hidden descendant content when deciding whether text is visible', function () {
+      const hiddenTextButton = document.createElement('md-bold')
+      hiddenTextButton.innerHTML = '<span hidden>Not a name</span>'
+      document.body.append(hiddenTextButton)
+      assert.equal(hiddenTextButton.getAttribute('title'), 'Bold')
+      document.body.removeChild(hiddenTextButton)
+
+      const ariaHiddenSvgButton = document.createElement('md-bold')
+      ariaHiddenSvgButton.innerHTML = '<svg aria-hidden="true"><title>Decorative</title></svg>'
+      document.body.append(ariaHiddenSvgButton)
+      assert.equal(ariaHiddenSvgButton.getAttribute('title'), 'Bold')
+
+      const ariaHiddenTextButton = document.createElement('md-bold')
+      ariaHiddenTextButton.innerHTML = '<span aria-hidden="true">Decorative</span>'
+      document.body.append(ariaHiddenTextButton)
+      assert.equal(ariaHiddenTextButton.getAttribute('title'), 'Bold')
+
+      const cssHiddenTextButton = document.createElement('md-bold')
+      cssHiddenTextButton.innerHTML =
+        '<span style="display:none">Decorative</span><span style="visibility:hidden">Decorative</span>'
+      document.body.append(cssHiddenTextButton)
+      assert.equal(cssHiddenTextButton.getAttribute('title'), 'Bold')
+    })
+
+    it('ignores hidden decoration when the host starts display:none', function () {
+      const button = document.createElement('md-bold')
+      button.style.display = 'none'
+      button.innerHTML = '<span aria-hidden="true">Decorative</span>'
+      document.body.append(button)
+      button.style.display = ''
+      assert.equal(button.getAttribute('title'), 'Bold')
+    })
+
+    it('keeps text naming when a hidden host is revealed', function () {
+      const hiddenButton = document.createElement('md-bold')
+      hiddenButton.hidden = true
+      hiddenButton.textContent = 'Gras'
+      document.body.append(hiddenButton)
+      hiddenButton.hidden = false
+      assert.isNull(hiddenButton.getAttribute('title'))
+
+      const ariaHiddenButton = document.createElement('md-bold')
+      ariaHiddenButton.setAttribute('aria-hidden', 'true')
+      ariaHiddenButton.textContent = 'Gras'
+      document.body.append(ariaHiddenButton)
+      ariaHiddenButton.removeAttribute('aria-hidden')
+      assert.isNull(ariaHiddenButton.getAttribute('title'))
+    })
+
+    it('recognizes image alternative text as an accessible name', function () {
+      const button = document.createElement('md-bold')
+      button.innerHTML = '<img alt="Fett">'
+      document.body.append(button)
+      assert.isNull(button.getAttribute('title'))
+    })
+
+    it('waits for parser-created children before deciding the fallback title', function (done) {
+      const frame = document.createElement('iframe')
+      frame.srcdoc = `
+        <script>
+          class ParserButton extends HTMLElement {
+            connectedCallback() {
+              parent.MarkdownBoldButtonElement.prototype.connectedCallback.call(this)
+            }
+          }
+          customElements.define('md-bold', ParserButton)
+          document.write('<md-bold id="parser-name">Fett</md-bold>')
+        </script>`
+      frame.addEventListener('load', function () {
+        const button = frame.contentDocument.querySelector('#parser-name')
+        if (!button) return
+        assert.equal(button.textContent, 'Fett')
+        assert.isNull(button.getAttribute('title'))
+        frame.remove()
+        done()
+      })
+      document.body.append(frame)
+    })
   })
 
   describe('in shadow DOM', function () {
