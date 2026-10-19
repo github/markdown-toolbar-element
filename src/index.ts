@@ -837,7 +837,7 @@ function applyStyle(button: Element, stylesToApply: Style) {
   const style = {...defaults, ...stylesToApply}
 
   const field = toolbar.field
-  if (field) {
+  if (field && !field.readOnly && !field.matches(':disabled')) {
     field.focus()
     styleSelectedText(field, style)
   }

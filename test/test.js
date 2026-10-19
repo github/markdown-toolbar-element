@@ -131,6 +131,35 @@ describe('markdown-toolbar-element', function () {
       document.body.innerHTML = ''
     })
 
+    for (const restriction of ['readOnly', 'disabled', 'fieldset']) {
+      it(`does not format a ${restriction} field until it is editable again`, function () {
+        const field = document.querySelector('textarea')
+        field.value = 'Hubot'
+        field.setSelectionRange(0, field.value.length)
+        let inputs = 0
+        field.addEventListener('input', () => inputs++)
+        let fieldset
+        if (restriction === 'fieldset') {
+          fieldset = document.createElement('fieldset')
+          field.before(fieldset)
+          fieldset.append(field)
+          fieldset.disabled = true
+        } else {
+          field[restriction] = true
+        }
+
+        clickToolbar('md-bold')
+        assert.equal(field.value, 'Hubot')
+        assert.equal(inputs, 0)
+
+        if (fieldset) fieldset.disabled = false
+        else field[restriction] = false
+        clickToolbar('md-bold')
+        assert.equal(field.value, '**Hubot**')
+        assert.equal(inputs, 1)
+      })
+    }
+
     describe('focus management', function () {
       function focusFirstButton() {
         document.querySelector('markdown-toolbar').focus()
