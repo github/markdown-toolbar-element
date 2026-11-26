@@ -532,6 +532,83 @@ describe('markdown-toolbar-element', function () {
         clickToolbar('md-quote')
         assert.equal('|Hey,\n\nThis looks great.\n\nThanks,\nJosh|\n\nEmailed me that last week.', visualValue())
       })
+
+      it('quotes full line of text when the cursor is in the middle of the line', function () {
+        setVisualValue('The quick brown| fox jumps over the lazy dog')
+        clickToolbar('md-quote')
+        assert.equal('> The quick brown| fox jumps over the lazy dog', visualValue())
+      })
+
+      it('quotes full line of text when the cursor is at the end of the line', function () {
+        setVisualValue('The quick brown fox|\nThe lazy dog')
+        clickToolbar('md-quote')
+        assert.equal('> The quick brown fox|\n\nThe lazy dog', visualValue())
+      })
+
+      it('quotes the last line of text when the cursor is at the end of the text', function () {
+        setVisualValue('First line\nThe quick brown fox|')
+        clickToolbar('md-quote')
+        assert.equal('First line\n\n> The quick brown fox|', visualValue())
+      })
+
+      it('inserts an empty quote when the cursor is on an empty line', function () {
+        setVisualValue('First line\n\n|\nThird line')
+        clickToolbar('md-quote')
+        assert.equal('First line\n\n> |\n\nThird line', visualValue())
+      })
+
+      it('quotes only the line with the cursor in the middle of other lines', function () {
+        setVisualValue('First line\nSecond li|ne\nThird line')
+        clickToolbar('md-quote')
+        assert.equal('First line\n\n> Second li|ne\n\nThird line', visualValue())
+      })
+
+      it('quotes the full line wherever the cursor is on the line', function () {
+        const textarea = document.querySelector('textarea')
+        const lines = ['The quick brown fox', 'jumps over the lazy dog']
+        for (let line = 0; line < lines.length; line++) {
+          const lineStart = line === 0 ? 0 : lines[0].length + 1
+          for (let offset = 0; offset <= lines[line].length; offset++) {
+            textarea.value = lines.join('\n')
+            textarea.setSelectionRange(lineStart + offset, lineStart + offset)
+            clickToolbar('md-quote')
+            const expected = line === 0 ? `> ${lines[0]}\n\n${lines[1]}` : `${lines[0]}\n\n> ${lines[1]}`
+            assert.equal(textarea.value, expected, `line ${line}, cursor offset ${offset}`)
+            assert.equal(
+              textarea.selectionStart,
+              lineStart + offset + (line === 0 ? 2 : 3),
+              `selection of line ${line}, offset ${offset}`
+            )
+            assert.equal(textarea.selectionEnd, textarea.selectionStart)
+          }
+        }
+      })
+
+      it('unquotes the full line of text when the cursor is in the middle of the line', function () {
+        setVisualValue('> The quick| brown fox jumps over the lazy dog')
+        clickToolbar('md-quote')
+        assert.equal('The quick| brown fox jumps over the lazy dog', visualValue())
+      })
+    })
+
+    describe('task list', function () {
+      it('turns the full line into a task when the cursor is in the middle of the line', function () {
+        setVisualValue('Buy mi|lk and eggs')
+        clickToolbar('md-task-list')
+        assert.equal('- [ ] Buy mi|lk and eggs', visualValue())
+      })
+
+      it('turns the full line into a task when the cursor is at the end of the text', function () {
+        setVisualValue('Buy milk and eggs|')
+        clickToolbar('md-task-list')
+        assert.equal('- [ ] Buy milk and eggs|', visualValue())
+      })
+
+      it('turns only the line with the cursor into a task in the middle of other lines', function () {
+        setVisualValue('First line\nBuy mi|lk\nThird line')
+        clickToolbar('md-task-list')
+        assert.equal('First line\n\n- [ ] Buy mi|lk\n\nThird line', visualValue())
+      })
     })
 
     describe('mention', function () {

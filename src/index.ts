@@ -441,9 +441,10 @@ function repeat(string: string, n: number): string {
   return Array(n + 1).join(string)
 }
 
-function wordSelectionStart(text: string, i: number): number {
+function wordSelectionStart(text: string, i: number, multiline: boolean): number {
   let index = i
-  while (text[index] && text[index - 1] != null && !text[index - 1].match(/\s/)) {
+  const breakpoint = multiline ? /\n/ : /\s/
+  while ((multiline || text[index]) && text[index - 1] != null && !text[index - 1].match(breakpoint)) {
     index--
   }
   return index
@@ -538,7 +539,7 @@ function expandSelectedText(
   multiline = false
 ): string {
   if (textarea.selectionStart === textarea.selectionEnd) {
-    textarea.selectionStart = wordSelectionStart(textarea.value, textarea.selectionStart)
+    textarea.selectionStart = wordSelectionStart(textarea.value, textarea.selectionStart, multiline)
     textarea.selectionEnd = wordSelectionEnd(textarea.value, textarea.selectionEnd, multiline)
   } else {
     const expandedSelectionStart = textarea.selectionStart - prefixToUse.length
